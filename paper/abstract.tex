@@ -1,0 +1,16 @@
+\begin{abstract}
+  
+%Existing Testing and Verification technologies, are impractical for testing large scale softwares. 
+One of the biggest problems faced by developers testing large scale systems is replicating the deployed environment to figure out errors.
+In the recent years there has been a lot of work in record-and-replay systems which capture 
+
+In this work we present a testing harness for production systems which allows the capabilities of running test-cases in a sandbox environment in the wild at any point in the execution of an integrated application. 
+The paper levarages, Linux Container Shells(LXCs) to launch test instances in forked VM's from running instances of a process. 
+The LXC shell provides a sandbox environment, for safe execution of test-cases provided by the users without disturbing the execution environment. 
+Test cases are initiated using user-defined probe points which launch test-cases using the execution context of the probe point. 
+Our sandboxes provide a seperate namespace for the processes executing the test cases, replicate and copy inputs to the parent application, safetly discard all outputs, and manage the file system such that existing and newly created file descriptors are safetly managed.
+
+We believe our tool provides a mechanism for practical testing of large scale multi-tier and cloud applications. 
+In our evaluation provide a number of use-cases to show the utility of our tool.
+  
+\end{abstract}
