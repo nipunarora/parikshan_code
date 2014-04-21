@@ -1,6 +1,6 @@
 FILES=sandbox.tex
 
-all: sandbox.pdf
+all: 	sandbox.pdf
 
 sandbox.pdf: ${FILES}
 	latex sandbox.tex

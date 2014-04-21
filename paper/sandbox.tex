@@ -1,75 +1,148 @@
-% TEMPLATE for Usenix papers, specifically to meet requirements of
-%  USENIX '05
-% originally a template for producing IEEE-format articles using LaTeX.
-%   written by Matthew Ward, CS Department, Worcester Polytechnic Institute.
-% adapted by David Beazley for his excellent SWIG paper in Proceedings,
-%   Tcl 96
-% turned into a smartass generic template by De Clarke, with thanks to
-%   both the above pioneers
-% use at your own risk.  Complaints to /dev/null.
-% make it two column with no page numbering, default is 10 point
+% This is "sig-alternate.tex" V2.0 May 2012
+% This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
+%
+% This example file demonstrates the use of the 'sig-alternate.cls'
+% V2.5 LaTeX2e document class file. It is for those submitting
+% articles to ACM Conference Proceedings WHO DO NOT WISH TO
+% STRICTLY ADHERE TO THE SIGS (PUBS-BOARD-ENDORSED) STYLE.
+% The 'sig-alternate.cls' file will produce a similar-looking,
+% albeit, 'tighter' paper resulting in, invariably, fewer pages.
+%
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V2.5) produces:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) NO page numbers
+%
+% as against the acm_proc_article-sp.cls file which
+% DOES NOT produce 1) thru' 3) above.
+%
+% Using 'sig-alternate.cls' you have control, however, from within
+% the source .tex file, over both the CopyrightYear
+% (defaulted to 200X) and the ACM Copyright Data
+% (defaulted to X-XXXXX-XX-X/XX/XX).
+% e.g.
+% \CopyrightYear{2007} will cause 2007 to appear in the copyright line.
+% \crdata{0-12345-67-8/90/12} will cause 0-12345-67-8/90/12 to appear in the copyright line.
+%
+% ---------------------------------------------------------------------------------------------------------------
+% This .tex source is an example which *does* use
+% the .bib file (from which the .bbl file % is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission, you *NEED* to 'insert'
+% your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% ================= IF YOU HAVE QUESTIONS =======================
+% Questions regarding the SIGS styles, SIGS policies and
+% procedures, Conferences etc. should be sent to
+% Adrienne Griscti (griscti@acm.org)
+%
+% Technical questions _only_ to
+% Gerald Murray (murray@hq.acm.org)
+% ===============================================================
+%
+% For tracking purposes - this is V2.0 - May 2012
 
-% Munged by Fred Douglis <douglis@research.att.com> 10/97 to separate
-% the .sty file from the LaTeX source template, so that people can
-%%% more easily include the .sty file into an existing document.  Also
-% changed to more closely follow the style guidelines as represented
-% by the Word sample file. 
+\documentclass{sig-alternate}
+\usepackage{paralist}
 
-% Note that since 2010, USENIX does not require endnotes. If you want
-% foot of page notes, don't include the endnotes package in the 
-% usepackage command, below.
-
-% This version uses the latex2e styles, not the very ancient 2.09 stuff.
-\documentclass[letterpaper,twocolumn,10pt]{article}
-\usepackage{usenix,epsfig,endnotes,graphicx,setspace}
 \begin{document}
+%
+% --- Author Metadata here ---
+\conferenceinfo{ICSE}{2015 Firenze, Italy}
+%\CopyrightYear{2007} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
+%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
+% --- End of Author Metadata ---
 
-%don't want date printed
-\date{}
-
-%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
 \title{\Large \bf Parikshan: A Testing Harness for In-Vivo Sandbox Testing}
+%\title{Alternate {\ttlit ACM} SIG Proceedings Paper in LaTeX
+%Format\titlenote{(Produces the permission block, and
+%copyright information). For use with
+%SIG-ALTERNATE.CLS. Supported by ACM.}}
+%\subtitle{[Extended Abstract]
+%\titlenote{A full version of this paper is available as
+%\textit{Author's Guide to Preparing ACM SIG Proceedings Using
+%\LaTeX$2_\epsilon$\ and BibTeX} at
+%\texttt{www.acm.org/eaddress.htm}}}
 
-%for single author (just remove % characters)
-%\author{
-%{\rm Nipun Arora}\\
-%NEC Research Labs \\
-%Princeton, NJ, USA\\
-%nipun@nec-labs.com
-%}%\and
-%{\rm Franjo Ivancic}\\
-%NEC Research Labs \\
-%Princeton, NJ, USA\\
-%ivancic@nec-labs.com
-%\and
-%{\rm Guofei Jiang}\\
-%NEC Research Labs\\
-%Princeton, NJ, USA\\
-%gfj@nec-labs.com
-%\and
-%{\rm Gail Kaiser}\\
-%Columbia University\\
-%New York, NY, USA\\
-%gail@cs.columbia.edu
-%} 
+%
+% You need the command \numberofauthors to handle the 'placement
+% and alignment' of the authors beneath the title.
+%
+% For aesthetic reasons, we recommend 'three authors at a time'
+% i.e. three 'name/affiliation blocks' be placed beneath the title.
+%
+% NOTE: You are NOT restricted in how many 'rows' of
+% "name/affiliations" may appear. We just ask that you restrict
+% the number of 'columns' to three.
+%
+% Because of the available 'opening page real-estate'
+% we ask you to refrain from putting more than six authors
+% (two rows with three columns) beneath the article title.
+% More than six makes the first-page appear very cluttered indeed.
+%
+% Use the \alignauthor commands to handle the names
+% and affiliations for an 'aesthetic maximum' of six authors.
+% Add names, affiliations, addresses for
+% the seventh etc. author(s) as the argument for the
+% \additionalauthors command.
+% These 'additional authors' will be output/set for you
+% without further effort on your part as the last section in
+% the body of your article BEFORE References or any Appendices.
 
+\numberofauthors{3} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
 \author{
-%{\rm Nipun Arora$^\dagger$, Gail Kaiser$^*$}\\ \\
-%$^\dagger$NEC Laboratories America \hspace{1.4cm}   $^*$Columbia University\\
-%Princeton, New Jersey, USA \hspace{1.4cm}  New York, NY, USA\\
-%\{nipun,ivancic,gfj\}@nec-labs.com \hspace{14pt} gail@cs.columbia.edu \\
-% nipun@nec-labs.com \hspace{2.6cm} gail@cs.columbia.edu
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+Nipun Arora\\
+       \affaddr{NEC Research Labs}\\
+       \affaddr{Princeton, NJ, USA}\\
+       \email{nipun@nec-labs.com}
+% 2nd. author
+\alignauthor
+Franjo Ivancic\\
+       \affaddr{Google}\\
+       \affaddr{New York, NY, USA}\\
+       \email{franjo@google.com}
+% 3rd. author
+\alignauthor Gail Kaiser\\
+       \affaddr{Columbia University}\\
+       \affaddr{New York, NY, USA}\\
+       \email{kaiser@cs.columbia.edu}\\
 }
-
-% end author
+\date{30 July 1999}
 \maketitle
 
-% Use the following at camera-ready time to suppress page numbers.
-% Comment it out when you first submit the paper for review.
-\thispagestyle{empty}
-
 \input{abstract}
+
+% A category with the (minimum) three required fields
+\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+\terms{Theory}
+
+\keywords{ACM proceedings, \LaTeX, text tagging}
+
+
+
 \input{introduction}
+\input{motivation}
 \input{related}
 \input{design}
 \input{trigger}
@@ -77,12 +150,16 @@
 \input{implementation}
 \input{conclusion}
 
-\begin{spacing}{0.8}
-\bibliographystyle{acm}
-\bibliography{sandbox}
-\end{spacing}
 
+
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
 \end{document}
-
-%Should show case that the entire process is automated to the user maybe show our presentation slides.
-%Additionally we should talk about advantages in comparison to D-Trace in related work
