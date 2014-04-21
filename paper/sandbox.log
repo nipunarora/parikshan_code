@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  21 APR 2014 10:07
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  21 APR 2014 16:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -236,7 +236,7 @@ File: figs/workflow.eps Graphic file (type eps)
  <figs/workflow.eps>
 File: figs/workflow2.eps Graphic file (type eps)
  <figs/workflow2.eps>
-LaTeX Font Info:    Try loading font information for T1+aett on input line 27.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 34.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
@@ -249,12 +249,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 4--5
 
  []
 
-) (./related.tex
+) (./related.tex [2]
 
 LaTeX Warning: Citation `perpetual' on page \thepage  undefined on input line 1
 0.
 
-) (./design.tex [2]) (./trigger.tex
+) (./design.tex) (./trigger.tex
 Overfull \hbox (31.67482pt too wide) in paragraph at lines 1--1
 []\secfnt TRIGGERING AND IN-SERT-ING TEST CASES 
  []
@@ -266,10 +266,10 @@ Overfull \hbox (31.67482pt too wide) in paragraph at lines 1--1
 Here is how much of TeX's memory you used:
  2001 strings out of 493489
  22989 string characters out of 3141349
- 79326 words of memory out of 3000000
+ 80326 words of memory out of 3000000
  5258 multiletter control sequences out of 15000+200000
  44645 words of font info for 55 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  39i,10n,26p,469b,295s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sandbox.dvi (3 pages, 11856 bytes).
+Output written on sandbox.dvi (3 pages, 13432 bytes).

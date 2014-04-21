@@ -20,11 +20,18 @@
 
 As application software grows and gets more complicated, testing large scale applications has become increasingly important. 
 However, it is often impossible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
+Testing in the development environment can be (1). Un-realistic because it may not be possible to faithfully reconstruct the production environment, (2). The test-cases generated may be incomplete, (3) It is infeasible to test all possible configurations given time and cost constraints of releasing the software to the field. 
+
+One of the proposed mechanisms of addressing this problem is to ``perpetually test'' the application in the field after it has been deployed. 
+This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which are possible only for a long running production configuration.
+
+
 On the other hand, there has been an equally impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
-This often allows for redundant computation, which can be used for testing purposes. 
+Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
+%This often allows for redundant computation, which can be used for testing purposes. 
 Leveraging this abundance of resource we present a testing harness which allows the user to dynamically insert test cases in a production environment( we call this in-vivo testing).
 
-We have designed a tool called \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing}, which allows capturing the context of application, and allows for a test-case to be run without effecting the sanctity/and performance of the actual application. 
+In this paper we introduce, \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing}, which allows capturing the context of application, and allows for a test-case to be run without effecting the sanctity/and performance of the actual application. 
 This is done by cloning a production server and creating two containers: a production container, and a testing container. 
 We duplicate the incoming traffic to both the production container and the test container using a custom proxy, which ignores the responses from the test-container. 
 The testing on the test-container is done on the fly using dynamic instrumentation, hence any set of test-cases can be turned on whenever required. 
@@ -42,9 +49,13 @@ The key contributions of this paper are:
 This allows for a safe and secure test harness which does not effect the production state, and allows the application to proceed in it's execution.
 \item We allow for dynamic insertion of the test case, and safetly capturing the context of the application. Dynamically inserting test-cases is important to avoid relaunching binaries in the test-container with the required test-cases. 
 Restarting binaries is not possible, because it would break active network connections, and destroy the state of the test container
+\item Language and Platform agnostic: One of the key advantages of our approach is that it is language and platform agnostic. Since the underlying mechanism takes advantage of containers as a platform to do the cloning, the language or interface does not matter as far as cloning is concerned. 
+Of-course testing mechanims may differ depending upon different languages.
 %\texttt{Zero-Probe Effect} probe points are added to the application which can be activated to insert test cases using ptrace\cite{ptrace}.
 %The use of dynamic instrumentation capability to add test cases in an application is an extension of our previous work of a dynamic instrumentation tool iProbe \cite{iProbe}
 \end{itemize}
+
+Traditional testing approaches break states and are unable to  
 
 %The authors previous work in in-vivo testing\cite{invite} explored testing in the wild by initiating test cases in the production environment and sharing the load across several instances of deployed application.
 %This approach adds test-cases in predetermined functions before starting the execution of the process, and periodically executes them in the run-time environment based on a probabilistic function. 
