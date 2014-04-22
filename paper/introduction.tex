@@ -2,43 +2,54 @@
 \section{Introduction}
 \label{sec:intro}
 
-\begin{figure}[t]
-  \begin{center}
-    \includegraphics[width=0.95\columnwidth]{figs/workflow.eps}
-    \caption{Workflow}
-    \label{fig:Normal workflow for most multi-tier service oriented systems}
-  \end{center}
-\end{figure}
+%\begin{figure}[t]
+%  \begin{center}
+%    \includegraphics[width=0.95\columnwidth]{figs/workflow.eps}
+%    \caption{Workflow}
+%    \label{fig:Normal workflow for most multi-tier service oriented systems}
+%  \end{center}
+%\end{figure}
 
-\begin{figure*}[t]
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{figs/workflow2.eps}
-    \caption{Workflow}
-    \label{fig:Backend wrapped around with Parakishan Run-time}
-  \end{center}
-\end{figure*}
+%\begin{figure*}[t]
+%  \begin{center}
+%    \includegraphics[width=0.8\textwidth]{figs/workflow2.eps}
+%    \caption{Workflow}
+%    \label{fig:Backend wrapped around with Parakishan Run-time}
+%  \end{center}
+%\end{figure*}
 
 As application software grows and gets more complicated, testing large scale applications has become increasingly important. 
 However, it is often impossible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
 Testing in the development environment can be (1). Un-realistic because it may not be possible to faithfully reconstruct the production environment, (2). The test-cases generated may be incomplete, (3) It is infeasible to test all possible configurations given time and cost constraints of releasing the software to the field. 
 
-One of the proposed mechanisms of addressing this problem is to ``perpetually test'' the application in the field after it has been deployed. 
-This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which are possible only for a long running production configuration.
+One of the proposed mechanisms of addressing this problem is to ``perpetually test''\cite{perpetual} the application in the field after it has been deployed. 
+This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which are possible only for a long running production environment.
+Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
+However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
 
+The reason behind any potential state-change, or performance slow-down is because of embedding test-case logic within the context of the application, thereby executing something that would otherwise not be there in an optimized implmentation of the application.
+This is something which is usually unacceptable in user-facing applications.
+Intuitively, test-cases can be parallelized thereby amortizing the cost of running the test, by running it in parallel \cite{invite}.
+However such approaches suffer from slow-down problems, as the forking must happen within the production system environment, and can lead to slow-down, as well as effect the system state, and hence can only help in speeding up testing in a development environment.
+An alternate approach is to record running production environments, and replay them offline.
+Over the years there have been several systems which have explored this direction with promising results.
+However most record and replay systems have high overheads, and require replication of the running configuration which may not be possible. 
+Additionally the administrator needs to wait for offline analysis, instead of doing real-time diagnosis.
 
-On the other hand, there has been an equally impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
-Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
+The motivation behind our work is to provide testing as a service for real-time diagnosis of production applications.
+We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
+%On the other hand, there has been an impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
+%Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
 %This often allows for redundant computation, which can be used for testing purposes. 
-Leveraging this abundance of resource we present a testing harness which allows the user to dynamically insert test cases in a production environment( we call this in-vivo testing).
-
-In this paper we introduce, \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing}, which allows capturing the context of application, and allows for a test-case to be run without effecting the sanctity/and performance of the actual application. 
+Leveraging this abundance of resource, and recent advances in user-space container technology(OpenVZ/LXC\cite{OpenVZ,LXC} we present a testing harness which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
+Our system called \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing} allows capturing the context of application, and for tests to be run without effecting the sanctity/and performance of the actual user-facing application. 
 This is done by cloning a production server and creating two containers: a production container, and a testing container. 
 We duplicate the incoming traffic to both the production container and the test container using a custom proxy, which ignores the responses from the test-container. 
 The testing on the test-container is done on the fly using dynamic instrumentation, hence any set of test-cases can be turned on whenever required. 
 %This is achieved by using dynamic instrumentation mechanisms to clone a VM by forking off from a running executed state and encapsulating the forked execution in a VM.
 The user can pre-define probe points for dynamically inserting test-cases (by default the entry and exit of each function is considered a probe point).
 Since the test is executed in a VM it acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or effecting the sanity of the responses to the production client. 
-We synchronize the production and test containers using a variant of live migration without suspending the services of the production server. 
+We synchronize the production and test containers using a variant of live migration without suspending the services of the production server, and follow it up with frequent synchronization for a long running tests. 
 Frequent synchronization is necessary because the test container can potentially go out of sync with the production because of non-determinism or because a test-case changes the state of the container, and effects future problems. 
 
 
@@ -55,8 +66,7 @@ Of-course testing mechanims may differ depending upon different languages.
 %The use of dynamic instrumentation capability to add test cases in an application is an extension of our previous work of a dynamic instrumentation tool iProbe \cite{iProbe}
 \end{itemize}
 
-Traditional testing approaches break states and are unable to  
-
+%Traditional testing approaches break states and are unable to  
 %The authors previous work in in-vivo testing\cite{invite} explored testing in the wild by initiating test cases in the production environment and sharing the load across several instances of deployed application.
 %This approach adds test-cases in predetermined functions before starting the execution of the process, and periodically executes them in the run-time environment based on a probabilistic function. 
 

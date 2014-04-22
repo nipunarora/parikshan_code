@@ -4,9 +4,12 @@ The top-level auxiliary file: sandbox.aux
 The style file: abbrv.bst
 Database file #1: sigproc.bib
 Warning--I didn't find a database entry for "perpetual"
+Warning--I didn't find a database entry for "invite"
+Warning--I didn't find a database entry for "OpenVZ"
+Warning--I didn't find a database entry for "LXC"
 You've used 0 entries,
             2118 wiz_defined-function locations,
-            498 strings with 3719 characters,
+            503 strings with 3743 characters,
 and the built_in function-call counts, 18 in all, are:
 = -- 0
 > -- 0
@@ -45,4 +48,4 @@ warning$ -- 0
 while$ -- 0
 width$ -- 0
 write$ -- 2
-(There was 1 warning)
+(There were 4 warnings)

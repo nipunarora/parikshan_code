@@ -7,7 +7,7 @@ However, most such record-replay systems have a high recording overhead and are 
 
 In this work we present a testing harness for production systems which allows the capabilities of running test-cases in a sandbox environment in the wild at any point in the execution of an integrated application. 
 The paper levarages, User-Space Containers(OpenVZ/LXCs) to launch test instances in a container cloned and migrated from a running instances of an application. 
-The LXC shell provides a sandbox environment, for safe execution of test-cases provided by the users without disturbing the execution environment. 
+The test-container provides a sandbox environment, for safe execution of test-cases provided by the users without disturbing the execution environment. 
 Test cases are initiated using user-defined probe points which launch test-cases using the execution context of the probe point. 
 Our sandboxes provide a seperate namespace for the processes executing the test cases, replicate and copy inputs to the parent application, safetly discard all outputs, and manage the file system such that existing and newly created file descriptors are safetly managed.
 
