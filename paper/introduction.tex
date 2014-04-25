@@ -10,13 +10,6 @@
 %  \end{center}
 %\end{figure}
 
-%\begin{figure*}[t]
-%  \begin{center}
-%    \includegraphics[width=0.8\textwidth]{figs/workflow2.eps}
-%    \caption{Workflow}
-%    \label{fig:Backend wrapped around with Parakishan Run-time}
-%  \end{center}
-%\end{figure*}
 
 As application software grows and gets more complicated, testing large scale applications has become increasingly important. 
 However, it is often impossible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
@@ -41,7 +34,7 @@ We observe that most modern day service oriented applications are hosted on IAAS
 %On the other hand, there has been an impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
 %Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
 %This often allows for redundant computation, which can be used for testing purposes. 
-Leveraging this abundance of resource, and recent advances in user-space container technology(OpenVZ/LXC\cite{OpenVZ,LXC} we present a testing harness which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
+Leveraging this abundance of resource, and recent advances in user-space container technology(OpenVZ/LXC\cite{openvz,linux} we present a testing harness which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
 Our system called \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing} allows capturing the context of application, and for tests to be run without effecting the sanctity/and performance of the actual user-facing application. 
 This is done by cloning a production server and creating two containers: a production container, and a testing container. 
 We duplicate the incoming traffic to both the production container and the test container using a custom proxy, which ignores the responses from the test-container. 

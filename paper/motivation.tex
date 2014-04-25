@@ -10,12 +10,14 @@ Under usual circumstances, the system would have to go down(depending on the sev
 However often, it is difficult to find out the confiugration of the system, and the user input which is causing this problem, also solving any emergent problems as soon as possible is extremely important.
 
 Joe can now use \textit{Parikshan}, to fork off a clone of tierA as test-tierA. Our proxy balancer sends a copy of the incoming request to test-tierA, while users can continue using tierA. 
-Process in test-tierA follow the same execution paths, as they receive the same input(we discuss non-determinisim related issues later), this allow Joe to initiate deeper test-cases, and observe the test-tierA, without fearing any problems in the user-facing operations.
+Process in test-tierA follow the same execution paths, as they receive the same input(we discuss non-determinisim related issues later); this allows Joe to initiate deeper test-cases, and observe the test-tierA, without fearing any problems in the user-facing operations.
 
+Time to bug resolution is usually a very important criteria in any user-facing service oriented application.
+Bearing this in my mind we believe, that online testing will be an important aspect towards modern applications.
+Additionally the usage of redundant computing for testing in alpha-beta testing(see \ref{sec:related}) approaches is a well accepted paradigm in real-world applications.
+This leads us to believe that using redundant computing should be acceptable for regular testing approaches as well.
 
-\subsection{Motivating Questions}
-The key intuition behind our approach is that \\
-
+To further motivate our testing paradigm we have come up with a set of motivating questions:
 
 \begin{compactitem}
 \setlength{\itemsep}{1Pt}
