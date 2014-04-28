@@ -1,2 +1,8 @@
 
 \section{Implementation}
+\label{sec:implementation}
+
+\textit{Parikshan} has been implemented in a small cluster environment, with physical hosts running KVM based virtual machines.
+Each VM is considered as a host-os for our implementation test bed.
+User-Space Container virtualization is done using OpenVZ\cite{openvz}, in Centos 6.4 kernels.
+Each container layout is managed using PLOOP\cite{ploop} devices to enable faster and easier migration.

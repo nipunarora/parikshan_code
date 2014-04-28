@@ -1,5 +1,6 @@
 
-\section{Design and Implementation}
+\section{Design}
+\label{sec:design}
 
 In this section we begin with a system overview of \texttt{Parikshan}. 
 We then explain how it inserts test cases, into the test harness, and finally we explain how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
@@ -12,13 +13,7 @@ We then explain how it inserts test cases, into the test harness, and finally we
   \end{center}
 \end{figure*}
 
-
-\subsection{System Overview}
-
-Figure 1 shows, a simple 2 tier production model with 
-
-
-\subsubsection{How does clone manager work?}
+\subsection{How does cloning work?}
 
 While the focus of our work is not to support VM/Container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
 Before moving further we fish to clarify that instead of the typical live migration supported by hypervisors, \textit{Parikshan} requires a clone of the production container. 
@@ -28,4 +23,12 @@ This cloning requires some tweaking, and modification in both how compute migrat
 To understand cloning in our context, one must first understand how live migration works. 
 Live migration refers to the process of moving a running virtual machine, guest os or container from one host node(physical machine) to another, without disconnecting any client or process running within the machine. 
 There are several variants of live migration, some of which require a short suspend time, while others are able to seamlessly transfer without any noticeable down-time by the user.
-In general the process involves the following steps: (1) Firstly, the copy is initiated by a pre-copy memory migration, where the underlying hypervisor copies all the memory pages from the source to the destination. (2) Secondly, 
+In general the process involves the following steps: (1) Firstly, the copy is initiated by a pre-copy memory migration, where the underlying hypervisor copies all the memory pages from the source to the destination. (2) Once pre-copy phase is finished, the VM is temporarily suspended, and all memory pages including live memory pages are transferred to the target node. 
+Once all memory pages have been transferred the target container is restarted. 
+To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
+Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
+Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network.
+
+Instead of Live Migration, in Live Cloning, we do not suspend operations 
+
+\subsection{System Overview}
