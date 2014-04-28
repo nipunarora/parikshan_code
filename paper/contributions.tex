@@ -6,9 +6,26 @@ The impact of sandbox testing can be seen in several different ways
 \begin{itemize}
   \item \textbf{Sandbox Live Testing}
     One of the key motivations leading to \emph{Parikshan} is to provide a harness to allow the user to test real, live implementations. 
+We have tried and tested this in particular for unit-testing cases. 
+While unit-testing cases are undoubtedly self contained, and can be designed like assertions such that they have no after effect on the any subsequent executions, any failure in these test-cases can definetely result in an unclean state.
+Apart from touching the state of the system testing in the production will also lead to a slow-down, which will affect the real system.
+We believe \emph{Parikshan} can be an effective tool to test and analyze unit tests.
 
+  \item \textbf{Fault Tolerance Testing}
+    A possible implementation of the \emph{Parikshan} test harness is to do Fault Tolerance Testing.
+As mentioned earlier testing and recreating large-scale configurations is extremely difficult.
+Additionally testing scalable aspects is costly as a significantly large test-bed is required to replicate loads. 
+Recent large scale fault tolerance testing approaches has been to use fault injection at random places.
+One such example is Chaos Monkey\cite{chaosmonkey} which has been employed by Netflix \cite{netflix} video streaming service. 
+Netflix has a highly distributed architecture with a large client base, and has several robustness mechanisms inbuilt to manage for failure. 
+The chaos monkey infrastructure forces random failiure in live Netflix production servers, to test it's fault tolerance.
+The key intuition behind this approach is, that faults in an ever evolving large-scale environment are inevitable, and in most cases the infrastructure will be able to auto-respond and get its instances back to a live state. 
+However, in the cases when it is unable to do so, Netflix wants to learn from failures, by forcing them in scheduled low-traffic hours.
 
-  \item \textbf{Fault Tolerance}
+Natrually such in production fault-injection mechanisms will always effect the user. 
+An alternate mechanism proposed by \emph{Parikshan} is to use the test-container to inject faults. 
+As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.
   \item \textbf{Verification}
+Software Verification is the process of exploring all possible 
   \item \textbf{Integration Testing}
 \end{itemize}

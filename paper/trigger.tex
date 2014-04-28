@@ -12,6 +12,7 @@ Analysis which need a long time window to record, and run the status across mult
 Such analysis can be considered to be similar to monitoring of live applications, and are usually statistical in nature.
 Typically tools such as PIN \cite{pin}, Valgrind \cite{valgrind}, Dyninst \cite{dyninst}, can do deep analysis without modifying the logic of the application.
 However, they impose a heavy penalty in terms of performance.
-
+Such tools can be easily used in \textit{Parikshan}, without effecting system performance.
+However, there are a few challanges with such statistics which need a longer window to run.
 \subsection{Unit Tests}
 \label{sec:unitTests}

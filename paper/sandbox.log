@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  25 APR 2014 17:28
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  27 APR 2014 23:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -255,7 +255,16 @@ File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 
 
 ]
-(./contributions.tex)) (./motivation.tex) (./related.tex [2]
+(./contributions.tex
+
+LaTeX Warning: Citation `chaosmonkey' on page \thepage  undefined on input line
+ 19.
+
+
+LaTeX Warning: Citation `netflix' on page \thepage  undefined on input line 19.
+
+
+)) (./motivation.tex [2]) (./related.tex
 
 LaTeX Warning: Citation `perpetual' on page \thepage  undefined on input line 1
 0.
@@ -275,16 +284,14 @@ LaTeX Warning: Citation `dyninst' on page \thepage  undefined on input line 13.
 
 
 ) (./network-issues.tex) (./implementation.tex) (./conclusion.tex)
-(./sandbox.bbl) [3
-
-] [4] (./sandbox.aux) ) 
+(./sandbox.bbl) [3] [4] (./sandbox.aux) ) 
 Here is how much of TeX's memory you used:
- 2006 strings out of 493489
- 22971 string characters out of 3141349
+ 2008 strings out of 493489
+ 22993 string characters out of 3141349
  83326 words of memory out of 3000000
- 5264 multiletter control sequences out of 15000+200000
+ 5266 multiletter control sequences out of 15000+200000
  44645 words of font info for 55 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  39i,10n,26p,469b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sandbox.dvi (4 pages, 19312 bytes).
+Output written on sandbox.dvi (4 pages, 22512 bytes).
