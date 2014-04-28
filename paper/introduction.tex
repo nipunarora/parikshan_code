@@ -45,6 +45,13 @@ Since the test is executed in a VM it acts like a sandbox which restricts it fro
 We synchronize the production and test containers using a variant of live migration without suspending the services of the production server, and follow it up with frequent synchronization for a long running tests. 
 Frequent synchronization is necessary because the test container can potentially go out of sync with the production because of non-determinism or because a test-case changes the state of the container, and effects future problems. 
 
+\textit{@Nipun edit -> consider why use user-space containers instead of VMs?}
+While VM virtualization has existed for several years, recent advances in user-space container technologies, along with support for migration, has created a space for light-weight testing in live environments.
+Technically our sandbox techniques could also be applied using more traditional Virtual Machines. 
+However, the overhead of using Virtual Machines is considerably higher, and it would technically require double the amount of resources for the target production servers.
+User-Space containers reduce this overhead considerably by using the resources in the same machine.
+We believe the availablity of resources in IAAS cloud infrastructures combined 
+
 
 The key contributions of this paper are:
 

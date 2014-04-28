@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  27 APR 2014 23:56
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  28 APR 2014 10:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -271,7 +271,12 @@ LaTeX Warning: Citation `perpetual' on page \thepage  undefined on input line 1
 
 ) (./design.tex
 File: figs/workflow2.eps Graphic file (type eps)
- <figs/workflow2.eps>) (./trigger.tex
+ <figs/workflow2.eps>
+Overfull \hbox (5.83961pt too wide) in paragraph at lines 23--27
+[]\T1/aer/m/n/9 While the fo-cus of our work is not to sup-port VM/Container
+ []
+
+) (./trigger.tex
 
 LaTeX Warning: Citation `pin' on page \thepage  undefined on input line 13.
 
@@ -283,8 +288,10 @@ LaTeX Warning: Citation `valgrind' on page \thepage  undefined on input line 13
 LaTeX Warning: Citation `dyninst' on page \thepage  undefined on input line 13.
 
 
-) (./network-issues.tex) (./implementation.tex) (./conclusion.tex)
-(./sandbox.bbl) [3] [4] (./sandbox.aux) ) 
+) (./network-issues.tex [3]) (./implementation.tex) (./conclusion.tex)
+(./sandbox.bbl) [4
+
+] (./sandbox.aux) ) 
 Here is how much of TeX's memory you used:
  2008 strings out of 493489
  22993 string characters out of 3141349
@@ -294,4 +301,4 @@ Here is how much of TeX's memory you used:
  957 hyphenation exceptions out of 8191
  39i,10n,26p,469b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sandbox.dvi (4 pages, 22512 bytes).
+Output written on sandbox.dvi (4 pages, 25660 bytes).
