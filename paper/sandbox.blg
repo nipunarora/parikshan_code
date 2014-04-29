@@ -4,7 +4,6 @@ The top-level auxiliary file: sandbox.aux
 The style file: abbrv.bst
 Database file #1: sigproc.bib
 Warning--I didn't find a database entry for "perpetual"
-Warning--I didn't find a database entry for "invite"
 Warning--I didn't find a database entry for "linux"
 Warning--I didn't find a database entry for "chaosmonkey"
 Warning--I didn't find a database entry for "netflix"
@@ -14,7 +13,7 @@ Warning--I didn't find a database entry for "valgrind"
 Warning--I didn't find a database entry for "dyninst"
 You've used 1 entry,
             2118 wiz_defined-function locations,
-            511 strings with 3840 characters,
+            510 strings with 3834 characters,
 and the built_in function-call counts, 224 in all, are:
 = -- 20
 > -- 7
@@ -53,4 +52,4 @@ warning$ -- 0
 while$ -- 2
 width$ -- 2
 write$ -- 12
-(There were 9 warnings)
+(There were 8 warnings)

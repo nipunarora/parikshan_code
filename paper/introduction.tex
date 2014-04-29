@@ -17,24 +17,29 @@ Testing in the development environment can be (1). Un-realistic because it may n
 
 One of the proposed mechanisms of addressing this problem is to ``perpetually test''\cite{perpetual} the application in the field after it has been deployed. 
 This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which are possible only for a long running production environment.
-Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
-However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
+%Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
+%However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
+Companies such as Flickr, Twitter, Facebook and Google have re-ignited the debate towards similar approaches as perpetual testing under the umbrella of DevOps.
+DevOps stresses on close coupling between software developers and operators, and to merge the operations of both. 
+Most of these companies have very frequent releases and a very short time to a bug fix, test, patch and release in order to realize continuous delivery(Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day).
+Testing, analyzing and monitoring are an important aspect of the devops cycle, however they have several limitations as only a very small performance bandwidth can be dedicated to QA operations as compared to real user activity(so as to not effect user-perceived delay).
 
-The reason behind any potential state-change, or performance slow-down is because of embedding test-case logic within the context of the application, thereby executing something that would otherwise not be there in an optimized implmentation of the application.
-This is something which is usually unacceptable in user-facing applications.
-Intuitively, test-cases can be parallelized thereby amortizing the cost of running the test, by running it in parallel \cite{invite}.
-However such approaches suffer from slow-down problems, as the forking must happen within the production system environment, and can lead to slow-down, as well as effect the system state, and hence can only help in speeding up testing in a development environment.
-An alternate approach is to record running production environments, and replay them offline.
-Over the years there have been several systems which have explored this direction with promising results.
-However most record and replay systems have high overheads, and require replication of the running configuration which may not be possible. 
-Additionally the administrator needs to wait for offline analysis, instead of doing real-time diagnosis.
+%Embedding test-case logic within the context of the application will result in state-change, or performance slow-down that would otherwise not be there in an optimized implmentation of the application.
+%This is something which is usually unacceptable in user-facing applications.
+%The authors have previously looked into amortizing the cost of running the test, by running it in parallel \cite{invite}.
+%However such approaches cannot completely avoid the slowdown, and additonally do not completely sandbox the effects of the test case on the production server. 
+
+%An alternate approach is to record live applications, and replay them offline.
+%Over the years there have been several systems which have explored this direction with promising results.
+%However most record and replay systems have high overheads, and require replication of the running configuration which may not be possible. 
+%Additionally the administrator needs to wait for offline analysis, instead of doing real-time diagnosis.
 
 The motivation behind our work is to provide testing as a service for real-time diagnosis of production applications.
 We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
 %On the other hand, there has been an impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
 %Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
 %This often allows for redundant computation, which can be used for testing purposes. 
-Leveraging this abundance of resource, and recent advances in user-space container technology(OpenVZ/LXC\cite{openvz,linux} we present a testing harness which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
+Leveraging this abundance of resource, and recent advances in user-space container technology(OpenVZ/LXC\cite{openvz,linux}) we present a testing harness which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
 Our system called \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing} allows capturing the context of application, and for tests to be run without effecting the sanctity/and performance of the actual user-facing application. 
 This is done by cloning a production server and creating two containers: a production container, and a testing container. 
 We duplicate the incoming traffic to both the production container and the test container using a custom proxy, which ignores the responses from the test-container. 

@@ -8,8 +8,8 @@ We then explain how it inserts test cases, into the test harness, and finally we
 \begin{figure*}[t]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{figs/workflow2.eps}
-    \caption{Workflow}
-    \label{fig:Backend wrapped around with Parakishan Run-time}
+    \caption{Backend wrapped around with Parakishan Run-time}
+    \label{fig:workflow}
   \end{center}
 \end{figure*}
 
@@ -29,6 +29,37 @@ To reduce the down-time memory pages are transferred probabiliticly based on pri
 Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
 Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network.
 
-Instead of Live Migration, in Live Cloning, we do not suspend operations 
+Instead of Live Migration, in Live Cloning, we do not suspend operations of the source container, rather we allow the container to keep executing in both production and test locations.
+The more tricky aspect is that there are two containers with the same identities in the network and application domain. 
+Hence the same network identifier should map to two seperate addresses.
+Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
+To allow for some load-balancing and an application aware buffer, we went for a web application level proxy server to duplicate traffic to both containers. 
+Further in this section we explain how we deal with these challenges.
 
 \subsection{System Overview}
+
+Each instance of \textit{Parikshan} can target only one tier at a time.
+Multiple instances of \textit{Parikshan} can be orchestrated together especially when it's required for integration testing or cross tier results need to be correlated.
+
+To begin with let us look at a simple example of client webserver with a database server as the backend, where the test harness needs to be applied on the backend.
+The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
+
+\begin{itemize} 
+
+\item \textbf{Proxy Network Duplicator} As described earlier an important aspect of live cloning is that we have two replicas which share the same identity.
+Clearly two containers cannot share the same network identity. 
+While we do not have strong consistency measures, in order for both containers to execute they must receive the same input.
+This can be achieved in multiple ways, the easiest would be a packet level tap device or a hardware switch which does port mirroring. 
+These are both pretty common, and are blackbox and do not require much configuration.
+However, such port mirroring solution gives us minimal control on the traffic going to our test container.
+The production and test-container may execute at varying speeds which will result in them being slightly out of sync.
+Additionally we need to accept responses from both servers and drop all the traffic coming from the test-container, while still mantaining an active connection with the client.
+Hence a layer 2 level network solution is not possible as some context of the address and state are required
+
+We have implemented our duplicator in two modes: (1) at TCP level, (2) at application level.
+The TCP level duplicator is configured with the client facing ip address (hence it becomes  a a proxy), and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
+
+
+\item \textbf{Clone Manager} 
+
+\end{itemize}

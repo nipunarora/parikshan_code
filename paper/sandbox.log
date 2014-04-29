@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  28 APR 2014 11:44
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  29 APR 2014 15:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -217,21 +217,25 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
 LaTeX Font Info:    ... okay on input line 51.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
 LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Try loading font information for U+msa on input line 129.
+LaTeX Font Info:    Try loading font information for U+msa on input line 133.
  (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 129.
+LaTeX Font Info:    Try loading font information for U+msb on input line 133.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 129.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 133.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
-) (./abstract.tex)
-Overfull \hbox (1.26794pt too wide) in paragraph at lines 136--137
+)
+
+LaTeX Warning: No \author given.
+
+(./abstract.tex)
+Overfull \hbox (1.26794pt too wide) in paragraph at lines 140--141
 \T1/aer/m/n/9 H.4 [\T1/aer/bx/n/9 Information Sys-tems Ap-pli-ca-tions\T1/aer/m
 /n/9 ]: Mis-cel-la-neous;
  []
@@ -242,18 +246,9 @@ LaTeX Warning: Citation `perpetual' on page \thepage  undefined on input line 1
 8.
 
 
-LaTeX Warning: Citation `invite' on page \thepage  undefined on input line 25.
+LaTeX Warning: Citation `linux' on page \thepage  undefined on input line 42.
 
-
-Overfull \hbox (4.07329pt too wide) in paragraph at lines 23--31
-\T1/aer/m/n/9 within the con-text of the ap-pli-ca-tion, thereby ex-e-cut-ing s
-ome-
- []
-
-
-LaTeX Warning: Citation `linux' on page \thepage  undefined on input line 37.
-
-LaTeX Font Info:    Try loading font information for T1+aett on input line 38.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 43.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 ) [1
@@ -281,11 +276,11 @@ Overfull \hbox (5.83961pt too wide) in paragraph at lines 18--22
 []\T1/aer/m/n/9 While the fo-cus of our work is not to sup-port VM/Container
  []
 
-) (./implementation.tex
+[3]) (./implementation.tex
 
 LaTeX Warning: Citation `ploop' on page \thepage  undefined on input line 8.
 
-) (./trigger.tex [3]
+) (./trigger.tex
 
 LaTeX Warning: Citation `pin' on page \thepage  undefined on input line 13.
 
@@ -297,22 +292,24 @@ LaTeX Warning: Citation `valgrind' on page \thepage  undefined on input line 13
 LaTeX Warning: Citation `dyninst' on page \thepage  undefined on input line 13.
 
 
-) (./challenges.tex) (./network-issues.tex) (./implementation.tex
+) (./challenges.tex) (./network-issues.tex [4]) (./implementation.tex
 
 LaTeX Warning: Citation `ploop' on page \thepage  undefined on input line 8.
 
-) (./conclusion.tex) (./sandbox.bbl) [4] (./sandbox.aux)
+) (./conclusion.tex) (./sandbox.bbl) [5
+
+] (./sandbox.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
  2019 strings out of 493489
- 23160 string characters out of 3141349
+ 23130 string characters out of 3141349
  83326 words of memory out of 3000000
  5272 multiletter control sequences out of 15000+200000
  44645 words of font info for 55 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 39i,10n,26p,469b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 39i,8n,26p,469b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sandbox.dvi (4 pages, 28604 bytes).
+Output written on sandbox.dvi (5 pages, 31052 bytes).
