@@ -1,0 +1,16 @@
+\section{Challenges}
+\label{sec:challenges}
+
+\subsection{Non-Determinism}
+\label{sec:nonDeterminism}
+
+While the test container is a clone of production container, and they receive the same input simultaneously. 
+They still suffer from aspects of non-determinism.
+Non-Determinism, can be triggered by multi-process servers, caching, or in rare circumstances it can happen because of non-determinism in the order of processing of input requests. 
+While the change in system state between the production and test containers, may not be too important initially, we believe that the cumulative effect of non-determinism may change the 
+
+\subsection{Slowdown}
+\label{sec:slowdown}
+
+\subsection{Consistency Requirements}
+\label{sec:consistency}
