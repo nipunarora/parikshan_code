@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  29 APR 2014 15:15
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=latex 2012.6.30)  30 APR 2014 10:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -276,7 +276,13 @@ Overfull \hbox (5.83961pt too wide) in paragraph at lines 18--22
 []\T1/aer/m/n/9 While the fo-cus of our work is not to sup-port VM/Container
  []
 
-[3]) (./implementation.tex
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3]
+File: figs/duplicator.eps Graphic file (type eps)
+
+<figs/duplicator.eps>) (./implementation.tex
 
 LaTeX Warning: Citation `ploop' on page \thepage  undefined on input line 8.
 
@@ -292,7 +298,7 @@ LaTeX Warning: Citation `valgrind' on page \thepage  undefined on input line 13
 LaTeX Warning: Citation `dyninst' on page \thepage  undefined on input line 13.
 
 
-) (./challenges.tex) (./network-issues.tex [4]) (./implementation.tex
+[4]) (./challenges.tex) (./network-issues.tex) (./implementation.tex
 
 LaTeX Warning: Citation `ploop' on page \thepage  undefined on input line 8.
 
@@ -304,12 +310,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2019 strings out of 493489
- 23130 string characters out of 3141349
- 83326 words of memory out of 3000000
- 5272 multiletter control sequences out of 15000+200000
+ 2022 strings out of 493489
+ 23179 string characters out of 3141349
+ 81326 words of memory out of 3000000
+ 5274 multiletter control sequences out of 15000+200000
  44645 words of font info for 55 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
  39i,8n,26p,469b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sandbox.dvi (5 pages, 31052 bytes).
+Output written on sandbox.dvi (5 pages, 31240 bytes).

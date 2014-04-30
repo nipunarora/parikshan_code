@@ -44,9 +44,9 @@ Multiple instances of \textit{Parikshan} can be orchestrated together especially
 To begin with let us look at a simple example of client webserver with a database server as the backend, where the test harness needs to be applied on the backend.
 The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
 
-\begin{itemize} 
+%\begin{itemize} 
 
-\item \textbf{Proxy Network Duplicator} As described earlier an important aspect of live cloning is that we have two replicas which share the same identity.
+\subsubsection{Proxy Network Duplicator} As described earlier an important aspect of live cloning is that we have two replicas which share the same identity.
 Clearly two containers cannot share the same network identity. 
 While we do not have strong consistency measures, in order for both containers to execute they must receive the same input.
 This can be achieved in multiple ways, the easiest would be a packet level tap device or a hardware switch which does port mirroring. 
@@ -59,7 +59,14 @@ Hence a layer 2 level network solution is not possible as some context of the ad
 We have implemented our duplicator in two modes: (1) at TCP level, (2) at application level.
 The TCP level duplicator is configured with the client facing ip address (hence it becomes  a a proxy), and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
 
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{figs/duplicator.eps}
+    \caption{Description of the Network Duplicator}
+    \label{fig:duplicator}
+  \end{center}
+\end{figure}
 
-\item \textbf{Clone Manager} 
 
-\end{itemize}
+\subsubsection{Clone Manager} 
+
