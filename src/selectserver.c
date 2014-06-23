@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
    *
    * If connection request, then echo input line 
    * and close connection. 
-				      * If command, then process command.
+   * If command, then process command.
    */
   while (notdone) {
 
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 	fflush(stdout);
       }
     }    
-
+    
     /* if a connection request has arrived, process it */
     if (FD_ISSET(parentfd, &readfds)) {
       /* 
