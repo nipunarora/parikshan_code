@@ -1,17 +1,26 @@
-# 
-# 
-# Filename: vzclone
-# Author: Nipun Arora
-# Created: Sat Jul  5 23:05:45 2014 (-0400)
-# URL: http://www.nipunarora.net 
-# 
-# Description: 
-# Live Cloning of OpenVZ for sandbox testing 
-# Derived from vzctl
+#!/bin/bash
+# Copyright (C) 2000-2013, Parallels, Inc. All rights reserved.
 #
-#!/bin/sh
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+# vzmigrate is used for container migration to another node
 
-echo " Sandbox Testing, VZ Cloning \n"
+
+PS4=':${BASH_SOURCE}:${LINENO}+'
+set -x
 
 ACT_SCRIPTS_SFX="start stop mount umount premount postumount"
 # blowfish is a fast block cipher, much faster then 3des
@@ -774,6 +783,9 @@ if [ $online -eq 1 ]; then
 	fi
 
 	log 2 "Resuming container"
+	if ! logexec 2 $VZCTL restore $VEID --resume ; then
+	    log 0 "Failed to resume container"
+	fi
 	if ! logexec 2 $SSH root@$host $VZCTL restore $VEID --resume ; then
 		log 0 "Failed to resume container"
 		undo_undump
@@ -784,8 +796,8 @@ if [ $online -eq 1 ]; then
 	log 1 "Cleaning up"
 
 	log 2 "Killing container"
-	logexec 2 $VZCTL chkpnt $VEID --kill
-	logexec 2 $VZCTL umount $VEID
+	#logexec 2 $VZCTL chkpnt $VEID --kill
+	#logexec 2 $VZCTL umount $VEID
 
 	log 2 "Removing dumpfiles"
 	rm -f "$VE_DUMPFILE"
@@ -818,8 +830,8 @@ else
 fi
 
 if [ $remove_area -eq 1 ]; then
-	log 2 "Destroying container"
-	logexec 2 $VZCTL destroy $VEID
+	#log 2 "Destroying container"
+	#logexec 2 $VZCTL destroy $VEID
 else
 	# Move config as veid.migrated to allow backward migration
 	mv -f $vpsconf $vpsconf.migrated

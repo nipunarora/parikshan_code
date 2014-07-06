@@ -1,419 +1,428 @@
-::+ACT_SCRIPTS_SFX=start stop mount umount premount postumount
-::+SSH_OPTIONS=-c blowfish -o BatchMode=yes
-::+SCP_OPTIONS=-c blowfish -o BatchMode=yes
-::+RSYNC_OPTIONS=-aHAX --delete --numeric-ids
-::+VZCTL=vzctl
-::+online=0
-::+verbose=0
-::+remove_area=1
-::+keep_dst=0
-::+debug=0
-::+times=0
-::+compact=0
-::+snapshot=0
-::+check_only=0
-::+confdir=/etc/vz/conf
-::+vzconf=/etc/vz/vz.conf
-::+tmpdir=/var/tmp
-::+act_scripts=
-::+PLOOP=no
-::+RSYNC1_OPTIONS=
-::+PLOOP_DEV=
-::+TOP_DELTA=
-::+MIG_ERR_USAGE=1
-::+MIG_ERR_VPS_IS_STOPPED=2
-::+MIG_ERR_CANT_CONNECT=4
-::+MIG_ERR_COPY=6
-::+MIG_ERR_START_VPS=7
-::+MIG_ERR_STOP_SOURCE=8
-::+MIG_ERR_EXISTS=9
-::+MIG_ERR_NOEXIST=10
-::+MIG_ERR_IP_IN_USE=12
-::+MIG_ERR_QUOTA=13
-::+MIG_ERR_CHECKPOINT=8
-::+MIG_ERR_MOUNT_VPS=7
-::+MIG_ERR_RESTORE_VPS=7
-::+MIG_ERR_OVZ_NOT_RUNNING=14
-::+MIG_ERR_APPLY_CONFIG=15
-::+MIG_ERR_UNSUP_PLOOP=16
-::+MIG_ERR_UNSUP_CPT_VER=17
-::+MIG_ERR_UNSUP_CPU=18
-::+echo :/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
-::+fgrep -q :/usr/sbin:
-::+[ 3 -lt 2 ]
-::+[ ! -z --online ]
-::+online=1
-::+shift
-::+[ ! -z 192.168.122.44 ]
-::+break
-::+[ 0 -gt 0 ]
-::+[ 0 -gt 1 ]
-::+[ 0 -gt 2 ]
-::+[ 0 -gt 3 ]
-::+RSYNC=rsync -aHAX --delete --numeric-ids
-::+SSH=ssh -c blowfish -o BatchMode=yes
-::+SCP=scp -c blowfish -o BatchMode=yes
-::+export RSYNC_RSH=ssh -c blowfish -o BatchMode=yes
-::+host=192.168.122.44
-::+shift
-::+VEID=102
-::+shift
-::+[ -z 192.168.122.44 -o -z 102 -o 0 -ne 0 ]
-::+echo 102
-::+egrep -qv ^[[:digit:]]+$
-::+vpsconf=/etc/vz/conf/102.conf
-::+[ ! -r /etc/vz/vz.conf ]
-::+vzctl status 102
-::+get_status CTID 102 exist mounted running
-::+exist=exist
-::+mounted=mounted
-::+state=running
-::+[ exist = deleted ]
-::+S=Starting
-::+M=migration
-::+[ 0 -eq 1 ]
-::+[ 1 -eq 1 ]
-::+M=live migration
-::+log 1 Starting live migration of CT 102 to 192.168.122.44
-::+[ 1 -eq 0 ]
-::+[ 1 -eq 1 ]
-::+shift
-::+echo Starting live migration of CT 102 to 192.168.122.44
-Starting live migration of CT 102 to 192.168.122.44
-::+unset S M
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /bin/true
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /bin/true
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /etc/init.d/vz status
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /etc/init.d/vz status
-::+[ 1 -eq 1 ]
-::+[ ! -f /proc/cpt ]
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 test -f /proc/rst
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 test -f /proc/rst
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl status 102
-::+awk {print $3}
-::+dst_exist=deleted
-::+[ deleted = exist ]
-::+[ 1 -eq 1 -a running != running ]
-::+[ 1 -eq 1 ]
-::+which vzcptcheck
-::+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 which vzcptcheck
-::+[ 1 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 which vzcptcheck
-::+check_cpt_props
-::+local version caps
-::+log 2 Checking for CPT version compatibility
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+vzcptcheck version
-::+version=2051
-::+[ 0 -ne 0 -o 2051 =  ]
-::+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck version 2051
-::+[ 1 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck version 2051
-::+log 2 Checking for CPU flags compatibility
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck caps
-::+caps=136607
-::+[ 0 -ne 0 -o 136607 =  ]
-::+logexec 1 vzcptcheck caps 102 136607
-::+[ 1 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+vzcptcheck caps 102 136607
-::+log 2 Loading /etc/vz/vz.conf and /etc/vz/conf/102.conf files
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+. /etc/vz/vz.conf
-::+VIRTUOZZO=yes
-::+LOCKDIR=/vz/lock
-::+DUMPDIR=/vz/dump
-::+VE0CPUUNITS=1000
-::+VE_STOP_MODE=suspend
-::+LOGGING=yes
-::+LOGFILE=/var/log/vzctl.log
-::+LOG_LEVEL=0
-::+VERBOSE=0
-::+DISK_QUOTA=yes
-::+VZFASTBOOT=no
-::+NEIGHBOUR_DEVS=all
-::+ERROR_ON_ARPFAIL=no
-::+TEMPLATE=/vz/template
-::+VE_ROOT=/vz/root/102
-::+VE_PRIVATE=/vz/private/102
-::+CONFIGFILE=vswap-256m
-::+DEF_OSTEMPLATE=centos-5
-::+LOCAL_UID=100000
-::+LOCAL_GID=100000
-::+VZWDOG=no
-::+IPTABLES=ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length
-::+IPTABLES_MODULES=ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length
-::+IPV6=yes
-::+IP6TABLES=ip6_tables ip6table_filter ip6table_mangle ip6t_REJECT
-::+. /etc/vz/conf/102.conf
-::+KMEMSIZE=14372700:14790164
-::+LOCKEDPAGES=2048:2048
-::+PRIVVMPAGES=65536:69632
-::+SHMPAGES=21504:21504
-::+NUMPROC=240:240
-::+PHYSPAGES=0:unlimited
-::+VMGUARPAGES=33792:unlimited
-::+OOMGUARPAGES=26112:unlimited
-::+NUMTCPSOCK=360:360
-::+NUMFLOCK=188:206
-::+NUMPTY=16:16
-::+NUMSIGINFO=256:256
-::+TCPSNDBUF=1720320:2703360
-::+TCPRCVBUF=1720320:2703360
-::+OTHERSOCKBUF=1126080:2097152
-::+DGRAMRCVBUF=262144:262144
-::+NUMOTHERSOCK=120
-::+DCACHESIZE=3409920:3624960
-::+NUMFILE=9312:9312
-::+AVNUMPROC=180:180
-::+NUMIPTENT=128:128
-::+DISKSPACE=2G:2.2G
-::+DISKINODES=200000:220000
-::+QUOTATIME=0
-::+CPUUNITS=1000
-::+VE_ROOT=/vz/root/102
-::+VE_PRIVATE=/vz/private/102
-::+OSTEMPLATE=debian-7.0-amd64-minimal
-::+ORIGIN_SAMPLE=basic
-::+HOSTNAME=sampleClone
-::+IP_ADDRESS=192.168.0.2
-::+NAMESERVER=8.8.8.8 8.8.4.4
-::+VE_DUMPFILE=/var/tmp/dump.102
-::+VE_QUOTADUMP=/var/tmp/quotadump.102
-::+DDXML=/vz/private/102/root.hdd/DiskDescriptor.xml
-::+[ -f /vz/private/102/root.hdd/DiskDescriptor.xml ]
-::+PLOOP=yes
-::+DISK_QUOTA=no
-::+[ yes = yes ]
-::+log 2 Checking if ploop is supported on destination node
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 ploop getdev
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 ploop getdev
-::+[ running = running ]
-::+get_ploop_info
-::+local dev top img root private
-::+readlink -f /vz/root/102
-::+root=/vz/root/102
-::+readlink -f /vz/private/102
-::+private=/vz/private/102
-::+awk $2=="/vz/root/102" {print $1} /proc/mounts
-::+sed -e s|^/dev/|| -e s|p1$||
-::+dev=ploop41111
-::+cat /sys/block/ploop41111/pstate/top
-::+top=0
-::+cat /sys/block/ploop41111/pdelta/0/image
-::+img=/vz/private/102/root.hdd/root.hdd
-::+echo /vz/private/102/root.hdd/root.hdd
-::+sed s|^/vz/private/102/||
-::+TOP_DELTA=root.hdd/root.hdd
-::+PLOOP_DEV=ploop41111
-::+RSYNC1_OPTIONS=--exclude root.hdd/root.hdd --delete-excluded
-::+echo 192.168.0.2  
-::+sed s@/[0-9][0-9]*[[:space:]]@ @g
-::+IP_X=192.168.0.2  
-::+log 2 Checking IPs on destination node: 192.168.0.2  
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+echo 192.168.0.2
-::+sed s/ /|/g
-::+IP_X=192.168.0.2
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 grep -cwE "192.168.0.2" /proc/vz/veip
-::+[ 0 -gt 0 ]
-::+[ 0 -eq 1 ]
-::+log 1 Preparing remote node
-::+[ 1 -eq 0 ]
-::+[ 1 -eq 1 ]
-::+shift
-::+echo Preparing remote node
+:/usr/sbin/vzmigrate:25+ACT_SCRIPTS_SFX='start stop mount umount premount postumount'
+:/usr/sbin/vzmigrate:27+SSH_OPTIONS='-c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:28+SCP_OPTIONS='-c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:29+RSYNC_OPTIONS='-aHAX --delete --numeric-ids'
+:/usr/sbin/vzmigrate:30+VZCTL=vzctl
+:/usr/sbin/vzmigrate:32+online=0
+:/usr/sbin/vzmigrate:33+verbose=0
+:/usr/sbin/vzmigrate:34+remove_area=1
+:/usr/sbin/vzmigrate:35+keep_dst=0
+:/usr/sbin/vzmigrate:36+debug=0
+:/usr/sbin/vzmigrate:37+times=0
+:/usr/sbin/vzmigrate:38+compact=0
+:/usr/sbin/vzmigrate:39+snapshot=0
+:/usr/sbin/vzmigrate:40+check_only=0
+:/usr/sbin/vzmigrate:41+confdir=/etc/vz/conf
+:/usr/sbin/vzmigrate:42+vzconf=/etc/vz/vz.conf
+:/usr/sbin/vzmigrate:43+tmpdir=/var/tmp
+:/usr/sbin/vzmigrate:44+act_scripts=
+:/usr/sbin/vzmigrate:45+PLOOP=no
+:/usr/sbin/vzmigrate:46+RSYNC1_OPTIONS=
+:/usr/sbin/vzmigrate:47+PLOOP_DEV=
+:/usr/sbin/vzmigrate:48+TOP_DELTA=
+:/usr/sbin/vzmigrate:51+MIG_ERR_USAGE=1
+:/usr/sbin/vzmigrate:52+MIG_ERR_VPS_IS_STOPPED=2
+:/usr/sbin/vzmigrate:53+MIG_ERR_CANT_CONNECT=4
+:/usr/sbin/vzmigrate:54+MIG_ERR_COPY=6
+:/usr/sbin/vzmigrate:55+MIG_ERR_START_VPS=7
+:/usr/sbin/vzmigrate:56+MIG_ERR_STOP_SOURCE=8
+:/usr/sbin/vzmigrate:57+MIG_ERR_EXISTS=9
+:/usr/sbin/vzmigrate:58+MIG_ERR_NOEXIST=10
+:/usr/sbin/vzmigrate:59+MIG_ERR_IP_IN_USE=12
+:/usr/sbin/vzmigrate:60+MIG_ERR_QUOTA=13
+:/usr/sbin/vzmigrate:61+MIG_ERR_CHECKPOINT=8
+:/usr/sbin/vzmigrate:62+MIG_ERR_MOUNT_VPS=7
+:/usr/sbin/vzmigrate:63+MIG_ERR_RESTORE_VPS=7
+:/usr/sbin/vzmigrate:64+MIG_ERR_OVZ_NOT_RUNNING=14
+:/usr/sbin/vzmigrate:65+MIG_ERR_APPLY_CONFIG=15
+:/usr/sbin/vzmigrate:66+MIG_ERR_UNSUP_PLOOP=16
+:/usr/sbin/vzmigrate:67+MIG_ERR_UNSUP_CPT_VER=17
+:/usr/sbin/vzmigrate:68+MIG_ERR_UNSUP_CPU=18
+:/usr/sbin/vzmigrate:71+echo :/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
+:/usr/sbin/vzmigrate:71+fgrep -q :/usr/sbin:
+:/usr/sbin/vzmigrate:347+'[' 3 -lt 2 ']'
+:/usr/sbin/vzmigrate:351+'[' '!' -z --online ']'
+:/usr/sbin/vzmigrate:352+case "$1" in
+:/usr/sbin/vzmigrate:354+online=1
+:/usr/sbin/vzmigrate:404+shift
+:/usr/sbin/vzmigrate:351+'[' '!' -z 192.168.122.172 ']'
+:/usr/sbin/vzmigrate:352+case "$1" in
+:/usr/sbin/vzmigrate:401+break
+:/usr/sbin/vzmigrate:407+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:410+'[' 0 -gt 1 ']'
+:/usr/sbin/vzmigrate:415+'[' 0 -gt 2 ']'
+:/usr/sbin/vzmigrate:419+'[' 0 -gt 3 ']'
+:/usr/sbin/vzmigrate:426+RSYNC='rsync -aHAX --delete --numeric-ids'
+:/usr/sbin/vzmigrate:427+SSH='ssh -c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:428+SCP='scp -c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:429+export 'RSYNC_RSH=ssh -c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:429+RSYNC_RSH='ssh -c blowfish -o BatchMode=yes'
+:/usr/sbin/vzmigrate:431+host=192.168.122.172
+:/usr/sbin/vzmigrate:432+shift
+:/usr/sbin/vzmigrate:433+VEID=102
+:/usr/sbin/vzmigrate:434+shift
+:/usr/sbin/vzmigrate:436+'[' -z 192.168.122.172 -o -z 102 -o 0 -ne 0 ']'
+:/usr/sbin/vzmigrate:441+echo 102
+:/usr/sbin/vzmigrate:441+egrep -qv '^[[:digit:]]+$'
+:/usr/sbin/vzmigrate:449+vpsconf=/etc/vz/conf/102.conf
+:/usr/sbin/vzmigrate:451+'[' '!' -r /etc/vz/vz.conf ']'
+::/usr/sbin/vzmigrate:456+vzctl status 102
+:/usr/sbin/vzmigrate:456+get_status CTID 102 exist mounted running
+:/usr/sbin/vzmigrate:251+exist=exist
+:/usr/sbin/vzmigrate:252+mounted=mounted
+:/usr/sbin/vzmigrate:253+state=running
+:/usr/sbin/vzmigrate:457+'[' exist = deleted ']'
+:/usr/sbin/vzmigrate:462+S=Starting
+:/usr/sbin/vzmigrate:463+M=migration
+:/usr/sbin/vzmigrate:464+'[' 0 -eq 1 ']'
+:/usr/sbin/vzmigrate:465+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:465+M='live migration'
+:/usr/sbin/vzmigrate:466+log 1 'Starting live migration of CT 102 to 192.168.122.172'
+:/usr/sbin/vzmigrate:135+'[' 1 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:139+shift
+:/usr/sbin/vzmigrate:140+echo 'Starting live migration of CT 102 to 192.168.122.172'
+Starting live migration of CT 102 to 192.168.122.172
+:/usr/sbin/vzmigrate:467+unset S M
+:/usr/sbin/vzmigrate:470+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 /bin/true
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 /bin/true
+:/usr/sbin/vzmigrate:477+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 /etc/init.d/vz status
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 /etc/init.d/vz status
+:/usr/sbin/vzmigrate:484+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:485+'[' '!' -f /proc/cpt ']'
+:/usr/sbin/vzmigrate:490+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'test -f /proc/rst'
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 test -f /proc/rst
+::/usr/sbin/vzmigrate:498+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'vzctl status 102'
+::/usr/sbin/vzmigrate:498+awk '{print $3}'
+:/usr/sbin/vzmigrate:498+dst_exist=deleted
+:/usr/sbin/vzmigrate:499+'[' deleted = exist ']'
+:/usr/sbin/vzmigrate:504+'[' 1 -eq 1 -a running '!=' running ']'
+:/usr/sbin/vzmigrate:509+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:510+which vzcptcheck
+:/usr/sbin/vzmigrate:513+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 which vzcptcheck
+:/usr/sbin/vzmigrate:153+'[' 1 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:154+shift
+:/usr/sbin/vzmigrate:155+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 which vzcptcheck
+:/usr/sbin/vzmigrate:517+check_cpt_props
+:/usr/sbin/vzmigrate:322+local version caps
+:/usr/sbin/vzmigrate:324+log 2 'Checking for CPT version compatibility'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:325+vzcptcheck version
+:/usr/sbin/vzmigrate:325+version=2051
+:/usr/sbin/vzmigrate:326+'[' 0 -ne 0 -o 2051 = '' ']'
+:/usr/sbin/vzmigrate:328+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzcptcheck version 2051
+:/usr/sbin/vzmigrate:153+'[' 1 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:154+shift
+:/usr/sbin/vzmigrate:155+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzcptcheck version 2051
+:/usr/sbin/vzmigrate:335+log 2 'Checking for CPU flags compatibility'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:336+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzcptcheck caps
+:/usr/sbin/vzmigrate:336+caps=136607
+:/usr/sbin/vzmigrate:337+'[' 0 -ne 0 -o 136607 = '' ']'
+:/usr/sbin/vzmigrate:339+logexec 1 vzcptcheck caps 102 136607
+:/usr/sbin/vzmigrate:153+'[' 1 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:154+shift
+:/usr/sbin/vzmigrate:155+vzcptcheck caps 102 136607
+:/usr/sbin/vzmigrate:521+log 2 'Loading /etc/vz/vz.conf and /etc/vz/conf/102.conf files'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:523+. /etc/vz/vz.conf
+::/etc/vz/vz.conf:2+VIRTUOZZO=yes
+::/etc/vz/vz.conf:3+LOCKDIR=/vz/lock
+::/etc/vz/vz.conf:4+DUMPDIR=/vz/dump
+::/etc/vz/vz.conf:5+VE0CPUUNITS=1000
+::/etc/vz/vz.conf:6+VE_STOP_MODE=suspend
+::/etc/vz/vz.conf:9+LOGGING=yes
+::/etc/vz/vz.conf:10+LOGFILE=/var/log/vzctl.log
+::/etc/vz/vz.conf:11+LOG_LEVEL=0
+::/etc/vz/vz.conf:12+VERBOSE=0
+::/etc/vz/vz.conf:15+DISK_QUOTA=yes
+::/etc/vz/vz.conf:16+VZFASTBOOT=no
+::/etc/vz/vz.conf:27+NEIGHBOUR_DEVS=all
+::/etc/vz/vz.conf:30+ERROR_ON_ARPFAIL=no
+::/etc/vz/vz.conf:33+TEMPLATE=/vz/template
+::/etc/vz/vz.conf:36+VE_ROOT=/vz/root/102
+::/etc/vz/vz.conf:37+VE_PRIVATE=/vz/private/102
+::/etc/vz/vz.conf:38+CONFIGFILE=vswap-256m
+::/etc/vz/vz.conf:39+DEF_OSTEMPLATE=centos-5
+::/etc/vz/vz.conf:44+LOCAL_UID=100000
+::/etc/vz/vz.conf:45+LOCAL_GID=100000
+::/etc/vz/vz.conf:48+VZWDOG=no
+::/etc/vz/vz.conf:51+IPTABLES='ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length'
+::/etc/vz/vz.conf:53+IPTABLES_MODULES='ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length'
+::/etc/vz/vz.conf:56+IPV6=yes
+::/etc/vz/vz.conf:59+IP6TABLES='ip6_tables ip6table_filter ip6table_mangle ip6t_REJECT'
+:/usr/sbin/vzmigrate:524+. /etc/vz/conf/102.conf
+::/etc/vz/conf/102.conf:19+KMEMSIZE=14372700:14790164
+::/etc/vz/conf/102.conf:20+LOCKEDPAGES=2048:2048
+::/etc/vz/conf/102.conf:21+PRIVVMPAGES=65536:69632
+::/etc/vz/conf/102.conf:22+SHMPAGES=21504:21504
+::/etc/vz/conf/102.conf:23+NUMPROC=240:240
+::/etc/vz/conf/102.conf:24+PHYSPAGES=0:unlimited
+::/etc/vz/conf/102.conf:25+VMGUARPAGES=33792:unlimited
+::/etc/vz/conf/102.conf:26+OOMGUARPAGES=26112:unlimited
+::/etc/vz/conf/102.conf:27+NUMTCPSOCK=360:360
+::/etc/vz/conf/102.conf:28+NUMFLOCK=188:206
+::/etc/vz/conf/102.conf:29+NUMPTY=16:16
+::/etc/vz/conf/102.conf:30+NUMSIGINFO=256:256
+::/etc/vz/conf/102.conf:31+TCPSNDBUF=1720320:2703360
+::/etc/vz/conf/102.conf:32+TCPRCVBUF=1720320:2703360
+::/etc/vz/conf/102.conf:33+OTHERSOCKBUF=1126080:2097152
+::/etc/vz/conf/102.conf:34+DGRAMRCVBUF=262144:262144
+::/etc/vz/conf/102.conf:35+NUMOTHERSOCK=120
+::/etc/vz/conf/102.conf:36+DCACHESIZE=3409920:3624960
+::/etc/vz/conf/102.conf:37+NUMFILE=9312:9312
+::/etc/vz/conf/102.conf:38+AVNUMPROC=180:180
+::/etc/vz/conf/102.conf:39+NUMIPTENT=128:128
+::/etc/vz/conf/102.conf:42+DISKSPACE=2G:2.2G
+::/etc/vz/conf/102.conf:43+DISKINODES=200000:220000
+::/etc/vz/conf/102.conf:44+QUOTATIME=0
+::/etc/vz/conf/102.conf:47+CPUUNITS=1000
+::/etc/vz/conf/102.conf:48+VE_ROOT=/vz/root/102
+::/etc/vz/conf/102.conf:49+VE_PRIVATE=/vz/private/102
+::/etc/vz/conf/102.conf:50+OSTEMPLATE=debian-7.0-amd64-minimal
+::/etc/vz/conf/102.conf:51+ORIGIN_SAMPLE=basic
+::/etc/vz/conf/102.conf:52+HOSTNAME=sampleClone
+::/etc/vz/conf/102.conf:53+IP_ADDRESS=192.168.0.2
+::/etc/vz/conf/102.conf:54+NAMESERVER='8.8.8.8 8.8.4.4'
+:/usr/sbin/vzmigrate:525+VE_DUMPFILE=/var/tmp/dump.102
+:/usr/sbin/vzmigrate:526+VE_QUOTADUMP=/var/tmp/quotadump.102
+:/usr/sbin/vzmigrate:528+DDXML=/vz/private/102/root.hdd/DiskDescriptor.xml
+:/usr/sbin/vzmigrate:529+'[' -f /vz/private/102/root.hdd/DiskDescriptor.xml ']'
+:/usr/sbin/vzmigrate:530+PLOOP=yes
+:/usr/sbin/vzmigrate:532+DISK_QUOTA=no
+:/usr/sbin/vzmigrate:535+'[' yes = yes ']'
+:/usr/sbin/vzmigrate:536+log 2 'Checking if ploop is supported on destination node'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:537+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 ploop getdev
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 ploop getdev
+:/usr/sbin/vzmigrate:542+'[' running = running ']'
+:/usr/sbin/vzmigrate:544+get_ploop_info
+:/usr/sbin/vzmigrate:261+local dev top img root private
+::/usr/sbin/vzmigrate:263+readlink -f /vz/root/102
+:/usr/sbin/vzmigrate:263+root=/vz/root/102
+::/usr/sbin/vzmigrate:264+readlink -f /vz/private/102
+:/usr/sbin/vzmigrate:264+private=/vz/private/102
+::/usr/sbin/vzmigrate:266+awk '$2=="/vz/root/102" {print $1}' /proc/mounts
+::/usr/sbin/vzmigrate:266+sed -e 's|^/dev/||' -e 's|p1$||'
+:/usr/sbin/vzmigrate:266+dev=ploop31618
+::/usr/sbin/vzmigrate:267+cat /sys/block/ploop31618/pstate/top
+:/usr/sbin/vzmigrate:267+top=0
+::/usr/sbin/vzmigrate:268+cat /sys/block/ploop31618/pdelta/0/image
+:/usr/sbin/vzmigrate:268+img=/vz/private/102/root.hdd/root.hdd
+::/usr/sbin/vzmigrate:269+echo /vz/private/102/root.hdd/root.hdd
+::/usr/sbin/vzmigrate:269+sed 's|^/vz/private/102/||'
+:/usr/sbin/vzmigrate:269+TOP_DELTA=root.hdd/root.hdd
+:/usr/sbin/vzmigrate:270+PLOOP_DEV=ploop31618
+:/usr/sbin/vzmigrate:548+RSYNC1_OPTIONS='--exclude root.hdd/root.hdd --delete-excluded'
+::/usr/sbin/vzmigrate:559+echo 192.168.0.2 ' '
+::/usr/sbin/vzmigrate:559+sed 's@/[0-9][0-9]*[[:space:]]@ @g'
+:/usr/sbin/vzmigrate:559+IP_X='192.168.0.2  '
+:/usr/sbin/vzmigrate:560+log 2 'Checking IPs on destination node: 192.168.0.2  '
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:562+echo 192.168.0.2
+::/usr/sbin/vzmigrate:562+sed 's/ /|/g'
+:/usr/sbin/vzmigrate:562+IP_X=192.168.0.2
+::/usr/sbin/vzmigrate:564+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'grep -cwE "192.168.0.2" /proc/vz/veip'
+:/usr/sbin/vzmigrate:564+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:569+'[' 0 -eq 1 ']'
+:/usr/sbin/vzmigrate:573+log 1 'Preparing remote node'
+:/usr/sbin/vzmigrate:135+'[' 1 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:139+shift
+:/usr/sbin/vzmigrate:140+echo 'Preparing remote node'
 Preparing remote node
-::+log 2 Copying config file
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.44:/etc/vz/conf/102.conf
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.44:/etc/vz/conf/102.conf
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl set 102 --applyconfig_map name --save
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl set 102 --applyconfig_map name --save
-::+RET=0
-::+[ 0 != 20 ]
-::+[ 0 != 21 ]
-::+[ 0 != 0 ]
-::+file=/etc/vz/conf/102.start
-::+[ -f /etc/vz/conf/102.start ]
-::+file=/etc/vz/conf/102.stop
-::+[ -f /etc/vz/conf/102.stop ]
-::+file=/etc/vz/conf/102.mount
-::+[ -f /etc/vz/conf/102.mount ]
-::+file=/etc/vz/conf/102.umount
-::+[ -f /etc/vz/conf/102.umount ]
-::+file=/etc/vz/conf/102.premount
-::+[ -f /etc/vz/conf/102.premount ]
-::+file=/etc/vz/conf/102.postumount
-::+[ -f /etc/vz/conf/102.postumount ]
-::+[ -n  ]
-::+log 2 Creating remote container root dir
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 mkdir -p /vz/root/102
-::+log 2 Creating remote container private dir
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 mkdir -p /vz/private/102
-::+[ no != no ]
-::+[ 0 -eq 1 ]
-::+[ 0 -eq 1 ]
-::+log 1 Syncing private
-::+[ 1 -eq 0 ]
-::+[ 1 -eq 1 ]
-::+shift
-::+echo Syncing private
+:/usr/sbin/vzmigrate:575+log 2 'Copying config file'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:576+logexec 2 scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.172:/etc/vz/conf/102.conf
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.172:/etc/vz/conf/102.conf
+:/usr/sbin/vzmigrate:581+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl set 102 --applyconfig_map name --save
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl set 102 --applyconfig_map name --save
+:/usr/sbin/vzmigrate:582+RET=0
+:/usr/sbin/vzmigrate:584+'[' 0 '!=' 20 ']'
+:/usr/sbin/vzmigrate:584+'[' 0 '!=' 21 ']'
+:/usr/sbin/vzmigrate:584+'[' 0 '!=' 0 ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.start
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.start ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.stop
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.stop ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.mount
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.mount ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.umount
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.umount ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.premount
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.premount ']'
+:/usr/sbin/vzmigrate:590+for sfx in '$ACT_SCRIPTS_SFX'
+:/usr/sbin/vzmigrate:591+file=/etc/vz/conf/102.postumount
+:/usr/sbin/vzmigrate:592+'[' -f /etc/vz/conf/102.postumount ']'
+:/usr/sbin/vzmigrate:596+'[' -n '' ']'
+:/usr/sbin/vzmigrate:605+log 2 'Creating remote container root dir'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:606+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'mkdir -p /vz/root/102'
+:/usr/sbin/vzmigrate:612+log 2 'Creating remote container private dir'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:613+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'mkdir -p /vz/private/102'
+:/usr/sbin/vzmigrate:619+'[' no '!=' no ']'
+:/usr/sbin/vzmigrate:637+'[' 0 -eq 1 ']'
+:/usr/sbin/vzmigrate:645+'[' 0 -eq 1 ']'
+:/usr/sbin/vzmigrate:653+log 1 'Syncing private'
+:/usr/sbin/vzmigrate:135+'[' 1 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:139+shift
+:/usr/sbin/vzmigrate:140+echo 'Syncing private'
 Syncing private
-::+rsync -aHAX --delete --numeric-ids --exclude root.hdd/root.hdd --delete-excluded /vz/private/102 root@192.168.122.44:/vz/private
-::+RET=0
-::+[ 0 != 24 ]
-::+[ 0 != 0 ]
-::+[ 1 -eq 1 ]
-::+log 1 Live migrating container...
-::+[ 1 -eq 0 ]
-::+[ 1 -eq 1 ]
-::+shift
-::+echo Live migrating container...
+:/usr/sbin/vzmigrate:654+rsync -aHAX --delete --numeric-ids --exclude root.hdd/root.hdd --delete-excluded /vz/private/102 root@192.168.122.172:/vz/private
+:/usr/sbin/vzmigrate:655+RET=0
+:/usr/sbin/vzmigrate:657+'[' 0 '!=' 24 ']'
+:/usr/sbin/vzmigrate:657+'[' 0 '!=' 0 ']'
+:/usr/sbin/vzmigrate:663+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:664+log 1 'Live migrating container...'
+:/usr/sbin/vzmigrate:135+'[' 1 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:139+shift
+:/usr/sbin/vzmigrate:140+echo 'Live migrating container...'
 Live migrating container...
-::+[ yes != yes ]
-::+log 2 Copying top ploop delta with CT suspend
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+mktemp
-::+TMPF=/tmp/tmp.4eVFsgvygI
-::+ploop_copy date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend
-::+local cmd dev delta cat size
-::+cmd=date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend
-::+dev=/dev/ploop41111
-::+delta=/vz/private/102/root.hdd/root.hdd
-::+test -b /dev/ploop41111
-::+test -f /vz/private/102/root.hdd/root.hdd
-::+cat=cat
-::+test 0 -gt 0
-::+ploop copy -s /dev/ploop41111 -F date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend 1>&2
-::+ssh -c blowfish -o::+tchMode=yes root@192.168.122.44 ploopcat
-y -d /vz/private/102/root.hdd/root.hdd
+:/usr/sbin/vzmigrate:666+'[' yes '!=' yes ']'
+:/usr/sbin/vzmigrate:675+log 2 'Copying top ploop delta with CT suspend'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:676+mktemp
+:/usr/sbin/vzmigrate:676+TMPF=/tmp/tmp.X1XNncaTAI
+:/usr/sbin/vzmigrate:677+ploop_copy 'date '\''+%s.%N'\'' > /tmp/tmp.X1XNncaTAI; vzctl chkpnt 102 --suspend'
+:/usr/sbin/vzmigrate:275+local cmd dev delta cat size
+:/usr/sbin/vzmigrate:277+cmd='date '\''+%s.%N'\'' > /tmp/tmp.X1XNncaTAI; vzctl chkpnt 102 --suspend'
+:/usr/sbin/vzmigrate:278+dev=/dev/ploop31618
+:/usr/sbin/vzmigrate:279+delta=/vz/private/102/root.hdd/root.hdd
+:/usr/sbin/vzmigrate:281+test -b /dev/ploop31618
+:/usr/sbin/vzmigrate:282+test -f /vz/private/102/root.hdd/root.hdd
+:/usr/sbin/vzmigrate:284+cat=cat
+:/usr/sbin/vzmigrate:286+test 0 -gt 0
+:/usr/sbin/vzmigrate:290+ploop copy -s /dev/ploop31618 -F 'date '\''+%s.%N'\'' > /tmp/tmp.X1XNncaTAI; vzctl chkpnt 102 --suspend 1>&2'
+:/usr/sbin/vzmigrate:291+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 ploop copy -d /vz/private/102/root.hdd/root.hdd
+:/usr/sbin/vzmigrate:290+cat
 Sending /vz/private/102/root.hdd/root.hdd
 Setting up checkpoint...
 	suspend...
 	get context...
 Checkpointing completed successfully
-::+date +%s.%N
-::+time_pcopy=1404618826.599741201
-::+cat /tmp/tmp.4eVFsgvygI
-::+time_suspend=1404618823.574226976
-::+rm /tmp/tmp.4eVFsgvygI
-::+log 2 Dumping container
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
-::+log 2 Copying dumpfile
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+date +%s.%N
-::+time_copy_dump=1404618826.784020329
-::+logexec 2 scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.44:/var/tmp/dump.102
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.44:/var/tmp/dump.102
-::+date +%s.%N
-::+time_rsync2=1404618826.942121141
-::+[ running = running -a yes != yes ]
-::+date +%s.%N
-::+time_quota=1404618826.943334848
-::+[ no != no ]
-::+[ 1 -eq 1 ]
-::+log 2 Undumping container
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+date +%s.%N
-::+time_undump=1404618826.944770005
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
-::+log 2 Resuming container
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --resume
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --resume
-::+date +%s.%N
-::+time_finish=1404618827.504527822
-::+print_times
-::+local fmt=  %20s: %6.2f\n
-::+local dt_susp_dump dt_pcopy
-::+[ 0 -eq 0 ]
-::+return
-::+log 1 Cleaning up
-::+[ 1 -eq 0 ]
-::+[ 1 -eq 1 ]
-::+shift
-::+echo Cleaning up
+::/usr/sbin/vzmigrate:684+date +%s.%N
+:/usr/sbin/vzmigrate:684+time_pcopy=1404623495.122294350
+::/usr/sbin/vzmigrate:685+cat /tmp/tmp.X1XNncaTAI
+:/usr/sbin/vzmigrate:685+time_suspend=1404623492.835076155
+:/usr/sbin/vzmigrate:686+rm /tmp/tmp.X1XNncaTAI
+:/usr/sbin/vzmigrate:689+log 2 'Dumping container'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:690+logexec 2 vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
+:/usr/sbin/vzmigrate:696+log 2 'Copying dumpfile'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:697+date +%s.%N
+:/usr/sbin/vzmigrate:697+time_copy_dump=1404623495.329201900
+:/usr/sbin/vzmigrate:698+logexec 2 scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.172:/var/tmp/dump.102
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.172:/var/tmp/dump.102
+::/usr/sbin/vzmigrate:738+date +%s.%N
+:/usr/sbin/vzmigrate:738+time_rsync2=1404623495.488070298
+:/usr/sbin/vzmigrate:739+'[' running = running -a yes '!=' yes ']'
+::/usr/sbin/vzmigrate:748+date +%s.%N
+:/usr/sbin/vzmigrate:748+time_quota=1404623495.489262385
+:/usr/sbin/vzmigrate:749+'[' no '!=' no ']'
+:/usr/sbin/vzmigrate:775+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:776+log 2 'Undumping container'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+::/usr/sbin/vzmigrate:777+date +%s.%N
+:/usr/sbin/vzmigrate:777+time_undump=1404623495.490818256
+:/usr/sbin/vzmigrate:778+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
+:/usr/sbin/vzmigrate:785+log 2 'Resuming container'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:786+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --resume
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --resume
+::/usr/sbin/vzmigrate:791+date +%s.%N
+:/usr/sbin/vzmigrate:791+time_finish=1404623495.958795632
+:/usr/sbin/vzmigrate:792+print_times
+:/usr/sbin/vzmigrate:295+local 'fmt=  %20s: %6.2f\n'
+:/usr/sbin/vzmigrate:296+local dt_susp_dump dt_pcopy
+:/usr/sbin/vzmigrate:298+'[' 0 -eq 0 ']'
+:/usr/sbin/vzmigrate:298+return
+:/usr/sbin/vzmigrate:793+log 1 'Cleaning up'
+:/usr/sbin/vzmigrate:135+'[' 1 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:139+shift
+:/usr/sbin/vzmigrate:140+echo 'Cleaning up'
 Cleaning up
-::+log 2 Killing container
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 vzctl chkpnt 102 --kill
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+vzctl chkpnt 102 --kill
-::+logexec 2 vzctl umount 102
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+vzctl umount 102
-::+log 2 Removing dumpfiles
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+rm -f /var/tmp/dump.102
-::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 rm -f /var/tmp/dump.102
-::+[ 1 -eq 1 ]
-::+log 2 Destroying container
-::+[ 2 -eq 0 ]
-::+[ 2 -eq 1 ]
-::+[ 0 -gt 0 ]
-::+logexec 2 vzctl destroy 102
-::+[ 2 -eq 1 -o 0 -gt 0 ]
-::+shift
-::+vzctl destroy 102
+:/usr/sbin/vzmigrate:795+log 2 'Killing container'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:796+logexec 2 vzctl chkpnt 102 --kill
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+vzctl chkpnt 102 --kill
+:/usr/sbin/vzmigrate:797+logexec 2 vzctl umount 102
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+vzctl umount 102
+:/usr/sbin/vzmigrate:799+log 2 'Removing dumpfiles'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:800+rm -f /var/tmp/dump.102
+:/usr/sbin/vzmigrate:801+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'rm -f /var/tmp/dump.102'
+:/usr/sbin/vzmigrate:829+'[' 1 -eq 1 ']'
+:/usr/sbin/vzmigrate:830+log 2 'Destroying container'
+:/usr/sbin/vzmigrate:135+'[' 2 -eq 0 ']'
+:/usr/sbin/vzmigrate:138+'[' 2 -eq 1 ']'
+:/usr/sbin/vzmigrate:141+'[' 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:831+logexec 2 vzctl destroy 102
+:/usr/sbin/vzmigrate:153+'[' 2 -eq 1 -o 0 -gt 0 ']'
+:/usr/sbin/vzmigrate:157+shift
+:/usr/sbin/vzmigrate:158+vzctl destroy 102
