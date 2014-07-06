@@ -1,4 +1,11 @@
 #!/bin/bash
+# 
+# Filename: openvz-boot.sh
+# Author: Nipun Arora
+# Created: Sat Jul  5 22:36:26 2014 (-0400)
+# URL: http://www.nipunarora.net 
+# 
+# Description: 
 # run: source <(curl -s https://raw.github.com/qrpike/CentOS6---OpenVZ-Installer/master/installOpenVZ.sh)
 
 
