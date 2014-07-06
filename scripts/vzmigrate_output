@@ -1,0 +1,419 @@
+::+ACT_SCRIPTS_SFX=start stop mount umount premount postumount
+::+SSH_OPTIONS=-c blowfish -o BatchMode=yes
+::+SCP_OPTIONS=-c blowfish -o BatchMode=yes
+::+RSYNC_OPTIONS=-aHAX --delete --numeric-ids
+::+VZCTL=vzctl
+::+online=0
+::+verbose=0
+::+remove_area=1
+::+keep_dst=0
+::+debug=0
+::+times=0
+::+compact=0
+::+snapshot=0
+::+check_only=0
+::+confdir=/etc/vz/conf
+::+vzconf=/etc/vz/vz.conf
+::+tmpdir=/var/tmp
+::+act_scripts=
+::+PLOOP=no
+::+RSYNC1_OPTIONS=
+::+PLOOP_DEV=
+::+TOP_DELTA=
+::+MIG_ERR_USAGE=1
+::+MIG_ERR_VPS_IS_STOPPED=2
+::+MIG_ERR_CANT_CONNECT=4
+::+MIG_ERR_COPY=6
+::+MIG_ERR_START_VPS=7
+::+MIG_ERR_STOP_SOURCE=8
+::+MIG_ERR_EXISTS=9
+::+MIG_ERR_NOEXIST=10
+::+MIG_ERR_IP_IN_USE=12
+::+MIG_ERR_QUOTA=13
+::+MIG_ERR_CHECKPOINT=8
+::+MIG_ERR_MOUNT_VPS=7
+::+MIG_ERR_RESTORE_VPS=7
+::+MIG_ERR_OVZ_NOT_RUNNING=14
+::+MIG_ERR_APPLY_CONFIG=15
+::+MIG_ERR_UNSUP_PLOOP=16
+::+MIG_ERR_UNSUP_CPT_VER=17
+::+MIG_ERR_UNSUP_CPU=18
+::+echo :/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
+::+fgrep -q :/usr/sbin:
+::+[ 3 -lt 2 ]
+::+[ ! -z --online ]
+::+online=1
+::+shift
+::+[ ! -z 192.168.122.44 ]
+::+break
+::+[ 0 -gt 0 ]
+::+[ 0 -gt 1 ]
+::+[ 0 -gt 2 ]
+::+[ 0 -gt 3 ]
+::+RSYNC=rsync -aHAX --delete --numeric-ids
+::+SSH=ssh -c blowfish -o BatchMode=yes
+::+SCP=scp -c blowfish -o BatchMode=yes
+::+export RSYNC_RSH=ssh -c blowfish -o BatchMode=yes
+::+host=192.168.122.44
+::+shift
+::+VEID=102
+::+shift
+::+[ -z 192.168.122.44 -o -z 102 -o 0 -ne 0 ]
+::+echo 102
+::+egrep -qv ^[[:digit:]]+$
+::+vpsconf=/etc/vz/conf/102.conf
+::+[ ! -r /etc/vz/vz.conf ]
+::+vzctl status 102
+::+get_status CTID 102 exist mounted running
+::+exist=exist
+::+mounted=mounted
+::+state=running
+::+[ exist = deleted ]
+::+S=Starting
+::+M=migration
+::+[ 0 -eq 1 ]
+::+[ 1 -eq 1 ]
+::+M=live migration
+::+log 1 Starting live migration of CT 102 to 192.168.122.44
+::+[ 1 -eq 0 ]
+::+[ 1 -eq 1 ]
+::+shift
+::+echo Starting live migration of CT 102 to 192.168.122.44
+Starting live migration of CT 102 to 192.168.122.44
+::+unset S M
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /bin/true
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /bin/true
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /etc/init.d/vz status
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 /etc/init.d/vz status
+::+[ 1 -eq 1 ]
+::+[ ! -f /proc/cpt ]
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 test -f /proc/rst
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 test -f /proc/rst
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl status 102
+::+awk {print $3}
+::+dst_exist=deleted
+::+[ deleted = exist ]
+::+[ 1 -eq 1 -a running != running ]
+::+[ 1 -eq 1 ]
+::+which vzcptcheck
+::+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 which vzcptcheck
+::+[ 1 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 which vzcptcheck
+::+check_cpt_props
+::+local version caps
+::+log 2 Checking for CPT version compatibility
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+vzcptcheck version
+::+version=2051
+::+[ 0 -ne 0 -o 2051 =  ]
+::+logexec 1 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck version 2051
+::+[ 1 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck version 2051
+::+log 2 Checking for CPU flags compatibility
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzcptcheck caps
+::+caps=136607
+::+[ 0 -ne 0 -o 136607 =  ]
+::+logexec 1 vzcptcheck caps 102 136607
+::+[ 1 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+vzcptcheck caps 102 136607
+::+log 2 Loading /etc/vz/vz.conf and /etc/vz/conf/102.conf files
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+. /etc/vz/vz.conf
+::+VIRTUOZZO=yes
+::+LOCKDIR=/vz/lock
+::+DUMPDIR=/vz/dump
+::+VE0CPUUNITS=1000
+::+VE_STOP_MODE=suspend
+::+LOGGING=yes
+::+LOGFILE=/var/log/vzctl.log
+::+LOG_LEVEL=0
+::+VERBOSE=0
+::+DISK_QUOTA=yes
+::+VZFASTBOOT=no
+::+NEIGHBOUR_DEVS=all
+::+ERROR_ON_ARPFAIL=no
+::+TEMPLATE=/vz/template
+::+VE_ROOT=/vz/root/102
+::+VE_PRIVATE=/vz/private/102
+::+CONFIGFILE=vswap-256m
+::+DEF_OSTEMPLATE=centos-5
+::+LOCAL_UID=100000
+::+LOCAL_GID=100000
+::+VZWDOG=no
+::+IPTABLES=ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length
+::+IPTABLES_MODULES=ipt_REJECT ipt_tos ipt_limit ipt_multiport iptable_filter iptable_mangle ipt_TCPMSS ipt_tcpmss ipt_ttl ipt_length
+::+IPV6=yes
+::+IP6TABLES=ip6_tables ip6table_filter ip6table_mangle ip6t_REJECT
+::+. /etc/vz/conf/102.conf
+::+KMEMSIZE=14372700:14790164
+::+LOCKEDPAGES=2048:2048
+::+PRIVVMPAGES=65536:69632
+::+SHMPAGES=21504:21504
+::+NUMPROC=240:240
+::+PHYSPAGES=0:unlimited
+::+VMGUARPAGES=33792:unlimited
+::+OOMGUARPAGES=26112:unlimited
+::+NUMTCPSOCK=360:360
+::+NUMFLOCK=188:206
+::+NUMPTY=16:16
+::+NUMSIGINFO=256:256
+::+TCPSNDBUF=1720320:2703360
+::+TCPRCVBUF=1720320:2703360
+::+OTHERSOCKBUF=1126080:2097152
+::+DGRAMRCVBUF=262144:262144
+::+NUMOTHERSOCK=120
+::+DCACHESIZE=3409920:3624960
+::+NUMFILE=9312:9312
+::+AVNUMPROC=180:180
+::+NUMIPTENT=128:128
+::+DISKSPACE=2G:2.2G
+::+DISKINODES=200000:220000
+::+QUOTATIME=0
+::+CPUUNITS=1000
+::+VE_ROOT=/vz/root/102
+::+VE_PRIVATE=/vz/private/102
+::+OSTEMPLATE=debian-7.0-amd64-minimal
+::+ORIGIN_SAMPLE=basic
+::+HOSTNAME=sampleClone
+::+IP_ADDRESS=192.168.0.2
+::+NAMESERVER=8.8.8.8 8.8.4.4
+::+VE_DUMPFILE=/var/tmp/dump.102
+::+VE_QUOTADUMP=/var/tmp/quotadump.102
+::+DDXML=/vz/private/102/root.hdd/DiskDescriptor.xml
+::+[ -f /vz/private/102/root.hdd/DiskDescriptor.xml ]
+::+PLOOP=yes
+::+DISK_QUOTA=no
+::+[ yes = yes ]
+::+log 2 Checking if ploop is supported on destination node
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 ploop getdev
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 ploop getdev
+::+[ running = running ]
+::+get_ploop_info
+::+local dev top img root private
+::+readlink -f /vz/root/102
+::+root=/vz/root/102
+::+readlink -f /vz/private/102
+::+private=/vz/private/102
+::+awk $2=="/vz/root/102" {print $1} /proc/mounts
+::+sed -e s|^/dev/|| -e s|p1$||
+::+dev=ploop41111
+::+cat /sys/block/ploop41111/pstate/top
+::+top=0
+::+cat /sys/block/ploop41111/pdelta/0/image
+::+img=/vz/private/102/root.hdd/root.hdd
+::+echo /vz/private/102/root.hdd/root.hdd
+::+sed s|^/vz/private/102/||
+::+TOP_DELTA=root.hdd/root.hdd
+::+PLOOP_DEV=ploop41111
+::+RSYNC1_OPTIONS=--exclude root.hdd/root.hdd --delete-excluded
+::+echo 192.168.0.2  
+::+sed s@/[0-9][0-9]*[[:space:]]@ @g
+::+IP_X=192.168.0.2  
+::+log 2 Checking IPs on destination node: 192.168.0.2  
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+echo 192.168.0.2
+::+sed s/ /|/g
+::+IP_X=192.168.0.2
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 grep -cwE "192.168.0.2" /proc/vz/veip
+::+[ 0 -gt 0 ]
+::+[ 0 -eq 1 ]
+::+log 1 Preparing remote node
+::+[ 1 -eq 0 ]
+::+[ 1 -eq 1 ]
+::+shift
+::+echo Preparing remote node
+Preparing remote node
+::+log 2 Copying config file
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.44:/etc/vz/conf/102.conf
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.44:/etc/vz/conf/102.conf
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl set 102 --applyconfig_map name --save
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl set 102 --applyconfig_map name --save
+::+RET=0
+::+[ 0 != 20 ]
+::+[ 0 != 21 ]
+::+[ 0 != 0 ]
+::+file=/etc/vz/conf/102.start
+::+[ -f /etc/vz/conf/102.start ]
+::+file=/etc/vz/conf/102.stop
+::+[ -f /etc/vz/conf/102.stop ]
+::+file=/etc/vz/conf/102.mount
+::+[ -f /etc/vz/conf/102.mount ]
+::+file=/etc/vz/conf/102.umount
+::+[ -f /etc/vz/conf/102.umount ]
+::+file=/etc/vz/conf/102.premount
+::+[ -f /etc/vz/conf/102.premount ]
+::+file=/etc/vz/conf/102.postumount
+::+[ -f /etc/vz/conf/102.postumount ]
+::+[ -n  ]
+::+log 2 Creating remote container root dir
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 mkdir -p /vz/root/102
+::+log 2 Creating remote container private dir
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 mkdir -p /vz/private/102
+::+[ no != no ]
+::+[ 0 -eq 1 ]
+::+[ 0 -eq 1 ]
+::+log 1 Syncing private
+::+[ 1 -eq 0 ]
+::+[ 1 -eq 1 ]
+::+shift
+::+echo Syncing private
+Syncing private
+::+rsync -aHAX --delete --numeric-ids --exclude root.hdd/root.hdd --delete-excluded /vz/private/102 root@192.168.122.44:/vz/private
+::+RET=0
+::+[ 0 != 24 ]
+::+[ 0 != 0 ]
+::+[ 1 -eq 1 ]
+::+log 1 Live migrating container...
+::+[ 1 -eq 0 ]
+::+[ 1 -eq 1 ]
+::+shift
+::+echo Live migrating container...
+Live migrating container...
+::+[ yes != yes ]
+::+log 2 Copying top ploop delta with CT suspend
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+mktemp
+::+TMPF=/tmp/tmp.4eVFsgvygI
+::+ploop_copy date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend
+::+local cmd dev delta cat size
+::+cmd=date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend
+::+dev=/dev/ploop41111
+::+delta=/vz/private/102/root.hdd/root.hdd
+::+test -b /dev/ploop41111
+::+test -f /vz/private/102/root.hdd/root.hdd
+::+cat=cat
+::+test 0 -gt 0
+::+ploop copy -s /dev/ploop41111 -F date '+%s.%N' > /tmp/tmp.4eVFsgvygI; vzctl chkpnt 102 --suspend 1>&2
+::+ssh -c blowfish -o::+tchMode=yes root@192.168.122.44 ploopcat
+y -d /vz/private/102/root.hdd/root.hdd
+Sending /vz/private/102/root.hdd/root.hdd
+Setting up checkpoint...
+	suspend...
+	get context...
+Checkpointing completed successfully
+::+date +%s.%N
+::+time_pcopy=1404618826.599741201
+::+cat /tmp/tmp.4eVFsgvygI
+::+time_suspend=1404618823.574226976
+::+rm /tmp/tmp.4eVFsgvygI
+::+log 2 Dumping container
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
+::+log 2 Copying dumpfile
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+date +%s.%N
+::+time_copy_dump=1404618826.784020329
+::+logexec 2 scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.44:/var/tmp/dump.102
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.44:/var/tmp/dump.102
+::+date +%s.%N
+::+time_rsync2=1404618826.942121141
+::+[ running = running -a yes != yes ]
+::+date +%s.%N
+::+time_quota=1404618826.943334848
+::+[ no != no ]
+::+[ 1 -eq 1 ]
+::+log 2 Undumping container
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+date +%s.%N
+::+time_undump=1404618826.944770005
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
+::+log 2 Resuming container
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --resume
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 vzctl restore 102 --resume
+::+date +%s.%N
+::+time_finish=1404618827.504527822
+::+print_times
+::+local fmt=  %20s: %6.2f\n
+::+local dt_susp_dump dt_pcopy
+::+[ 0 -eq 0 ]
+::+return
+::+log 1 Cleaning up
+::+[ 1 -eq 0 ]
+::+[ 1 -eq 1 ]
+::+shift
+::+echo Cleaning up
+Cleaning up
+::+log 2 Killing container
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 vzctl chkpnt 102 --kill
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+vzctl chkpnt 102 --kill
+::+logexec 2 vzctl umount 102
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+vzctl umount 102
+::+log 2 Removing dumpfiles
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+rm -f /var/tmp/dump.102
+::+ssh -c blowfish -o BatchMode=yes root@192.168.122.44 rm -f /var/tmp/dump.102
+::+[ 1 -eq 1 ]
+::+log 2 Destroying container
+::+[ 2 -eq 0 ]
+::+[ 2 -eq 1 ]
+::+[ 0 -gt 0 ]
+::+logexec 2 vzctl destroy 102
+::+[ 2 -eq 1 -o 0 -gt 0 ]
+::+shift
+::+vzctl destroy 102

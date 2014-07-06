@@ -6,7 +6,8 @@
 # URL: http://www.nipunarora.net 
 # 
 # Description: 
-# Live Cloning of OpenVZ
+# Live Cloning of OpenVZ for sandbox testing 
+# Derived from vzctl
 #
 #!/bin/sh
 
