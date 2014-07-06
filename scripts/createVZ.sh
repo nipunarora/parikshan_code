@@ -1,8 +1,14 @@
 #!/bin/bash
-########################
-#Author: Nipun Arora
-#Description: This script installs a typical OpenVZ container
-#Usage createVZ <container ID> <hostname> <IP Address>
+# 
+# 
+# Filename: createVZ.sh
+# Author: Nipun Arora
+# Created: Sat Jul  5 22:31:34 2014 (-0400)
+# URL: http://www.nipunarora.net 
+# 
+# Description: 
+# This script installs a typical OpenVZ container
+# Usage createVZ <container ID> <hostname> <IP Address>
 
 #****Before starting the script you need to download debian-minimal image***
 #> cd /vz/template/cache
