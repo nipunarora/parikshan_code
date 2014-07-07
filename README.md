@@ -132,4 +132,6 @@ apt-get install nodejs-legacy
 
 13. Proxy Servers
 ----------
-http://voorloopnul.com/blog/a-python-proxy-in-less-than-100-lines-of-code/ - simple proxy https://github.com/iSECPartners/tcpprox - well made proxy https://gist.github.com/fiorix/1878983 - Twisted proxy
+http://voorloopnul.com/blog/a-python-proxy-in-less-than-100-lines-of-code/ - simple proxy 
+https://github.com/iSECPartners/tcpprox - well made proxy 
+https://gist.github.com/fiorix/1878983 - Twisted proxy

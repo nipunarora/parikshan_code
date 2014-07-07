@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (C) 2000-2013, Parallels, Inc. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or
@@ -18,6 +18,9 @@
 #
 # vzmigrate is used for container migration to another node
 
+
+PS4=':${BASH_SOURCE}:${LINENO}+'
+set -x
 
 ACT_SCRIPTS_SFX="start stop mount umount premount postumount"
 # blowfish is a fast block cipher, much faster then 3des
@@ -780,6 +783,9 @@ if [ $online -eq 1 ]; then
 	fi
 
 	log 2 "Resuming container"
+	if ! logexec 2 $VZCTL restore $VEID --resume ; then
+	    log 0 "Failed to resume container"
+	fi
 	if ! logexec 2 $SSH root@$host $VZCTL restore $VEID --resume ; then
 		log 0 "Failed to resume container"
 		undo_undump
@@ -790,8 +796,8 @@ if [ $online -eq 1 ]; then
 	log 1 "Cleaning up"
 
 	log 2 "Killing container"
-	logexec 2 $VZCTL chkpnt $VEID --kill
-	logexec 2 $VZCTL umount $VEID
+	#logexec 2 $VZCTL chkpnt $VEID --kill
+	#logexec 2 $VZCTL umount $VEID
 
 	log 2 "Removing dumpfiles"
 	rm -f "$VE_DUMPFILE"
@@ -824,8 +830,8 @@ else
 fi
 
 if [ $remove_area -eq 1 ]; then
-	log 2 "Destroying container"
-	logexec 2 $VZCTL destroy $VEID
+	#log 2 "Destroying container"
+	#logexec 2 $VZCTL destroy $VEID
 else
 	# Move config as veid.migrated to allow backward migration
 	mv -f $vpsconf $vpsconf.migrated
