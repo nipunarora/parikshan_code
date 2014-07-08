@@ -19,8 +19,8 @@
 # vzmigrate is used for container migration to another node
 
 
-PS4=':${BASH_SOURCE}:${LINENO}+'
-set -x
+#PS4=':${BASH_SOURCE}:${LINENO}+'
+#set -x
 
 ACT_SCRIPTS_SFX="start stop mount umount premount postumount"
 # blowfish is a fast block cipher, much faster then 3des
