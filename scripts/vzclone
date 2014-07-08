@@ -829,10 +829,10 @@ else
 	log 1 "Cleaning up"
 fi
 
-if [ $remove_area -eq 1 ]; then
+#if [ $remove_area -eq 1 ]; then
 	#log 2 "Destroying container"
 	#logexec 2 $VZCTL destroy $VEID
-else
+#else
 	# Move config as veid.migrated to allow backward migration
-	mv -f $vpsconf $vpsconf.migrated
-fi
+#	mv -f $vpsconf $vpsconf.migrated
+#fi
