@@ -83,6 +83,8 @@ Set ip_forwarding for ipv4
 Set iptables to MASQUERADE on eth0
 [host-node]# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
+replace /etc/modprobe.d/openvz.conf from 1 to 0
+
 9. Splitting Network Traffic
 ----------------
 Need to split traffic at Layer 7 level
