@@ -1,55 +1,165 @@
-
 \section{Design}
 \label{sec:design}
 
-In this section we begin with an explanation of live cloning to explain to the reader some the key challenges in designing a sandbox. We then give a system overview of \texttt{Parikshan}, explaining each of its components. 
-Next, we explain how it inserts test cases, into the test harness, and finally we explain how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
+%In this section we begin with an explanation of live cloning to explain to the reader some the key challenges in designing a sandbox. We then give a system overview of \texttt{Parikshan}, explaining each of its components. 
+%Next, we explain how it inserts test cases, into the test harness, and finally we explain how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{figs/workflow2.eps}
+    \includegraphics[width=0.45\textwidth]{figs/workflow2.eps}
     \caption{Backend wrapped around with Parakishan Run-time}
     \label{fig:workflow}
   \end{center}
-\end{figure*}
+\end{figure}
 
-\subsection{How does cloning work?}
+%\subsection{Workflow and Architecture}
+%\label{sec:workflowArch}
 
-While the focus of our work is not to support VM/Container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
-Before moving further we fish to clarify that instead of the typical live migration supported by hypervisors, \textit{Parikshan} requires a clone of the production container. 
-In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
-This cloning requires some tweaking, and modification in both how compute migration is handled, and especially how the network migration is handled. 
-
-To understand cloning in our context, one must first understand how live migration works. 
-Live migration refers to the process of moving a running virtual machine, guest os or container from one host node(physical machine) to another, without disconnecting any client or process running within the machine. 
-There are several variants of live migration, some of which require a short suspend time, while others are able to seamlessly transfer without any noticeable down-time by the user.
-In general the process involves the following steps: (1) Firstly, the copy is initiated by a pre-copy memory migration, where the underlying hypervisor copies all the memory pages from the source to the destination. (2) Once pre-copy phase is finished, the VM is temporarily suspended, and all memory pages including live memory pages are transferred to the target node. 
-Once all memory pages have been transferred the target container is restarted. 
-To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
-Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
-Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network.
-
-Instead of Live Migration, in Live Cloning, we do not suspend operations of the source container, rather we allow the container to keep executing in both production and test locations.
-The more tricky aspect is that there are two containers with the same identities in the network and application domain. 
-Hence the same network identifier should map to two seperate addresses.
-Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
-To allow for some load-balancing and an application aware buffer, we went for a web application level proxy server to duplicate traffic to both containers. 
-Further in this section we explain how we deal with these challenges.
+%The basic workflow of \textit{Parikshan} is as described in Figure \ref{fig:workflow}. 
+%\textit{Parikshan} can be applied at the boundary of every tier of a multi-tier system. In figure \ref{fig:workflow} we show parikshan being applied to a single tier boundary( communication from a webserver to a backend server) to showcase a simple example, this process can be easily scaled depending on the complexity of the system design. 
+%The architecture is driven by a proxy request duplication agent( see section \ref{ and a live clone manager.
 
 \subsection{System Overview}
+\label{sec:systemOverview}
 
 Each instance of \textit{Parikshan} can target only one tier at a time.
-Multiple instances of \textit{Parikshan} can be orchestrated together especially when it's required for integration testing or cross tier results need to be correlated.
-
-To begin with let us look at a simple example of client webserver with a database server as the backend, where the test harness needs to be applied on the backend.
-The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
+However, multiple instances can be orchestrated together especially when it's required for integration testing or cross tier results need to be correlated.
+To begin with let us look at a simple example of client webserver with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
+As explained earlier basic workflow of our system is to duplicate all network requests to the production backend server and a ``live cloned'' test container.
+Traffic duplication is managed by our proxy network duplicator (see section \ref{sec:proxyDuplicator}), which uses several different strategies to clone user input to our test-container, with minimal impact on the production container.
+Another core aspect of our design is how to implement ``live cloning''; this is the process by which a production container (in this case our backend service), can be cloned to create a test-container which has the same file system and process state. 
+Cloning and syncing between the production container and the test-container is managed by our clone manager, which uses user-space containers OpenVZ and a variant of live migration to manage the cloning.
+Next, we explain each of the modules in detail.
+%The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
 
 %\begin{itemize} 
 
-\subsubsection{Proxy Network Duplicator} As described earlier an important aspect of live cloning is that we have two replicas which share the same identity.
-Clearly two containers cannot share the same network identity. 
-While we do not have strong consistency measures, in order for both containers to execute they must receive the same input.
-This can be achieved in multiple ways, the easiest would be a packet level tap device or a hardware switch which does port mirroring. 
+
+\subsection{Clone Manager} 
+\label{sec:CloneManager}
+
+%\subsection{How does cloning work?}
+%\label{sec:cloning}
+
+While the focus of our work is not to support VM Container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
+Before moving further we wish to clarify that instead of the standard live migration supported by hypervisors, \textit{Parikshan} requires a cloning functionality. 
+In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
+This cloning requires some tweaking, and modification in both how compute migration is handled, and especially how the network migration is handled. 
+
+To understand cloning in our context, let us understand how live migration works. 
+Live migration refers to the process of moving a running virtual machine, guest os or container from one host node(physical machine) to another, without disconnecting any client or process running within the machine. 
+Live migration is supported by most well known Hypervisors( vmware, virtualbox, xen, qemu, kvm) with different amount of efficiency.
+There are several variants of migration, some of which require a short suspend time, while others are able to seamlessly transfer without any noticeable down-time by the user.
+In general the process involves the following steps: 
+(1) Firstly, the copy (\textit{rsync}) is initiated by a pre-copy memory migration, where the underlying hypervisor copies all the memory pages from the source to the destination. 
+(2) Once pre-copy phase is finished, the VM is temporarily suspended, and all memory pages including live memory pages are transferred to the target node. 
+Once all memory pages have been transferred the target container is restarted. 
+Obviously, two rsync runs are needed, so the first one moves most of the data, while the container is still up and running, and the second one moves the changes made during the time period between the first rsync run and the VM stop
+\footnote{Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
+Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network}.
+%To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
+
+Instead of Live Migration, in Live Cloning, we do not suspend operations of the source container, rather we allow the container to keep executing in both production and test locations.
+The more tricky aspect is that there are two containers with the same identities in the network and application domain. 
+This is important, as the operating system and the process may be configured with the IP Address, or other networking operation, which cannot be changed without leading to a crash of the system.
+Hence the same network identifier should map to two seperate addresses.
+Clearly the same ipAddress, mac addresses cannot be kept for both the production and test-container as that would lead to conflict in the network. 
+There are two ways to resolve this : 
+(1) Host each container behind their own network namespaces, on the same host machine, and configure packet forwarding to both containers such that the duplicator can communicate to them. 
+Network namespaces is a definete possiblity, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
+(2) Another approach is to host both containers in different machines with port forwarding setup to forward incoming TCP requests to containers behind a NAT. 
+This is slightly more scalable and has clear seperation of network and compute resources. 
+However, an obvious downside to this approach is that it needs a new VM to be allocated.
+As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
+%Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
+%To allow for some load-balancing and an application aware buffer, we went for a web application level proxy server to duplicate traffic to both containers. 
+%
+%Further in this section we explain how we deal with these challenges.
+
+\subsubsection{Cloning Modes}
+
+Test Containers and production containers can be allocated in various schemes: we call these schemes \textit{modes} 
+Broadly speaking the clone manager works in 2 modes : 
+\begin{itemize}
+\item \textit{Internal Mode}: In this mode we allocate the test-container and  production containers to the same host node. 
+This would mean less suspend time, as the production container can be locally cloned ( instead of streaming over the network). 
+Requires the same amount of resources as the original production container (number of host nodes remain the same), hence could potentially be cost-effective.
+On the down-side, co-hosting the test and production containers, could have an adverse effect on the performance of the production container, hence effecting the user.
+\item \textit{External Mode}: In this mode we provision an extra VM as the host of our test-container (this VM can host more than one test-containers), 
+While this mechanism can have a higher overhead in terms of suspend time (~3 seconds, dependent on process state), and it will require provisioning an extra host-node, the advantage of this mechanism is that once cloned, the VM is totally seperate and will not effect the performance of the production-container.
+We believe that such a mode will be more benificial in comparison to the internal mode, as testing is likely to be transient, and it is often more important to not effect user experience\footnote{ \textit{Scaled Mode}: This can be viewed as a variant of the External Mode, where we can scale out test-containers to several testing containers which can be used to do statistical testing and distribute the instrumentation load to capture the overhead easier. This reduces the frequency with which the container needs to be synced. This is currently out of the scope of this paper, however we aim to show this in a future publication.}.
+\end{itemize}
+
+%\RestyleAlgo{boxruled}
+%\LinesNumbered
+
+%\\ \\
+%\noindent \textbf{Implementation}\\
+\subsubsection{Implementation}
+%The Clone Manager is responsible for creating a live running ``clone'' of the production container and launch it as the test-container. 
+%In our current setup cloning is done for each target production environment in the same physical host machine (we can clone to a different physical host as well, however for optimization purposes we have assumed that they will always be in the same local network).
+In our current implementation, we are using OpenVZ\cite{openvz} as our container engine, and have modified the migration mechanism in vzctl \cite{vzctl} to make it work for live cloning instead. 
+We tested this out on multiple VM's acting as host nodes for OpenVZ containers. 
+To make the cloning easier and faster, we used OpenVZ's \textit{ploop} devices \cite{ploop} to host the containers. 
+\textit{Ploop} devices are a variant of disk loopback devices where the entire file system of the container is stored as a single file. 
+This makes features such as syncing, moving, snapshots, backups and easy seperation of inodes of each container file system.
+
+The algorithm for live cloning is explained below: 
+
+\begin{algorithm}[ht]
+   \caption{Algorithm for Live Cloning using OpenVZ 
+   \label{algCloning}}
+ \begin{enumerate}
+   \item Safety Checks(Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
+   \item Runs rsync of container file system (\textit{ploop} device) to the destination server  
+   \item Checkpoints and suspend the container 
+   \item Runs a second rsync of the \textit{ploop} device to the destination  
+   \item Start container locally 
+   \item Set up port forwarding and packet duplication
+   \item Starts the container on the destination 
+  \end{enumerate}
+\end{algorithm}
+
+Let us imaging we are cloning production container C1 on Host H1 as test container C2 on Host H2. 
+The initial setup requires certain safety checks and pre-setup to ensure easy cloning, these include: ssh-copy-id operation for accessing without password, checking pre-existing container ID's, check version of vzctl etc. 
+These ensure that H1 and H2 are compatible, and ready for live-cloning.
+Next, we run an intial rsync of container C1, from Host H1 to Host H2, this step does not require any suspension of C1, and copies the bulk of the container file system to the destination server (H2). 
+The next step involves checkpointing, and dumping the process in memory state to a file, this is what allows the container to be restarted from the same checkpointed state. 
+However for sanity of the container process, it is important to restart the container from the same file system state as it was when the checkpoint was taken.
+To ensure this, we take a second rsync of the ploop device of C1, and sync it with H2, after this the original container can be restarted.
+Next we copy the dump file from step 3, from H1 to H2, and resume a new container from that dump file.
+
+Clearly the overhead of live migration depends on the I/O operations happening within the container between step 2 and step 4 (the first and the second rsync), as this will directly impact the amount of memory that needs to be copied during the suspend phase. 
+A few iteration of cloning a container back and forth between two OpenVZ instances ( on KVM's within the same physical machine), resulted in an average suspend time of 1.8 seconds for the production container, and 3.3 seconds for launch of the test-container( see table \ref{table:clonePerf}).
+This is nearly the same as that of native live migration, and has lesser suspend time for the production container as we do not include the \textit{``copy dump file''}, or the \textit{``undump and resume phase''} for production containers. 
+
+%The same amount of resources as the production container are reserved for the test-container. 
+%After doing the pre-copy, we do a pause for syncing the two containers, and start them together. 
+%Subsequent clone operations are optimized as they only require rsync for the change that has happened to the base image and in memory operation.
+%After the intial setup, the frequency of cloning depends on the slowdown experienced by the test-container, and requirement of the test-case (some test cases may not require a long running test-window).
+
+\begin{table}[t]
+  \centering
+    \begin{tabular}{ | p{2.2cm} | l | l | l | l | l | l | l |}
+    \hline
+    \textbf{Iteration} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{Avg} \\ \hline
+    \textbf{Suspend + Dump} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \textbf{Pcopy after suspend} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \textbf{Copy Dump File} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \textbf{Undump and Resume} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+%    \textbf{--------------} & --- & --- & --- & --- & --- & --- & ---\\ \hline
+    \textbf{Total Suspend Time} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \end{tabular}
+\caption{Performance of Live Cloning (external mode) with a random file dump process running in the container}
+\label{table:clonePerf}
+\end{table}
+
+\subsection{Proxy Network Duplicator} 
+\label{sec:proxyDuplicator}
+
+As described earlier an important aspect of live cloning is that we have two replicas which share the same identity. 
+While we do not have strong consistency requirements, in order for both containers to execute they must receive the same input.
+This can be achieved in multiple ways, the easiest would be a port-mirroring mechanism either using software provided tap devices or in hardware switches (several vendors provide mirroring options). 
 These are both pretty common, and are blackbox and do not require much configuration.
 However, such port mirroring solution gives us minimal control on the traffic going to our test container.
 The production and test-container may execute at varying speeds which will result in them being slightly out of sync.
@@ -67,6 +177,63 @@ The TCP level duplicator is configured with the client facing ip address (hence 
   \end{center}
 \end{figure}
 
+The workflow of each component is as follows: Traffic from the client (Node 1 in figure \ref{fig:duplicator}) is forwarded to the Connection Manager(Node 2 in figure \ref{fig:duplicator}). 
+The connection manager essentially is a socket reader which copies, parses the incoming traffic. 
+Based on the type of TCP request, a new connection is created or data is forwarded/received to/from the TCP Connector( Node 3, figure \ref{fig:duplicator}) which in turn creates a connection to actual production server.
+In this way the connection manager and TCP connector follow the TCP state machine hence mantaining network packet sanity while forwarding traffic to the production container.
+Simultaneously, the connection manager creates an internal copy of incoming traffic, and parses and sends it to the Buffer Manager (Node 5, figure \ref{fig:duplicator}).
+In a naive scenario the connection could be simply forwarded to the test-container, and the traffic would be managed by itself. 
+However, it is likely that the rate of traffic consumption by the test-container is less than the production container. 
+This gives us several startegies to design the duplication of traffic to the test container:
 
-\subsubsection{Clone Manager} 
+\begin{enumerate}
 
+  \item \textbf{Synchronized}
+
+  A naive startegy is to send TCP requests to the production node, and then send it to the request node
+
+  \item \textbf{Asynchronous}
+
+Launch two threads on accepting each TCP request. For each session of TCP requests, two threads manage sending and receiving  to the production and test-container
+
+  \item \textbf{Synchronized Partial Order Multi-Threaded Queue}
+
+Launch two threads, track slowdown of the duplication thread.
+
+  \item \textbf{Multi-Duplication}
+
+Launch multiple duplication threads
+
+\end{enumerate}
+
+Since the speed of input from the client is not in sync production-container, we need to buffer incoming traffic and relay it to the the TCP Connector(Node 6, figure \ref{fig:duplicator}) as soon as the test-container is ready for new traffic. 
+Since parallel connections can be initiated by the client on the same TCP port, the BufferManager creates multiple buffers for each connection, and initiates new connections by following the same causal flow of the packets received from the client. 
+Unlike record-replay systems \textit{Parikshan} does not claim to have strong consistency requirements, and does not need to exactly follow the production container as the goal is not reproduce all non-determinism in the production environment, but instead capture input non-determinism, and complete system state from a given point of time.
+We discuss consistency requirements further in section \ref{sec:consistency}
+
+\subsubsection{Time Delay and Buffer Management}
+\label{sec:TimeManagement}
+
+%It is possible that in heavy load conditions the buffers in the Buffer Manager may overflow. 
+%Depending on the use-case the BufferManager can then trigger the CloneManager, which closes the analysis time-window and launches a fresh clone.
+Incoming traffic may potentially have a cumulative effect which will eventually lead to a buffer overflow in the BufferManager, hence leading to packet drops. 
+This behavior is similar to packet dropping in classical TCP buffers, which rely on retransmission of incoming packets from the client.
+However in our case if packets are dropped the client cannot retransmit them as it not in sync with the test container.
+Hence in some cases \textit{Parikshan} analysis, has to be restricted to a time-window dependent on the load of incoming traffic and the slowdown experienced by the test-container.
+
+%Let the rate of incoming traffic be \lambda
+
+\subsection{Network State Model}
+\label{sec:networkStateModel}
+
+Network communication in most applications consists of two core types of protocols: UDP \& TCP.
+The UDP(User Datagram Protocol) allows the applications to send messages(referred to as datagrams) to other hosts in the network without prior communications to set up any transmission channels.
+UDP uses a simple communication mechanism while minimizing protocls. 
+It has no handshaking dialogues or acknowledgement of package delivery. It is broadly used for network traffic where speed is much more important than reliability (viz. network streaming applications like video etc.)
+On the other hand TCP(Transmission Control Protocol) is a reliable error checked delivery stream.
+It involves initially establishing the connection, and allowing for packet re-delivery or re-ordering to allow for reliable and dependable connection. 
+While TCP is slower than UDP it is preferred for most normal connections between clients and server applications.
+
+Since the UDP protocol has no error management mechanism, it automatically follows that machine state in a UDP connection is not important.
+Hence in our design the duplicator can easily flood packets to the cloned UDP server by simply sending packets to the targeted host and port. 
+Our solution for this is 
