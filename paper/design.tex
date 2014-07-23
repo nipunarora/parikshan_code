@@ -38,8 +38,8 @@ Next, we explain each of the modules in detail.
 \subsection{Clone Manager} 
 \label{sec:CloneManager}
 
-%\subsection{How does cloning work?}
-%\label{sec:cloning}
+\subsubsection{How does cloning work?}
+\label{sec:cloning}
 
 While the focus of our work is not to support VM Container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
 Before moving further we wish to clarify that instead of the standard live migration supported by hypervisors, \textit{Parikshan} requires a cloning functionality. 
@@ -66,28 +66,48 @@ Hence the same network identifier should map to two seperate addresses.
 Clearly the same ipAddress, mac addresses cannot be kept for both the production and test-container as that would lead to conflict in the network. 
 There are two ways to resolve this : 
 (1) Host each container behind their own network namespaces, on the same host machine, and configure packet forwarding to both containers such that the duplicator can communicate to them. 
-Network namespaces is a definete possiblity, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
-(2) Another approach is to host both containers in different machines with port forwarding setup to forward incoming TCP requests to containers behind a NAT. 
+Network namespaces(see internal mode, figure.\ref{fig:modesCloning}) is a definete possiblity, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
+(2) Another approach is to host both containers in different machines with port forwarding setup to forward incoming TCP requests to containers behind a NAT (see external mode, figure.\ref{fig:modesCloning}). 
 This is slightly more scalable and has clear seperation of network and compute resources. 
 However, an obvious downside to this approach is that it needs a new VM to be allocated.
-As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
+This leads us to two different modes of implementation, which we discuss in the next section.
+%As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
 %Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
 %To allow for some load-balancing and an application aware buffer, we went for a web application level proxy server to duplicate traffic to both containers. 
 %
 %Further in this section we explain how we deal with these challenges.
 
-\subsubsection{Cloning Modes}
+\subsubsection{Basic Design \& Modes}
 
-Test Containers and production containers can be allocated in various schemes: we call these schemes \textit{modes} 
-Broadly speaking the clone manager works in 2 modes : 
+The Clone Manager itself is just an interface which interacts with an \textit{agent} installed in each container host.
+The clone manager dictates the frequency of cloning/syncing operations, as well as  coordinates setup operations/orchestration etc.
+The agent itself is the driver for live cloning, and performs rsync operations, snapshot, transferring and starting the image.
+
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{figs/modesCloning.eps}
+    \caption{External and Internal Mode for Live Cloning: P1 is the production container, and T1 is the test container, the Clone Manager interacts with an Agent which has drivers to implement live Cloning}
+    \label{fig:modesCloning}
+  \end{center}
+\end{figure}
+
+
+Test and production containers can be allocated in various schemes: we call these schemes \textit{modes}. 
+Broadly speaking the clone manager works in 2 modes (see figure.\ref{fig:modesCloning}) : 
 \begin{itemize}
+
 \item \textit{Internal Mode}: In this mode we allocate the test-container and  production containers to the same host node. 
 This would mean less suspend time, as the production container can be locally cloned ( instead of streaming over the network). 
 Requires the same amount of resources as the original production container (number of host nodes remain the same), hence could potentially be cost-effective.
 On the down-side, co-hosting the test and production containers, could have an adverse effect on the performance of the production container, hence effecting the user.
+As we can see in figure.\ref{fig:modesCloning} the production container P1 and test container T1 are both hosted within the same physical host, and with the same ip addres, but their network is encapsulated within different network namespaces to sandbox them.
+The duplicator is then able to communicate to both these containers with no networking conflict.
+
 \item \textit{External Mode}: In this mode we provision an extra VM as the host of our test-container (this VM can host more than one test-containers), 
 While this mechanism can have a higher overhead in terms of suspend time (~3 seconds, dependent on process state), and it will require provisioning an extra host-node, the advantage of this mechanism is that once cloned, the VM is totally seperate and will not effect the performance of the production-container.
 We believe that such a mode will be more benificial in comparison to the internal mode, as testing is likely to be transient, and it is often more important to not effect user experience\footnote{ \textit{Scaled Mode}: This can be viewed as a variant of the External Mode, where we can scale out test-containers to several testing containers which can be used to do statistical testing and distribute the instrumentation load to capture the overhead easier. This reduces the frequency with which the container needs to be synced. This is currently out of the scope of this paper, however we aim to show this in a future publication.}.
+As we can see in figure.\ref{fig:modesCloning} the production container P1 and test container T1, are hosted on two different host machines, and are encapsulated behind a NAT\cite{nat} (network address translator), hence they each have their ip's in an internal network thereby avoiding any conflict.
+
 \end{itemize}
 
 %\RestyleAlgo{boxruled}
@@ -131,7 +151,8 @@ Next we copy the dump file from step 3, from H1 to H2, and resume a new containe
 
 Clearly the overhead of live migration depends on the I/O operations happening within the container between step 2 and step 4 (the first and the second rsync), as this will directly impact the amount of memory that needs to be copied during the suspend phase. 
 A few iteration of cloning a container back and forth between two OpenVZ instances ( on KVM's within the same physical machine), resulted in an average suspend time of 1.8 seconds for the production container, and 3.3 seconds for launch of the test-container( see table \ref{table:clonePerf}).
-This is nearly the same as that of native live migration, and has lesser suspend time for the production container as we do not include the \textit{``copy dump file''}, or the \textit{``undump and resume phase''} for production containers. 
+%add citation for OpenVZ Live Migration performance iteration testbed http://openvz.livejournal.com/47780.html
+This is nearly the same as that of native live migration\cite{openvzLiveMigrationPerf}, and has lesser suspend time for the production container as we do not include the \textit{``copy dump file''}, or the \textit{``undump and resume phase''} for production containers. 
 
 %The same amount of resources as the production container are reserved for the test-container. 
 %After doing the pre-copy, we do a pause for syncing the two containers, and start them together. 
