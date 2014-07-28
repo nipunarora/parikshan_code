@@ -1,0 +1,56 @@
+;; RefTeX parse info file
+;; File: /Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex
+;; User: Nipun (Nipun Arora)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/")
+
+(label-numbers)
+
+(bof "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex")
+
+(toc "toc" "    1 Design" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 2 "1" "\\section{Design}" 2)
+
+("sec:design" "s" "%In this section we begin with an explanation of live cloning to explain to the reader some the key " "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+("fig:workflow" "f" "Backend wrapped around with Parakishan Run-time" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+("sec:workflowArch" "s" "%The basic workflow of \\textit{Parikshan} is as described in Figure \\ref{fig:workflow}. %\\textit{Par" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" 700)
+
+(toc "toc" "      1.1 System Overview" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 3 "1.1" "\\subsection{System Overview}" 1270)
+
+("sec:systemOverview" "s" "Each instance of \\textit{Parikshan} can target only one tier at a time. However, multiple instances " "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+(toc "toc" "      1.2 Proxy Network Duplicator" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 3 "1.2" "\\subsection{Proxy Network Duplicator}" 6805)
+
+("sec:proxyDuplicator" "s" "As described earlier an important aspect of live cloning is that we have two replicas which share th" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+("fig:duplicator" "f" "Description of the Network Duplicator" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+(toc "toc" "      1.3 Clone Manager" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 3 "1.3" "\\subsection{Clone Manager}" 10918)
+
+("sec:CloneManager" "s" "%\\subsection{How does cloning work?} % While the focus of our work is not to support VM/Container mi" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+("sec:cloning" "s" "While the focus of our work is not to support VM/Container migration, or to make changes to the hype" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" 6852)
+
+(toc "toc" "        1.3.1 Time Delay and Buffer Management" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 4 "1.3.1" "\\subsubsection{Time Delay and Buffer Management}" 10919)
+
+("sec:TimeManagement" "s" "%It is possible that in heavy load conditions the buffers in the Buffer Manager may overflow. %Depen" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+(toc "toc" "      1.4 Network State Model" "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil 3 "1.4" "\\subsection{Network State Model}" 11881)
+
+("sec:networkStateModel" "s" "Network communication in most applications consists of two core types of protocols: UDP \\& TCP. The " "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex" nil)
+
+(eof "/Users/Nipun/Dropbox/Research/Papers/Sandbox/sandbox-testing/paper/design.tex")
+))
+
