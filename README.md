@@ -129,7 +129,15 @@ The assignment of network cards to interfaces is done in /etc/udev/rules.d/70-pe
 
 12. Install Node JS & npm
 -------------
+
+Ref: https://github.com/joyent/node/wiki/backports.debian.org, https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
+
+Run the following (as root):
+
+echo "deb http://ftp.us.debian.org/debian wheezy-backports main" >> /etc/apt/sources.list
+apt-get update
 apt-get install nodejs-legacy
+curl --insecure https://www.npmjs.org/install.sh | bash
 
 
 13. Proxy Servers
