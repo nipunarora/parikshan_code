@@ -18,6 +18,8 @@
 echo "Usage createVZ <container ID> <hostname> <IP Address>"
 echo "Creating Container" $1
 vzctl create $1 --ostemplate debian-7.0-amd64-minimal --config basic --layout ploop
+#vzctl create $1 --ostemplate ubuntu-14.04-x86_64-minimal --config basic --layout ploop
+#vzctl create $1 --ostemplate centos-6-x86_64-minimal --config basic --layout ploop
 echo "Finished creating container" $1
 vzctl set $1 --hostname $2 --save
 vzctl set $1 --ipadd $3 --save

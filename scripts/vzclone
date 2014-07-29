@@ -775,6 +775,12 @@ fi
 if [ $online -eq 1 ]; then
 	log 2 "Undumping container"
 	time_undump=$(date +%s.%N)
+	
+	log 2 "Resuming container"
+	if ! logexec 2 $VZCTL chkpnt $VEID --resume ; then
+	    log 0 "Failed to resume container"
+	fi
+
 	if ! logexec 2 $SSH root@$host $VZCTL restore $VEID --undump \
 			--dumpfile $VE_DUMPFILE --skip_arpdetect ; then
 		log 0 "Failed to undump container"
@@ -782,10 +788,6 @@ if [ $online -eq 1 ]; then
 		exit $MIG_ERR_RESTORE_VPS
 	fi
 
-	log 2 "Resuming container"
-	if ! logexec 2 $VZCTL restore $VEID --resume ; then
-	    log 0 "Failed to resume container"
-	fi
 	if ! logexec 2 $SSH root@$host $VZCTL restore $VEID --resume ; then
 		log 0 "Failed to resume container"
 		undo_undump
@@ -793,9 +795,9 @@ if [ $online -eq 1 ]; then
 	fi
 	time_finish=$(date +%s.%N)
 	print_times
-	log 1 "Cleaning up"
+	#log 1 "Cleaning up"
 
-	log 2 "Killing container"
+	#log 2 "Killing container"
 	#logexec 2 $VZCTL chkpnt $VEID --kill
 	#logexec 2 $VZCTL umount $VEID
 
@@ -829,10 +831,10 @@ else
 	log 1 "Cleaning up"
 fi
 
-if [ $remove_area -eq 1 ]; then
+#if [ $remove_area -eq 1 ]; then
 	#log 2 "Destroying container"
 	#logexec 2 $VZCTL destroy $VEID
-else
+#else
 	# Move config as veid.migrated to allow backward migration
-	mv -f $vpsconf $vpsconf.migrated
-fi
+        #mv -f $vpsconf $vpsconf.migrated
+#fi
