@@ -17,12 +17,17 @@
 
 echo "Usage createVZ <container ID> <hostname> <IP Address>"
 echo "Creating Container" $1
+<<<<<<< HEAD
 vzctl create $1 --ostemplate debian-7.0-amd64-minimal --config basic --layout ploop
 #vzctl create $1 --ostemplate ubuntu-14.04-x86_64-minimal --config basic --layout ploop
 #vzctl create $1 --ostemplate centos-6-x86_64-minimal --config basic --layout ploop
+=======
+#vzctl create $1 --ostemplate debian-7.0-amd64-minimal --config basic --layout ploop
+vzctl create $1 --ostemplate centos-6-x86_64 --config basic --layout ploop
+>>>>>>> 0bd3800b320c5c459603ea65faf5f08cac997bbd
 echo "Finished creating container" $1
 vzctl set $1 --hostname $2 --save
 vzctl set $1 --ipadd $3 --save
-vzctl set $1 --numothersock 120 --save
+vzctl set $1 --numothersock 1200 --save
 vzctl set $1 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --save
 echo "Finished configuration"

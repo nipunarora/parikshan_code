@@ -46,7 +46,7 @@
 % For tracking purposes - this is V2.0 - May 2012
 
 \documentclass{sig-alternate}
-\usepackage{paralist}
+\usepackage{paralist,algorithm,algorithmic}
 
 \begin{document}
 %
@@ -107,6 +107,19 @@
 % e-mail address with \email.
 %
 % 1st. author
+
+%Author if only Nipun
+\numberofauthors{1}
+\author{
+\alignauthor
+Nipun Arora \\
+     \affaddr{NEC Research Labs}\\
+     \affaddr{Princeton, NJ, USA}\\
+     \email{nipun@nec-labs.com}
+}
+
+
+%All Authors
 \iffalse 
 \numberofauthors{3}
 \author{
@@ -120,7 +133,7 @@ Nipun Arora\\
 Franjo Ivancic\\
        \affaddr{Google}\\
        \affaddr{New York, NY, USA}\\
-       \email{ivancic@google.com}
+c       \email{ivancic@google.com}
 % 3rd. author
 \alignauthor Gail Kaiser\\
        \affaddr{Columbia University}\\
@@ -129,7 +142,7 @@ Franjo Ivancic\\
 }
 \fi
 
-\date{28 April 2014}
+%\date{28 April 2014}
 \maketitle
 
 \input{abstract}
@@ -149,11 +162,12 @@ Franjo Ivancic\\
 \input{motivation}
 \input{related}
 \input{design}
-\input{implementation}
 \input{trigger}
+\input{implementation}
 \input{challenges}
 \input{network-issues}
 \input{implementation}
+\input{Evaluation}
 \input{conclusion}
 
 
@@ -163,7 +177,7 @@ Franjo Ivancic\\
 % initial runs of your .tex file to
 % produce the bibliography for the citations in your paper.
 \bibliographystyle{abbrv}
-\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\bibliography{sandbox}  % sigproc.bib is the name of the Bibliography in this case
 % You must have a proper ".bib" file
 %  and remember to run:
 % latex bibtex latex latex

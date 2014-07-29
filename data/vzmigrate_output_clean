@@ -1,0 +1,51 @@
+::/usr/sbin/vzmigrate:456+vzctl status 102
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 /etc/init.d/vz status
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 test -f /proc/rst
+::/usr/sbin/vzmigrate:498+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'vzctl status 102'
+:/usr/sbin/vzmigrate:510+which vzcptcheck
+:/usr/sbin/vzmigrate:155+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 which vzcptcheck
+::/usr/sbin/vzmigrate:325+vzcptcheck version
+:/usr/sbin/vzmigrate:155+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzcptcheck version 2051
+::/usr/sbin/vzmigrate:336+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzcptcheck caps
+:/usr/sbin/vzmigrate:155+vzcptcheck caps 102 136607
+:/usr/sbin/vzmigrate:524+. /etc/vz/conf/102.conf
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 ploop getdev
+:/usr/sbin/vzmigrate:544+get_ploop_info
+::/usr/sbin/vzmigrate:564+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'grep -cwE "192.168.0.2" /proc/vz/veip'
+:/usr/sbin/vzmigrate:158+scp -c blowfish -o BatchMode=yes /etc/vz/conf/102.conf root@192.168.122.172:/etc/vz/conf/102.conf
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl set 102 --applyconfig_map name --save
+:/usr/sbin/vzmigrate:606+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'mkdir -p /vz/root/102'
+:/usr/sbin/vzmigrate:613+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'mkdir -p /vz/private/102'
+
+Syncing private
+:/usr/sbin/vzmigrate:654+rsync -aHAX --delete --numeric-ids --exclude root.hdd/root.hdd --delete-excluded /vz/private/102 root@192.168.122.172:/vz/private
+Live migrating container...
+:/usr/sbin/vzmigrate:677+ploop_copy 'date '\''+%s.%N'\'' > /tmp/tmp.X1XNncaTAI; vzctl chkpnt 102 --suspend'
+:/usr/sbin/vzmigrate:290+ploop copy -s /dev/ploop31618 -F 'date '\''+%s.%N'\'' > /tmp/tmp.X1XNncaTAI; vzctl chkpnt 102 --suspend 1>&2'
+:/usr/sbin/vzmigrate:291+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 ploop copy -d /vz/private/102/root.hdd/root.hdd
+Setting up checkpoint...
+	suspend...
+	get context...
+Checkpointing completed successfully
+:/usr/sbin/vzmigrate:689+log 2 'Dumping container'
+
+----> Here is the only place that checkpoint happens
+:/usr/sbin/vzmigrate:158+vzctl chkpnt 102 --dump --dumpfile /var/tmp/dump.102
+----> Here is the only place that checkpoint is released
+
+---> >>/usr/sbin/vzmigrate vzctl chkpnt 102 --resume
+
+:/usr/sbin/vzmigrate:158+scp -c blowfish -o BatchMode=yes /var/tmp/dump.102 root@192.168.122.172:/var/tmp/dump.102
+:/usr/sbin/vzmigrate:776+log 2 'Undumping container'
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --undump --dumpfile /var/tmp/dump.102 --skip_arpdetect
+:/usr/sbin/vzmigrate:785+log 2 'Resuming container'
+:/usr/sbin/vzmigrate:158+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 vzctl restore 102 --resume
+Cleaning up
+:/usr/sbin/vzmigrate:795+log 2 'Killing container'
+:/usr/sbin/vzmigrate:158+vzctl chkpnt 102 --kill
+:/usr/sbin/vzmigrate:158+vzctl umount 102
+:/usr/sbin/vzmigrate:799+log 2 'Removing dumpfiles'
+:/usr/sbin/vzmigrate:800+rm -f /var/tmp/dump.102
+:/usr/sbin/vzmigrate:801+ssh -c blowfish -o BatchMode=yes root@192.168.122.172 'rm -f /var/tmp/dump.102'
+:/usr/sbin/vzmigrate:830+log 2 'Destroying container'
+:/usr/sbin/vzmigrate:158+vzctl destroy 102
