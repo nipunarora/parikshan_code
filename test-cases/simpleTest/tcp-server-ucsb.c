@@ -13,12 +13,18 @@ int main(int argc, char**argv)
   pid_t     childpid;
   char mesg[1000];
 
+  if(argc != 2)
+    {
+      printf("usage: server <Port Number> \n");
+      exit(1);
+    }
+
   listenfd=socket(AF_INET,SOCK_STREAM,0);
 
   bzero(&servaddr,sizeof(servaddr));
   servaddr.sin_family = AF_INET;
   servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-  servaddr.sin_port=htons(32000);
+  servaddr.sin_port=htons(argv[1]);
   bind(listenfd,(struct sockaddr *)&servaddr,sizeof(servaddr));
 
   listen(listenfd,1024);

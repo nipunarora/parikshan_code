@@ -12,9 +12,9 @@ int main(int argc, char**argv)
   char sendline[1000];
   char recvline[1000];
 
-  if (argc != 2)
+  if (argc != 3)
     {
-      printf("usage:  client <IP address>\n");
+      printf("usage:  client <IP address> <Port number>\n");
       exit(1);
     }
 
@@ -23,7 +23,7 @@ int main(int argc, char**argv)
   bzero(&servaddr,sizeof(servaddr));
   servaddr.sin_family = AF_INET;
   servaddr.sin_addr.s_addr=inet_addr(argv[1]);
-  servaddr.sin_port=htons(32000);
+  servaddr.sin_port=htons(argv[2]);
 
   connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
