@@ -1,3 +1,11 @@
+# 
+# Filename: pythonTCPDuplicator.py
+# Author: Nipun Arora
+# Created: Sat Aug  2 15:53:53 2014 (-0400)
+# URL: http://www.nipunarora.net 
+# 
+# Description: 
+# 
 #!/usr/bin/env python
 
 import socket
