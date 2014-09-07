@@ -150,3 +150,8 @@ https://gist.github.com/fiorix/1878983 - Twisted proxy
 ------------------
 
 LAMP Install - https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-14-04
+
+15. Todo
+------------
+
+ vzmigrate --times --online <host> VEID 
