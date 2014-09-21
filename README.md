@@ -146,6 +146,14 @@ http://voorloopnul.com/blog/a-python-proxy-in-less-than-100-lines-of-code/ - sim
 https://github.com/iSECPartners/tcpprox - well made proxy 
 https://gist.github.com/fiorix/1878983 - Twisted proxy
 
+Vaurien Install 
+
+- yum install python python-devel
+- yum install libevent-devel
+- pip install vaurien
+
+ 
+
 14. Evaluation Install
 ------------------
 
