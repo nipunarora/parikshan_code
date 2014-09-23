@@ -88,6 +88,10 @@ replace /etc/modprobe.d/openvz.conf from 1 to 0
 To allow for cloning to work - 
 http://wiki.hillockhosting.com/openvz/vzrst-module-is-not-loaded-on-the-destination-node/
 
+modprobe vzrst
+
+modprobe vzcpt
+
 9. Splitting Network Traffic
 ----------------
 Need to split traffic at Layer 7 level
@@ -124,6 +128,7 @@ Next we set the number of sockets to 120 and assign a few nameservers to the vm:
 vzctl set 101 --numothersock 120 --save
 
 vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
+
 
 11. Network Card Management in KVM
 -------------
