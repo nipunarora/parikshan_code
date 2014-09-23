@@ -85,6 +85,9 @@ Set iptables to MASQUERADE on eth0
 
 replace /etc/modprobe.d/openvz.conf from 1 to 0
 
+To allow for cloning to work - 
+http://wiki.hillockhosting.com/openvz/vzrst-module-is-not-loaded-on-the-destination-node/
+
 9. Splitting Network Traffic
 ----------------
 Need to split traffic at Layer 7 level
