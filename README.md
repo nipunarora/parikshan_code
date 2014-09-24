@@ -85,6 +85,13 @@ Set iptables to MASQUERADE on eth0
 
 replace /etc/modprobe.d/openvz.conf from 1 to 0
 
+To allow for cloning to work - 
+http://wiki.hillockhosting.com/openvz/vzrst-module-is-not-loaded-on-the-destination-node/
+
+modprobe vzrst
+
+modprobe vzcpt
+
 9. Splitting Network Traffic
 ----------------
 Need to split traffic at Layer 7 level
@@ -122,6 +129,7 @@ vzctl set 101 --numothersock 120 --save
 
 vzctl set 101 --nameserver 8.8.8.8 --nameserver 8.8.4.4 --nameserver 145.253.2.75 --save
 
+
 11. Network Card Management in KVM
 -------------
 
@@ -146,7 +154,20 @@ http://voorloopnul.com/blog/a-python-proxy-in-less-than-100-lines-of-code/ - sim
 https://github.com/iSECPartners/tcpprox - well made proxy 
 https://gist.github.com/fiorix/1878983 - Twisted proxy
 
+Vaurien Install 
+
+- yum install python python-devel
+- yum install libevent-devel
+- pip install vaurien
+
+ 
+
 14. Evaluation Install
 ------------------
 
 LAMP Install - https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-14-04
+
+15. Todo
+------------
+
+ vzmigrate --times --online <host> VEID 
