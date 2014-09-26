@@ -16,11 +16,11 @@ DevOps stresses on close coupling between software developers and operators, and
 Most of these companies have very frequent releases and hence require a very short time to a bug fix, test, patch and release in order to realize continuous delivery(Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day).
 
 However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
-In general, testing in the development environment can be (1). Un-realistic because it may not be possible to faithfully reconstruct the production environment, (2). Incomplete, as it may be impossible to generate all possible input cases (3). Costly, as it is infeasible to test all possible configurations given time and cost constraints of releasing the software to the field. 
+In general, testing in the development environment can be (1). Ln-realistic because it may not be possible to faithfully reconstruct the production environment, (2). Incomplete, as it may be impossible to generate all possible input cases (3). Costly, as it is unfeasible to test all possible configurations given time and cost constraints of releasing the software to the field. 
 Hence testing is not only difficult because of difficulty to recreate production scenarios, it is also increasingly important to test and catch bugs in a very short period of time.
 
 One of the proposed mechanisms of addressing this problem is to ``perpetually test''\cite{perpetual} the application in the field after it has been deployed. 
-This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which can arise due to various factors such as unpredictible user environment, outdated softwares, an ever increasing list of hardware devices (e.g. mobile phones, embedded devices etc.), or simply because of imperfect network connectivity (wifi, cellular).
+This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which can arise due to various factors such as unpredictable user environment, outdated software, an ever increasing list of hardware devices (e.g. mobile phones, embedded devices etc.), or simply because of imperfect network connectivity (wifi, cellular).
 %which are possible only for a long running production environment. 
 %Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
 %However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
@@ -40,14 +40,14 @@ However, despite a clear need, testing in the wild has never gotten much tractio
 %However most record and replay systems have high overheads, and require replication of the running configuration which may not be possible. 
 %Additionally the administrator needs to wait for offline analysis, instead of doing real-time diagnosis.
 
-The motivation behind our work is to provide ``testing as a service'' for real-time diagnosis of production applications in order to signifcantly reduce the time towards bug resolution.
+The motivation behind our work is to provide ``testing as a service'' for real-time diagnosis of production applications in order to significantly reduce the time towards bug resolution.
 We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
 %On the other hand, there has been an impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
 %Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
 %This often allows for redundant computation, which can be used for testing purposes. 
 Leveraging this abundance of resources, and recent advances in user-space virtualization technology(OpenVZ/LXC\cite{openvz,linux}) we present a testing mechanism which allows the user to dynamically insert test cases in a production environment(we call this in-vivo testing), enabling real-time diagnosis.
 
-Our system called \texttt{Parikshan}\footnote{Parikshan is the sanskrit word for testing} allows capturing the context of application, and for tests to be run without effecting the sanctity and performance of the actual user-facing application. 
+Our system called \texttt{Parikshan}\footnote{Parikshan is the Sanskrit word for testing} allows capturing the context of application, and for tests to be run without effecting the sanctity and performance of the actual user-facing application. 
 This is done by cloning a production server and creating two containers: a production container, and a testing container. 
 We duplicate the incoming traffic to both the production container and the test container using a custom proxy, which ignores the responses from the test-container. 
 The testing on the test-container is done on the fly using dynamic instrumentation, hence any set of test-cases can be turned on whenever required. 
@@ -70,10 +70,10 @@ The key contributions of this paper are:
 \begin{itemize}
 \item A tool which provides a sandbox environment to execute test cases in the production environment. 
 This allows for a safe and secure test harness which does not effect the production state, and allows the application to proceed in it's execution.
-\item We allow for dynamic insertion of the test case, and safetly capturing the context of the application. Dynamically inserting test-cases is important to avoid relaunching binaries in the test-container with the required test-cases. 
+\item We allow for dynamic insertion of the test case, and safely capturing the context of the application. Dynamically inserting test-cases is important to avoid relaunching binaries in the test-container with the required test-cases. 
 Restarting binaries is not possible, because it would break active network connections, and destroy the state of the test container
 \item Language and Platform agnostic: One of the key advantages of our approach is that it is language and platform agnostic. Since the underlying mechanism takes advantage of containers as a platform to do the cloning, the language or interface does not matter as far as cloning is concerned. 
-Of-course testing mechanims may differ depending upon different languages.
+Of-course testing mechanisms may differ depending upon different languages.
 %\texttt{Zero-Probe Effect} probe points are added to the application which can be activated to insert test cases using ptrace\cite{ptrace}.
 %The use of dynamic instrumentation capability to add test cases in an application is an extension of our previous work of a dynamic instrumentation tool iProbe \cite{iProbe}
 \end{itemize}

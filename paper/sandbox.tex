@@ -46,7 +46,8 @@
 % For tracking purposes - this is V2.0 - May 2012
 
 \documentclass{sig-alternate}
-\usepackage{paralist,algorithm,algorithmic}
+\usepackage[noend]{algpseudocode}
+\usepackage{paralist,algorithm}
 
 \begin{document}
 %
@@ -109,6 +110,7 @@
 % 1st. author
 
 %Author if only Nipun
+\iffalse
 \numberofauthors{1}
 \author{
 \alignauthor
@@ -117,7 +119,7 @@ Nipun Arora \\
      \affaddr{Princeton, NJ, USA}\\
      \email{nipun@nec-labs.com}
 }
-
+\fi
 
 %All Authors
 \iffalse 
@@ -133,7 +135,7 @@ Nipun Arora\\
 Franjo Ivancic\\
        \affaddr{Google}\\
        \affaddr{New York, NY, USA}\\
-c       \email{ivancic@google.com}
+       \email{ivancic@google.com}
 % 3rd. author
 \alignauthor Gail Kaiser\\
        \affaddr{Columbia University}\\

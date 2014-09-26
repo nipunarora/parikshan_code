@@ -24,7 +24,7 @@
 
 Each instance of \textit{Parikshan} can target only one tier at a time.
 However, multiple instances can be orchestrated together especially when it's required for integration testing or cross tier results need to be correlated.
-To begin with let us look at a simple example of client webserver with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
+To begin with let us look at a simple example of client web-server with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
 As explained earlier basic workflow of our system is to duplicate all network requests to the production backend server and a ``live cloned'' test container.
 Traffic duplication is managed by our proxy network duplicator (see section \ref{sec:proxyDuplicator}), which uses several different strategies to clone user input to our test-container, with minimal impact on the production container.
 Another core aspect of our design is how to implement ``live cloning''; this is the process by which a production container (in this case our backend service), can be cloned to create a test-container which has the same file system and process state. 
@@ -61,13 +61,13 @@ Since the identity of the target container remains the same, the IAAS is able to
 Instead of Live Migration, in Live Cloning, we do not suspend operations of the source container, rather we allow the container to keep executing in both production and test locations.
 The more tricky aspect is that there are two containers with the same identities in the network and application domain. 
 This is important, as the operating system and the process may be configured with the IP Address, or other networking operation, which cannot be changed without leading to a crash of the system.
-Hence the same network identifier should map to two seperate addresses.
+Hence the same network identifier should map to two separate addresses.
 Clearly the same ipAddress, mac addresses cannot be kept for both the production and test-container as that would lead to conflict in the network. 
 There are two ways to resolve this : 
 (1) Host each container behind their own network namespaces, on the same host machine, and configure packet forwarding to both containers such that the duplicator can communicate to them. 
-Network namespaces(see internal mode, figure.\ref{fig:modesCloning}) is a definete possiblity, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
+Network namespaces(see internal mode, figure.\ref{fig:modesCloning}) is a definite possibility, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
 (2) Another approach is to host both containers in different machines with port forwarding setup to forward incoming TCP requests to containers behind a NAT (see external mode, figure.\ref{fig:modesCloning}). 
-This is slightly more scalable and has clear seperation of network and compute resources. 
+This is slightly more scalable and has clear separation of network and compute resources. 
 However, an obvious downside to this approach is that it needs a new VM to be allocated.
 This leads us to two different modes of implementation, which we discuss in the next section.
 %As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
@@ -103,8 +103,8 @@ As we can see in figure.\ref{fig:modesCloning} the production container P1 and t
 The duplicator is then able to communicate to both these containers with no networking conflict.
 
 \item \textit{External Mode}: In this mode we provision an extra VM as the host of our test-container (this VM can host more than one test-containers), 
-While this mechanism can have a higher overhead in terms of suspend time (~3 seconds, dependent on process state), and it will require provisioning an extra host-node, the advantage of this mechanism is that once cloned, the VM is totally seperate and will not effect the performance of the production-container.
-We believe that such a mode will be more benificial in comparison to the internal mode, as testing is likely to be transient, and it is often more important to not effect user experience\footnote{ \textit{Scaled Mode}: This can be viewed as a variant of the External Mode, where we can scale out test-containers to several testing containers which can be used to do statistical testing and distribute the instrumentation load to capture the overhead easier. This reduces the frequency with which the container needs to be synced. This is currently out of the scope of this paper, however we aim to show this in a future publication.}.
+While this mechanism can have a higher overhead in terms of suspend time (~3 seconds, dependent on process state), and it will require provisioning an extra host-node, the advantage of this mechanism is that once cloned, the VM is totally separate and will not effect the performance of the production-container.
+We believe that such a mode will be more beneficial in comparison to the internal mode, as testing is likely to be transient, and it is often more important to not effect user experience\footnote{ \textit{Scaled Mode}: This can be viewed as a variant of the External Mode, where we can scale out test-containers to several testing containers which can be used to do statistical testing and distribute the instrumentation load to capture the overhead easier. This reduces the frequency with which the container needs to be synced. This is currently out of the scope of this paper, however we aim to show this in a future publication.}.
 As we can see in figure.\ref{fig:modesCloning} the production container P1 and test container T1, are hosted on two different host machines, and are encapsulated behind a NAT\cite{nat} (network address translator), hence they each have their ip's in an internal network thereby avoiding any conflict.
 
 \end{itemize}
@@ -121,11 +121,12 @@ In our current implementation, we are using OpenVZ\cite{openvz} as our container
 We tested this out on multiple VM's acting as host nodes for OpenVZ containers. 
 To make the cloning easier and faster, we used OpenVZ's \textit{ploop} devices \cite{ploop} to host the containers. 
 \textit{Ploop} devices are a variant of disk loopback devices where the entire file system of the container is stored as a single file. 
-This makes features such as syncing, moving, snapshots, backups and easy seperation of inodes of each container file system.
+This makes features such as syncing, moving, snapshots, backups and easy separation of inodes of each container file system.
 
 The algorithm for live cloning is explained below: 
 
 \begin{algorithm}[ht]
+\begin{algorithmic}
    \caption{Algorithm for Live Cloning using OpenVZ 
    \label{algCloning}}
  \begin{enumerate}
@@ -137,6 +138,7 @@ The algorithm for live cloning is explained below:
    \item Set up port forwarding and packet duplication
    \item Starts the container on the destination 
   \end{enumerate}
+\end{algorithmic}
 \end{algorithm}
 
 Let us imaging we are cloning production container C1 on Host H1 as test container C2 on Host H2. 
@@ -163,10 +165,10 @@ This is nearly the same as that of native live migration\cite{openvzLiveMigratio
     \begin{tabular}{ | p{2.2cm} | l | l | l | l | l | l | l |}
     \hline
     \textbf{Iteration} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{Avg} \\ \hline
-    \textbf{Suspend + Dump} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
-    \textbf{Pcopy after suspend} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
-    \textbf{Copy Dump File} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
-    \textbf{Undump and Resume} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \textbf{Suspend + Dump} & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Pcopy after suspend} & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Copy Dump File} & 0.00 & 0.00 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
+    \textbf{Undump and Resume} & 0.00 & 0.00 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
 %    \textbf{--------------} & --- & --- & --- & --- & --- & --- & ---\\ \hline
     \textbf{Total Suspend Time} & 0.60 & 0.60 & 0.57 & 0.74 & 0.59 & 0.65\\ \hline
     \end{tabular}
@@ -178,77 +180,105 @@ This is nearly the same as that of native live migration\cite{openvzLiveMigratio
 \label{sec:proxyDuplicator}
 
 As described earlier an important aspect of live cloning is that we have two replicas which share the same identity. 
-While we do not have strong consistency requirements, in order for both containers to execute they must receive the same input.
+While we do not have strong consistency requirements for our production and test-container, in order for sandbox-testing to work, both containers must receive the same input.
 This can be achieved in multiple ways, the easiest would be a port-mirroring mechanism either using software provided tap devices or in hardware switches (several vendors provide mirroring options). 
 These are both pretty common, and are blackbox and do not require much configuration.
 However, such port mirroring solution gives us minimal control on the traffic going to our test container.
 The production and test-container may execute at varying speeds which will result in them being slightly out of sync.
-Additionally we need to accept responses from both servers and drop all the traffic coming from the test-container, while still mantaining an active connection with the client.
+Additionally we need to accept responses from both servers and drop all the traffic coming from the test-container, while still maintaining an active connection with the client.
 Hence a layer 2 level network solution is not possible as some context of the address and state are required
 
-We have implemented our duplicator in two modes: (1) at TCP level, (2) at application level.
-The TCP level duplicator is configured with the client facing ip address (hence it becomes  a a proxy), and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
+Network proxies can be created at different levels in the network stack, for our purposes we have created a TCP proxy which mirrors the incoming traffic.
+The TCP level duplicator is configured with the client facing ip address (hence it becomes a proxy), and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
+
+\iffalse
 
 \begin{figure}[t]
   \begin{center}
-    \includegraphics[width=0.4\textwidth]{figs/duplicator.eps}
+    \includegraphics[width=0.49\textwidth]{figs/duplicator.eps}
     \caption{Description of the Network Duplicator}
     \label{fig:duplicator}
   \end{center}
 \end{figure}
 
-The workflow of each component is as follows: Traffic from the client (Node 1 in figure \ref{fig:duplicator}) is forwarded to the Connection Manager(Node 2 in figure \ref{fig:duplicator}). 
+The workflow of each component is as follows: Traffic from the client (Node 1 in figure \ref{fig:duplicator}) is forwarded to the Connection Manager (Node 2 in figure \ref{fig:duplicator}). 
 The connection manager essentially is a socket reader which copies, parses the incoming traffic. 
 Based on the type of TCP request, a new connection is created or data is forwarded/received to/from the TCP Connector( Node 3, figure \ref{fig:duplicator}) which in turn creates a connection to actual production server.
-In this way the connection manager and TCP connector follow the TCP state machine hence mantaining network packet sanity while forwarding traffic to the production container.
+In this way the connection manager and TCP connector follow the TCP state machine hence maintaining network packet sanity while forwarding traffic to the production container.
 Simultaneously, the connection manager creates an internal copy of incoming traffic, and parses and sends it to the Buffer Manager (Node 5, figure \ref{fig:duplicator}).
-In a naive scenario the connection could be simply forwarded to the test-container, and the traffic would be managed by itself. 
+\fi
+
+In a naive scenario the connection could be simply forwarded to the test-container. 
 However, it is likely that the rate of traffic consumption by the test-container is less than the production container. 
-This gives us several startegies to design the duplication of traffic to the test container:
+This means that the buffer size of the proxy for the test-container, the incoming client traffic and the amount of workload running on the test container will define the time window for which the test container will remain ``in-sync'' with the production container.
+In this section we first discuss several strategies(we call modes) to design the duplication of traffic to the test container, and next we discuss briefly the ``testing window'' during which we believe that the test-container faithfully represents the execution of the production container. 
+
+\input{algorithm}
+
+\subsubsection{Duplication Modes}
+\label{sec:dupMode}
 
 \begin{enumerate}
 
-  \item \textbf{Synchronized}
+\item \textbf{Synchronized Packet Forwarding Mode}
 
-  A naive startegy is to send TCP requests to the production node, and then send it to the request node
+A naive strategy is to have a single worker thread to send and receive tcp stream to the production container as well as the test container.
+This is the simplest strategy and is quite robust as far as sending proxy data is concerned. 
+It especially works well with standard SOA architectures with small incoming packet flows, as it means that the delay caused in the test and production container would be minimal.
+However, a major disadvantage of this approach is that every connection received would finish a round trip connection with production container before sending the packets to the test-container.
+This would obviously delay all communication to the test-container by the amount of time it takes for the production container to respond. 
+However, more importantly it also effects the speed of the production container for every subsequent flow, since it will have to wait for the time taken to send the packets to the test container.
+We assume a worker thread model for our proxy, where each connection is managed separately by one worker thread, since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
 
-  \item \textbf{Asynchronous}
+  \item \textbf{Asynchronous Packet Forwarding Model}
 
-Launch two threads on accepting each TCP request. For each session of TCP requests, two threads manage sending and receiving  to the production and test-container
+In this strategy we have two worker threads which simultaneously handle sending and receiving tcp streams for the production container as well as the test container.
+Whenever any event happens the connection is established, and the incoming message is read to a buffer, this buffer is then sent to a worker thread for forwarding the data to the production container, and another thread for forwarding the data to the test container. 
+This means that unlike our previous model, the processing time of either the production container or the test container will not effect the performance of the other.
+We have a slightly modified worker thread model, in which each incoming connection is managed by two worker threads one for communication with the production and the other for the test.
 
-  \item \textbf{Synchronized Partial Order Multi-Threaded Queue}
-
-Launch two threads, track slowdown of the duplication thread.
-
-  \item \textbf{Multi-Duplication}
-
-Launch multiple duplication threads
+  \item \textbf{Asynchronous Load Balanced Packet Forwarding Model}
+It is still possible that there will be slowdown, and a short packet window because of the overhead of running test-cases in the test container. 
+This would mean that the test container will have a short time-window before which it needs to be synced.
+To further increase this time window, we try and load balance testing across multiple test-containers, which can each get a duplicate copy of the incoming data. 
+This would mean that there are multiple threads handling the incoming connection, one for the production container, and one for each of the test containers.
+We believe that such a strategy would significantly increase the testing window size especially if the testing load is heavy.
 
 \end{enumerate}
 
+The algorithm for each of the packet forwarding modes has been described in Algorithm.\ref{algoDuplication}. 
+As an added explanation, the only difference between communication with the production container v/s the test container is that the when the proxy receives the message back from the production container, it sends the stream back to the client, on the other hand for the test container the packets are simply received and then dropped.
+
+
+\iffalse
 Since the speed of input from the client is not in sync production-container, we need to buffer incoming traffic and relay it to the the TCP Connector(Node 6, figure \ref{fig:duplicator}) as soon as the test-container is ready for new traffic. 
-Since parallel connections can be initiated by the client on the same TCP port, the BufferManager creates multiple buffers for each connection, and initiates new connections by following the same causal flow of the packets received from the client. 
-Unlike record-replay systems \textit{Parikshan} does not claim to have strong consistency requirements, and does not need to exactly follow the production container as the goal is not reproduce all non-determinism in the production environment, but instead capture input non-determinism, and complete system state from a given point of time.
+Since parallel connections can be initiated by the client on the same TCP port, the Buffer-Manager creates multiple buffers for each connection, and initiates new connections by following the same causal flow of the packets received from the client. 
+Unlike record-replay systems \textit{Parisian} does not claim to have strong consistency requirements, and does not need to exactly follow the production container as the goal is not reproduce all non-determinism in the production environment, but instead capture input non-determinism, and complete system state from a given point of time.
 We discuss consistency requirements further in section \ref{sec:consistency}
+\fi
+\subsubsection{Testing Window}
+\label{sec:testingWindow}
 
-\subsubsection{Time Delay and Buffer Management}
-\label{sec:TimeManagement}
-
+At the time of the live cloning, the testing container has an identical status and receives the same input as the production container. 
+Hence, any test-cases run in the testing container, should faithfully represent the status of the production container.
+However, an obvious down-side to any testing is that it will have an overhead on the performance of the container as compared to the production environment.
 %It is possible that in heavy load conditions the buffers in the Buffer Manager may overflow. 
 %Depending on the use-case the BufferManager can then trigger the CloneManager, which closes the analysis time-window and launches a fresh clone.
-Incoming traffic may potentially have a cumulative effect which will eventually lead to a buffer overflow in the BufferManager, hence leading to packet drops. 
-This behavior is similar to packet dropping in classical TCP buffers, which rely on retransmission of incoming packets from the client.
-However in our case if packets are dropped the client cannot retransmit them as it not in sync with the test container.
+Incoming traffic may potentially have a cumulative effect which will eventually lead to a buffer overflow in the BufferManager, hence leading to packet drops, and eventually leading to a modified state in the testing container, which can no longer faithfully represent the production container.
+We call the time period in which the test-container faithfully represents the production container as the testing-window of the test container. 
+This behavior is similar to packet dropping in classical TCP buffers, which rely on re-transmission of incoming packets from the client.
+However in our case if packets are dropped the client cannot re-transmit them as it not in sync with the test container.
 Hence in some cases \textit{Parikshan} analysis, has to be restricted to a time-window dependent on the load of incoming traffic and the slowdown experienced by the test-container.
 
 %Let the rate of incoming traffic be \lambda
 
+\iffalse
 \subsection{Network State Model}
 \label{sec:networkStateModel}
 
 Network communication in most applications consists of two core types of protocols: UDP \& TCP.
 The UDP(User Datagram Protocol) allows the applications to send messages(referred to as datagrams) to other hosts in the network without prior communications to set up any transmission channels.
-UDP uses a simple communication mechanism while minimizing protocls. 
+UDP uses a simple communication mechanism while minimizing protocols. 
 It has no handshaking dialogues or acknowledgement of package delivery. It is broadly used for network traffic where speed is much more important than reliability (viz. network streaming applications like video etc.)
 On the other hand TCP(Transmission Control Protocol) is a reliable error checked delivery stream.
 It involves initially establishing the connection, and allowing for packet re-delivery or re-ordering to allow for reliable and dependable connection. 
@@ -257,3 +287,4 @@ While TCP is slower than UDP it is preferred for most normal connections between
 Since the UDP protocol has no error management mechanism, it automatically follows that machine state in a UDP connection is not important.
 Hence in our design the duplicator can easily flood packets to the cloned UDP server by simply sending packets to the targeted host and port. 
 Our solution for this is 
+\fi

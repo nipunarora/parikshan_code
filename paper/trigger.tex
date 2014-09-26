@@ -1,9 +1,15 @@
 \section{Triggering and Inserting Analysis}
 \label{sec:trigger}
 
+The key idea behind sandbox testing is to ofcourse insert test-cases 
 Once we have forked off a clone, we are now ready to do some deeper analysis. 
 %By design, \textit{Parikshan} can allow a variety of test cases. 
 We divide such analysis in two parts based on the time window required for analysis: (1).Statistical
+
+\subsection{Inserting Probes \& TestCases}
+\label{sec:unitTests}
+
+Inserting probes in the sandbox can be done using existing dynamic instrumentation
 
 \subsection{Statistical Analysis}
 \label{sec:statisticalTests}
@@ -15,5 +21,3 @@ However, they impose a heavy penalty in terms of performance.
 Such tools can be easily used in \textit{Parikshan}, without effecting system performance.
 However, there are a few challanges with such statistics which need a longer window to run.
 
-\subsection{Inserting Probes \& TestCases}
-\label{sec:unitTests}
