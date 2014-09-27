@@ -1,5 +1,6 @@
 #!/bin/bash
-
+modprobe vzrst
+modprobe vzcpt
 modprobe ip6table_filter
 modprobe ip6table_mangle
 modprobe ip6_tables
