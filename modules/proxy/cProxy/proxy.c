@@ -245,7 +245,7 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	//if duplication is chosen either synch or asynch must be specified
 	if(synch||asynch){
 		if((duplicate_destination_sock = create_dup_connection()) < 0){
-			perror("Could not connec to to duplicate host");
+			perror("Could not connect to to duplicate host");
 			return;
 		}	
 	}
@@ -256,7 +256,7 @@ Create a fork to forward data from client to remote host
   if (fork() == 0) { // a process forwarding data from client to remote socket
   	if (opt_out) 
   	{
-		//forward_data_ext(client_sock, remote_sock, cmd_out);
+		//f-orward_data_ext(client_sock, remote_sock, cmd_out);
   	} 
   	else 
   	{
@@ -378,11 +378,13 @@ int create_dup_connection() {
 	int sock;
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("Client socket error");
 		return CLIENT_SOCKET_ERROR;
 	}
 	//usage duplicate host
 	if ((server = gethostbyname(duplicate_host)) == NULL) {
 		errno = EFAULT;
+		printf("Client resolve error");
 		return CLIENT_RESOLVE_ERROR;
 	}
 
@@ -393,6 +395,7 @@ int create_dup_connection() {
 	server_addr.sin_port = htons(duplicate_port);
 
 	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+		printf("Client connect error");
 		return CLIENT_CONNECT_ERROR;
 	}
 
