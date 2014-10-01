@@ -373,6 +373,7 @@ void forward_data_synch(int source_sock, int destination_sock, int duplicate_des
 
 /* Create connection to duplicate host*/
 int create_dup_connection() {
+	
 	struct sockaddr_in server_addr;
 	struct hostent *server;
 	int sock;
@@ -382,6 +383,7 @@ int create_dup_connection() {
 		return CLIENT_SOCKET_ERROR;
 	}
 	//usage duplicate host
+	printf("Host %s \n", duplicate_host);
 	if ((server = gethostbyname(duplicate_host)) == NULL) {
 		errno = EFAULT;
 		printf("Client resolve error");
@@ -393,6 +395,7 @@ int create_dup_connection() {
 	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
 	//usage duplicate_port
 	server_addr.sin_port = htons(duplicate_port);
+	printf("Port ID %d \n", duplicate_port);
 
 	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
 		printf("Client connect error");
