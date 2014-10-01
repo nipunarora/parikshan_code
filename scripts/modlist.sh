@@ -17,3 +17,8 @@ modprobe nf_defrag_ipv4
 modprobe nf_defrag_ipv6 
 modprobe nf_nat  
 modprobe xt_multiport
+modprobe vzrst
+modprobe vzcpt
+service iptables stop
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o $1 -j MASQUERADE
