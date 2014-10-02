@@ -481,7 +481,8 @@ void forward_data_asynch(int source_sock, int destination_sock) {
   while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
   	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
-    	send(pfds[1],buffer,n,0);//send data to pipe
+	write(pfds[1],buffer,n);//send data to pipe
+	DEBUG_PRINT("Data sent to pipe %s \n", buffer);
 	}
 
   shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
@@ -498,9 +499,9 @@ void forward_data_pipe(int destination_sock) {
 	int n;
 
   //put in error condition for -1, currently the socket is shutdown
-  while ((n = recv(pfds[0], buffer, BUF_SIZE, 0)) > 0)// read data from pipe socket 
+  while ((n = read(pfds[0], buffer, BUF_SIZE)) > 0)// read data from pipe socket 
   	{ 
-  		DEBUG_PRINT("Data received in pipe %s \n", buffer);
+	DEBUG_PRINT("Data received in pipe %s \n", buffer);
     	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
