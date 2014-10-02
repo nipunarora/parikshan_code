@@ -45,10 +45,14 @@
  void handle_client(int client_sock, struct sockaddr_in client_addr);
  void forward_data(int source_sock, int destination_sock);
  //void forward_data_ext(int source_sock, int destination_sock, char *cmd);
+ void forward_data_asynch(int source_sock, int destination_sock);
  void forward_data_synch(int source_sock, int destination_sock, int duplicate_destination_sock);
  void receive_data_synch(int source_sock, int destination_sock, int duplicate_destination_sock);
+ void receive_data_asynch(int source_sock);
+ void forward_data_pipe(int destination_sock);
  int parse_options(int argc, char *argv[]);
 
+ int pfds[2];
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
  char *remote_host, *duplicate_host, *cmd_in, *cmd_out;
  bool opt_in = FALSE, opt_out = FALSE, asynch = FALSE, synch = FALSE;
@@ -175,13 +179,11 @@ int create_socket(int port) {
 	int server_sock, optval;
 	struct sockaddr_in server_addr;
 
-	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-	{
+	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		return SERVER_SOCKET_ERROR;
 	}
 
-	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) 
-	{
+	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
 		return SERVER_SETSOCKOPT_ERROR;
 	}
 
@@ -244,51 +246,142 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	
 	//if duplication is chosen either synch or asynch must be specified
 	if(synch||asynch){
-		if((duplicate_destination_sock = create_dup_connection()) < 0){
+		if((duplicate_destination_sock = create_dup_connection_synch()) < 0){
 			perror("Could not connect to to duplicate host");
 			return;
 		}	
 	}
 
+	if(asynch){
+		if(pipe(pfds)<0){
+			perror("pipe ");
+			exit(1);
+		}
+	}
+
+
+
 /**
-Create a fork to forward data from client to remote host
+T1: Create a fork to forward data from client to remote host
 */		
-  if (fork() == 0) { // a process forwarding data from client to remote socket
-  	if (opt_out) 
-  	{
-		//f-orward_data_ext(client_sock, remote_sock, cmd_out);
-  	} 
-  	else 
-  	{
-  		if(!synch && !asynch)
-	  		forward_data(client_sock, remote_sock);
-	  	if(synch){
-	  		forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
-	  	}
-  	}
-  	exit(0);
-  }
-/**
-Create a fork to forward data from remote host to client
-*/
   if (fork() == 0) 
-  { // a process forwarding data from remote socket to client
-  	if (opt_in) 
-  	{
-  		//forward_data_ext(remote_sock, client_sock, cmd_in);
-  	} 
-  	else 
-  	{
-		if(!synch && !asynch)
-			forward_data(remote_sock, client_sock);
-		if(synch)
-			receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
+  { 
+  	if(!synch && !asynch)
+  		//write to remote socket
+  		forward_data(client_sock, remote_sock);
+  	if(synch){
+  		//write to remote socket and duplicate socket
+  		forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
   	}
+  	if(asynch){
+  		//write to remote socket and pipe
+  		forward_data_asynch(client_sock,remote_sock);
+  	}
+  
   	exit(0);
   }
 
+/**
+T2: Create a fork to forward data from remote host to client
+*/
+  if (fork() == 0) 
+  { 
+	if(!synch)
+		forward_data(remote_sock, client_sock);
+	if(synch)
+		receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
+  	
+  	exit(0);
+  }
+
+  if(asynch){
+  /**
+  T3: Create a fork to forward data asynchrounously to duplicate
+  */	  
+	  if(fork() == 0){
+	  	forward_data_pipe(duplicate_destination_sock);
+	  	exit(0);		
+	  }
+ /**
+  T4: Create a fork to forward data asynchrounously to duplicate
+  */
+	  if(fork() == 0){
+	 	receive_data_asynch(duplicate_destination_sock); 	
+	  	exit(0);
+	  }
+  }
+
+  /*
+  Close all socket opened in this handle
+  */
   close(remote_sock);
   close(client_sock);
+  close(duplicate_destination_sock);
+}
+
+/* Create connection to duplicate host*/
+int create_dup_connection_synch() {
+	
+	struct sockaddr_in server_addr;
+	struct hostent *server;
+	int sock;
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("Client socket error");
+		return CLIENT_SOCKET_ERROR;
+	}
+	//usage duplicate host
+	//printf("Host %s \n", duplicate_host);
+
+	if ((server = gethostbyname(duplicate_host)) == NULL) {
+		errno = EFAULT;
+		printf("Client resolve error");
+		return CLIENT_RESOLVE_ERROR;
+	}
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+	//usage duplicate_port
+	server_addr.sin_port = htons(duplicate_port);
+	
+	//printf("Port ID %d \n", duplicate_port);
+
+	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+		printf("Client connect error");
+		return CLIENT_CONNECT_ERROR;
+	}
+
+	return sock;
+}
+
+/* Create client connection */
+int create_connection() {
+	struct sockaddr_in server_addr;
+	struct hostent *server;
+	int sock;
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		return CLIENT_SOCKET_ERROR;
+	}
+	//usage production host
+	if ((server = gethostbyname(remote_host)) == NULL) {
+		errno = EFAULT;
+		return CLIENT_RESOLVE_ERROR;
+	}
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+	
+	//usage production port
+	server_addr.sin_port = htons(remote_port);
+
+	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+		return CLIENT_CONNECT_ERROR;
+	}
+
+	return sock;
 }
 
 /* Forward data between sockets */
@@ -297,8 +390,8 @@ void forward_data(int source_sock, int destination_sock) {
 	int n;
 
   //put in error condition for -1, currently the socket is shutdown
-  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) 
-  	{ // read data from input socket
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
+  	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
@@ -371,65 +464,47 @@ void forward_data_synch(int source_sock, int destination_sock, int duplicate_des
   	close(source_sock);
 }
 
-/* Create connection to duplicate host*/
-int create_dup_connection() {
-	
-	struct sockaddr_in server_addr;
-	struct hostent *server;
-	int sock;
+/* Forward data between sockets */
+void forward_data_asynch(int source_sock, int destination_sock) {
+	char buffer[BUF_SIZE];
+	int n;
 
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		printf("Client socket error");
-		return CLIENT_SOCKET_ERROR;
-	}
-	//usage duplicate host
-	printf("Host %s \n", duplicate_host);
-	if ((server = gethostbyname(duplicate_host)) == NULL) {
-		errno = EFAULT;
-		printf("Client resolve error");
-		return CLIENT_RESOLVE_ERROR;
+  //put in error condition for -1, currently the socket is shutdown
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
+  	{ 
+    	send(destination_sock, buffer, n, 0); // send data to output socket
+    	send(pfds[1],buffer,n,0);//send data to pipe
 	}
 
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-	//usage duplicate_port
-	server_addr.sin_port = htons(duplicate_port);
-	printf("Port ID %d \n", duplicate_port);
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
+  close(destination_sock);
 
-	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		printf("Client connect error");
-		return CLIENT_CONNECT_ERROR;
-	}
-
-	return sock;
+  shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
+  close(source_sock);
 }
 
-/* Create client connection */
-int create_connection() {
-	struct sockaddr_in server_addr;
-	struct hostent *server;
-	int sock;
+/* Forward data from pipe to duplicate */
+void forward_data_pipe(int destination_sock) {
 
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		return CLIENT_SOCKET_ERROR;
-	}
-	//usage production host
-	if ((server = gethostbyname(remote_host)) == NULL) {
-		errno = EFAULT;
-		return CLIENT_RESOLVE_ERROR;
+	char buffer[BUF_SIZE];
+	int n;
+
+  //put in error condition for -1, currently the socket is shutdown
+  while ((n = recv(pfds[0], buffer, BUF_SIZE, 0)) > 0)// read data from pipe socket 
+  	{ 
+    	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-	
-	//usage production port
-	server_addr.sin_port = htons(remote_port);
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
+  close(destination_sock);
+}
 
-	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		return CLIENT_CONNECT_ERROR;
-	}
+void receive_data_asynch(int source_sock){
+	char buffer[BUF_SIZE];
+	int n;
 
-	return sock;
+ 	while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) // read data from input socket
+
+	shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
+  	close(source_sock);
 }
