@@ -21,6 +21,14 @@
 #include <unistd.h>
 #include <wait.h>
 
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
+#else
+#define DEBUG_PRINT(fmt, args...)    /* Don't do anything in release builds */
+#endif
+
 #define BUF_SIZE 1024
 
 #define READ  0
@@ -68,7 +76,7 @@
 
  	if (local_port < 0) 
  	{
- 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port [-i \"input parser\"] [-o \"output parser\"]\n", argv[0]);
+ 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) \n", argv[0]);
  		return 0;
  	}
 
@@ -105,59 +113,59 @@
 /* Parse command line options */
 int parse_options(int argc, char *argv[]) 
 {
+	
 	int c, local_port;
 	l = h = p = x = d = FALSE;
 
-	while ((c = getopt(argc, argv, "l:h:p:x:d:i:o:as")) != -1) 
+	while ((c = getopt(argc, argv, "l:h:p:x:d:as")) != -1) 
 	{
 		switch(c) 
 		{
 			case 'l':
 			local_port = atoi(optarg);
 			l = TRUE;
+			DEBUG_PRINT("local_port =  %d ", local_port);
 			break;
 
 			case 'h':
 			remote_host = optarg;
 			h = TRUE;
+			DEBUG_PRINT("remote_host =  %s ", remote_host);
 			break;
 	
 			case 'p':
 			remote_port = atoi(optarg);
 			p = TRUE;
+			DEBUG_PRINT("production_port =  %d ", remote_port);			
 			break;
 	
 			case 'x':
 			duplicate_host = optarg;
 			x = TRUE;
+			DEBUG_PRINT("duplicate_host =  %s ", duplicate_host);
 			break;
 	
 			case 'd':
 			duplicate_port = atoi(optarg);
 			d = TRUE;
-			break;
-	
-			case 'i':
-			opt_in = TRUE;
-			cmd_in = optarg;
-			break;
-
-			case 'o':
-			opt_out = TRUE;
-			cmd_out = optarg;
+			DEBUG_PRINT("duplicate_port =  %d ", duplicate_port);
 			break;
 
 			case 'a':
 			a = TRUE;
 			asynch = TRUE;
+			DEBUG_PRINT("asynchrounous mode ");
 			break;
 
 			case 's':
 			s = TRUE;
 			synch = TRUE;
+			DEBUG_PRINT("synchrounous mode ");
 			break;
 		}
 	}
+
+	DEBUG_PRINT("\n");
 
 	//if asynch or synch are not specified only local port, remote host, and remote port are required
 	// if either asynch or synch are specified both the duplicate port, and duplicate host must also be specified
@@ -492,6 +500,7 @@ void forward_data_pipe(int destination_sock) {
   //put in error condition for -1, currently the socket is shutdown
   while ((n = recv(pfds[0], buffer, BUF_SIZE, 0)) > 0)// read data from pipe socket 
   	{ 
+  		DEBUG_PRINT("Data received in pipe %s \n", buffer);
     	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
