@@ -20,6 +20,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <wait.h>
+#include <fcntl.h>
 
 #define DEBUG
 
@@ -61,10 +62,11 @@
  int parse_options(int argc, char *argv[]);
 
  int pfds[2];
+ int buffer_size;
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
  char *remote_host, *duplicate_host, *cmd_in, *cmd_out;
  bool opt_in = FALSE, opt_out = FALSE, asynch = FALSE, synch = FALSE;
- bool l, h, p, x, d, a, s = FALSE;
+ bool l, h, p, x, d, a, s, b = FALSE;
 
 /* Program start */
  int main(int argc, char *argv[]) 
@@ -76,7 +78,7 @@
 
  	if (local_port < 0) 
  	{
- 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) \n", argv[0]);
+ 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) -b buffer_size \n", argv[0]);
  		return 0;
  	}
 
@@ -117,7 +119,7 @@ int parse_options(int argc, char *argv[])
 	int c, local_port;
 	l = h = p = x = d = FALSE;
 
-	while ((c = getopt(argc, argv, "l:h:p:x:d:as")) != -1) 
+	while ((c = getopt(argc, argv, "l:h:p:x:d:b:as")) != -1) 
 	{
 		switch(c) 
 		{
@@ -162,6 +164,13 @@ int parse_options(int argc, char *argv[])
 			synch = TRUE;
 			DEBUG_PRINT("synchrounous mode ");
 			break;
+
+			case 'b':
+			b = TRUE;
+			buffer_size = atoi(optarg);
+			DEBUG_PRINT("buffer_size = %d ", buffer_size);
+			break;
+
 		}
 	}
 
@@ -221,6 +230,7 @@ void sigterm_handler(int signal)
 {
 	close(client_sock);
 	close(server_sock);
+	close(duplicate_destination_sock);
 	exit(0);
 }
 
@@ -265,6 +275,9 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 			perror("pipe ");
 			exit(1);
 		}
+
+		setNonblocking(pfds[1]);
+		//setBufferSize(pfds[1],buffer_size);
 	}
 
 
@@ -307,11 +320,12 @@ T2: Create a fork to forward data from remote host to client
   T3: Create a fork to forward data asynchrounously to duplicate
   */	  
 	  if(fork() == 0){
+	  	sleep(10);
 	  	forward_data_pipe(duplicate_destination_sock);
 	  	exit(0);		
 	  }
  /**
-  T4: Create a fork to forward data asynchrounously to duplicate
+  T4: Create a fork to read data asynchrounously to duplicate
   */
 	  if(fork() == 0){
 	 	receive_data_asynch(duplicate_destination_sock); 	
@@ -325,6 +339,7 @@ T2: Create a fork to forward data from remote host to client
   close(remote_sock);
   close(client_sock);
   close(duplicate_destination_sock);
+
 }
 
 /* Create connection to duplicate host*/
@@ -481,8 +496,11 @@ void forward_data_asynch(int source_sock, int destination_sock) {
   while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
   	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
-	write(pfds[1],buffer,n);//send data to pipe
-	DEBUG_PRINT("Data sent to pipe %s \n", buffer);
+		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
+		{
+			perror("Error in writing to pipe");
+		}
+		DEBUG_PRINT("Data sent to pipe %s \n", buffer);
 	}
 
   shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
@@ -518,3 +536,34 @@ void receive_data_asynch(int source_sock){
 	shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
   	close(source_sock);
 }
+
+/**
+Make file descriptor non blocking
+*/
+int setNonblocking(int fd)
+{
+    int flags;
+
+    /* If they have O_NONBLOCK, use the Posix way to do it */
+#if defined(O_NONBLOCK)
+    /* Fixme: O_NONBLOCK is defined but broken on SunOS 4.1.x and AIX 3.2.5. */
+    if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
+        flags = 0;
+    return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+#else
+    /* Otherwise, use the old way of doing it */
+    flags = 1;
+    return ioctl(fd, FIOBIO, &flags);
+#endif
+}     
+
+/**
+set buffer size to given value
+*/
+/*
+int setBufferSize(int fd, int buffer){
+	if(fcntl(fd, F_SETPIPE_SZ, buffer)<0){
+		perror("Error in setting pipe size");
+	}
+}
+*/
