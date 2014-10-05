@@ -6,6 +6,15 @@
 *.pdf
 *.ps
 *.rel
+*.o
 *.~
 #*
 *#
+modules/ntools-1.5/src/nclient
+modules/ntools-1.5/src/nemu
+modules/ntools-1.5/src/nemud
+modules/ntools-1.5/src/ngen
+modules/ntools-1.5/src/nrecv
+modules/ntools-1.5/src/nserver
+modules/proxy/cProxy/temp
+modules/proxy/cProxy/temp.c
