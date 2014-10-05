@@ -1,0 +1,398 @@
+.\" Man page for ngen
+.\"
+.\" Copyright (C) 2008, Norbert Vegh
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License Verson 2, or any later version at your option.
+.\"
+.\" Norbert Vegh
+.\" ntools@norvegh.com
+.\"
+.TH ngen 1 "April 20, 2010" "1.5"
+
+.SH NAME
+.BR "ngen " "- the UDP/TCP generator program of ntools"
+
+.SH SYNOPSIS
+.BR "ngen -if " "interface " "-proto udp" "|" "tcp -dstip" " dstip " "-rate" " rate "
+.BR  "-dstport" " dstport [" "-size" " size] [" "-srcip" " srcip] [" "-srcport" " srcport]"
+.RB " [" "-tos" " tos] [" "-prec" " prec]"
+.PP
+.BR "ngen -f" " file"
+
+.SH DESCRIPTION
+.B ngen
+is the UDP/TCP generator program of
+.BR ntools ". It can generate traffic on arbitrary number of UDP/TCP streams."
+Currently three packet generation profile (distribution) are supported:
+.IP - 3
+.PD 0
+Fix: fixed frame size and rate
+.IP - 3
+On-Off: two states with different frame sizes, rates,
+and durations
+.IP - 3
+Poisson: fixed frame size, exponential inter-packet time
+.IP - 3
+.PD
+TCP: packet generation is controlled by the TCP protocol stack (only for TCP streams)
+.PP
+Frame sizes and rates are specified on layer 2. It means that they include the
+Ethernet overhead.
+.PP
+On the command line only one stream can be configured with fix distribution.
+.PP
+The program places sequence number and timestamp into the packets, so that
+.BR nrecv " can calculate loss and delay.
+.PP
+.B MULTICAST
+.PP
+Multicast traffic is supported with UDP streams. A multicast route must be configured in advance.
+Otherwise just a multicast destination address must be configured for this feature.
+.PP
+.B Sending VLAN traffic
+.PP
+There are two options for generating VLAN traffic. First, a regular VLAN interface can be configured with
+.RB "the standard " "vconfig " "command, and that interface can be used with the " "-if " "option."
+.RB "The other solution is to use the low-level mode, see section " "LOW-LEVEL MODE" "."
+.PP
+.B Support for real-time Linux
+.PP
+.BR "ngen " "supports the CONFIG_PREEMPT_RT kernel patch for precisely timing packet sending."
+.RB "Without this patch " "ngen " "has to use active waiting to time packet sending,"
+which will result in constant 100% CPU usage.
+Upon startup the program checks whether the kernel has the RT support and use it if available.
+.PP
+For more information about the RT patch visit the following link:
+.br
+https://rt.wiki.kernel.org/index.php/Main_Page
+
+.SH OPTIONS
+.TP
+.BR \-f " file"
+The config file. No other options can be specified if a config file is used.
+.TP
+.BR "\-if " "interface"
+The sending interface.
+.TP
+.BR "\-proto udp|tcp"
+The protocol can be either UDP or TCP.
+.TP
+.BR \-dstip " dstip"
+The destination IP address.
+.TP
+.BR \-rate " rate"
+The L2 (Ethernet-level) bitrate. It is a number and an optional postfix of 'k' or 'M'
+for kbps and Mbps respectively.
+.TP
+.BR \-size " size"
+The frame size in bytes. The default is 1518. Jumbo frames are allowed up to 9018 bytes.
+.TP
+.BR \-srcip " srcip"
+The source IP address. The default is the address of the sending interface.
+.TP
+.BR \-srcport " srcport"
+The source port. The default is 8888.
+.TP
+.BR \-dstport " dstport"
+The destination port.
+.TP
+.BR \-prec " precedence"
+The IP precedence value. Its valid range is 0..7.
+.TP
+.BR \-tos " tos"
+The IP Type of Service value. Its valid range is 0..255.
+Note that for TCP streams the last 2 bits will be cleared by the kernel.
+
+.SH "CONFIG FILE"
+The config file contains any number of stream specifications in the
+following format. (The maximum number of streams is defined in
+.BR defs.h ", its default value is 100.)"
+.IP "" 3
+.PD 0
+.B add
+.IP
+.B {
+.IP "" 6
+.PD 0
+.IP
+.BR "if " "interface"
+.IP
+.BR "proto udp" "|" "tcp"
+.BR "srcip " "<srcip-spec>"
+.IP
+.BR "dstip " "<dstip-spec>"
+.IP
+.BR "dstmac " "mac"
+.IP
+.BR "vlan " "vlan"
+.IP
+.BR "pbits " "pbits"
+.IP
+.BR "tos" "|" "prec " "tos|prec"
+.IP
+.BR "srcport " "<srcport-spec>"
+.IP
+.BR "dstport " "<dstport-spec>"
+.IP
+.BR "distrib " "<distrib-spec>"
+.IP "" 3
+.PD
+.B }
+.PP
+Anything after a hashmark (#) on a line is treated as comment, and ignored.
+.PP
+.B IP AND PORT SPECS
+.PP
+The
+.BR srcip-spec " and " dstip-spec " can be a simple IP address, or an address range"
+in the following format:
+.IP "" 3
+.PD 0
+.B range
+.IP
+.B {
+.IP "" 6
+.PD 0
+.BR "first " "first"
+.IP
+.BR "inc " "inc"
+.IP
+.BR "num " "num"
+.IP "" 3
+.PD
+.B }
+.PP
+.BR first " is the first IP address in the range."
+.BR inc " is also in IP address notation. The range is created by adding
+.BR inc " successively to the " first " ip address. The range contains"
+.BR num " number of addresses."
+.PP
+The
+.BR srcport-spec " and " dstport-spec " can be a simple port number, or a port range."
+It has exactly the same format as an address range, expect that here
+.BR first " and " inc " are simple numbers."
+.PP
+If an address/port range is specified, then the successive packets are sent with
+the successive address/port from the range. At the end of the range, the first
+value is taken.
+.PP
+Ranges are not supported for TCP streams.
+.PP
+.B DISTRIB SPECS
+.PP
+There are different
+.BR distrib-spec " formats for each distribution.
+.PP
+Fix:
+.IP "" 3
+.PD 0
+.B fix
+.IP
+.B {
+.IP "" 6
+.PD 0
+.BR "rate " "rate"
+.IP
+.BR "size " "size"
+.IP "" 3
+.PD
+.B }
+.PP
+.BR rate " is the L2 (Ethernet-level) bitrate. It is a number and an optional postfix of 'k' or 'M'
+for kbps and Mbps respectively.
+.BR size " is the packet size in bytes."
+.PP
+On-off:
+.IP "" 3
+.PD 0
+.B on-off
+.IP
+.B {
+.IP "" 6
+.PD 0
+.BR "rate1 " "rate1"
+.IP
+.BR "rate2 " "rate2"
+.IP
+.BR "time1 " "time1"
+.IP
+.BR "time2 " "time2"
+.IP
+.BR "size1 " "size1"
+.IP
+.BR "size2 " "size2"
+.IP "" 3
+.PD
+.B }
+.PP
+The on-off distribution has two sets of parameters for the two states.
+The rate and size parameters are the same as described above. The time
+parameters specify the duration of the states in second.
+Its format is a number and an optional 'm' or 'u' postfix for ms and us
+respectively.
+.PP
+Poisson:
+.IP "" 3
+.PD 0
+.B poisson
+.IP
+.B {
+.IP "" 6
+.PD 0
+.BR "size " "size"
+.IP
+.BR "avgint " "avgint"
+.IP "" 3
+.PD
+.B }
+.PP
+.BR avgint " is the average inter-packet time of the poisson distribution in seconds."
+Its format is a number and an optional 'm' or 'u' postfix for ms and us
+respectively.
+.PP
+TCP:
+.IP "" 3
+.PD 0
+.B tcp
+.PD
+.PP
+There are no further parameters for this distribution.
+.PP
+.B LOW-LEVEL MODE
+.PP
+.RB "If the " "dstmac " "parameter is defined, it enables the low-level mode for the stream."
+This mode is useful if you want to by-pass the normal routing process.
+You need this mode if you want to generate VLAN traffic without
+.RB "actually creating the VLAN sub-interfaces. If you want to set the " "vlan " "parameter for"
+.RB "the stream, then you have to use this mode, and also specify the " "dstmac " "parameter."
+.RB "You can also set the p-bits in the VLAN header with the " "pbits " "parameter."
+.br
+You can also use this mode if you want to send traffic between interfaces on the same machine
+.RB "through an external device under test. In that case you have to set the " "dstmac " "parameter to"
+.RB "the MAC address of the receiving interface. You must also specify the " "srcip " "parameter,"
+and it cannot be any address on the PC, otherwise the packets will be discarded at the receiver side.
+.PP
+.B RESTRICTIONS
+.PP
+Only UDP streams can have
+.BR "srcip, dstmac, vlan, pbits " "parameters. The"
+.BR "if, proto, dstip " "and " "dstport " "parameters are mandatory. For udp streams if"
+.BR srcip " is not defined, it is set to the address of the sending interface."
+
+.SH "NOTES"
+You must be root to generate UDP streams.
+.PP
+For TCP streams the program tries to send out the packets with the specified
+rate, but since it uses a normal TCP socket, the sending rate depends on the
+network condition, and may be much lower then the configured value.
+.PP
+For delay measurements the clock of the machines running
+.BR "ngen " "and " "nrecv " "must be synchronized. An other way is to"
+run both program on the same machine, and use the
+.BR low-level " mode."
+.PP
+.RB "It is important that you understand that without the RT patch " "ngen"
+uses active waiting for timing the packet sending.
+.RB "It means that when you start " "ngen" ", the CPU usage goes up to 100%."
+
+.SH "EXAMPLES"
+To generate a 10 Mbps UDP stream to PC 10.0.0.5 port 8000:
+.IP "" 3
+ngen -if eth0 -proto udp -dstip 10.0.0.5 -dstport 8000 -rate 10M
+.PP
+A config file with two stream, on the second stream we send to 10 different addresses of
+10.0.50.10, 10.0.50.12 ... 10.0.50.28:
+.IP "" 3
+.PD 0
+add
+.IP
+{
+.IP "" 6
+.PD 0
+id stream_1
+.IP
+if eth0
+.IP
+proto udp
+.IP
+dstip 10.0.0.5
+.IP
+dstport 8000
+.IP
+distrib fix
+.IP
+{
+.IP "" 9
+.PD 0
+size 500
+.IP
+rate 500k
+.IP "" 6
+.PD 0
+}
+.IP "" 3
+.PD 0
+}
+.IP
+.br
+.IP
+{
+.IP "" 6
+.PD 0
+id stream_2
+.IP
+if eth0
+.IP
+proto udp
+.IP
+dstip range
+.IP
+{
+.IP "" 9
+.PD 0
+first 10.0.0.10
+.IP
+inc 0.0.0.2
+.IP
+num 10
+.IP "" 6
+.PD 0
+}
+.IP
+dstport 9000
+.IP
+distrib poisson
+.IP
+{
+.IP "" 9
+.PD 0
+size 1500
+.IP
+avgint 1m
+.IP "" 6
+.PD 0
+}
+.IP
+.IP "" 3
+.PD
+}
+
+.SH "SEE ALSO"
+.B ntools(1), nrecv(1).
+
+.SH AUTHOR
+Norbert Vegh, ntools@norvegh.com
+
+.SH COPYRIGHT
+.BR "ngen " "is (C) 2002-2010 Norbert Vegh"
+.br
+The program was originally developed in Telia Research AB.
+.PP
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation;
+either version 2 of the License, or (at your	option)
+any later version.
+.PP
+This software is provided without any warranty.

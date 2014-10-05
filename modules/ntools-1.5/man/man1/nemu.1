@@ -1,0 +1,150 @@
+.\" Man page for nemu
+.\"
+.\" Copyright (C) 2008, Norbert Vegh
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License Verson 2, or any later version at your option.
+.\"
+.\" Norbert Vegh
+.\" ntools@norvegh.com
+.\"
+.TH nemu 1 "April 20, 2010" "1.5"
+
+.SH NAME
+.BR "nemu " "- the network emulator client of ntools"
+
+.SH SYNOPSIS
+.BR "nemu -reset -clear -cnt -get"
+.PP
+.BR "-1closs" " continuous_loss"
+.PP
+.BR "-1bloss" " bursty_loss" " -1blossm" " bursty_loss_max" " -1blossl" " bursty_loss_length" " -1blossp" " bursty_loss_period"
+.PP
+.BR "-1delay" " delay"
+.PP
+.BR "-1cjitter" " continuous_jitter"
+.PP
+.BR "-1jitter" " jitter" " -1jitterl" " jitter_loss" " -1jitteru" " jitter_up" " -1jitterk" " jitter_keep"
+.BR " -1jitterd" " jitter_down" " -1jitterp" " jitter_period"
+.PP
+.BR "-2closs" " continuous_loss"
+.PP
+.BR "-2bloss" " bursty_loss" " -2blossm" " bursty_loss_max" " -2blossl" " bursty_loss_length" " -2blossp" " bursty_loss_period"
+.PP
+.BR "-2delay" " delay"
+.PP
+.BR "-2cjitter" " continuous_jitter"
+.PP
+.BR "-2jitter" " jitter" " -2jitterl" " jitter_loss" " -2jitteru" " jitter_up" " -2jitterk" " jitter_keep"
+.BR " -2jitterd" " jitter_down" " -2jitterp" " jitter_period"
+
+All parameters are optional.
+
+.SH DESCRIPTION
+.B nemu
+is the network emulator client of
+.BR "ntools" ". It is used to change the impairment settings of the emulator daemon. The current settings can be"
+.RB "retrieved with the " "-get" " command. When new parameters are supplied all other old parameters remain untouched."
+Every time you want to start with fresh new settings, use the
+.BR "-reset" " command.
+.PP
+There are two sets of parameters, for both directions. The parameters with the "-1" prefix
+are for the direction from the first interface towards the second one, while prefix "-2" is
+for the other direction.
+
+.SH COMMANDS
+.TP
+.B -reset
+Resets the emulator daemon: clears the impairments and the counters.
+.TP
+.B -clear
+Clears the frame counters.
+.TP
+.B -cnt
+Retrieves the frame counters. There are two counters for each direction: total received frames and dropped frames.
+.TP
+.B -get
+Retrieves the impairment settings of the emulator daemon.
+
+.SH IMPAIRMENTS
+.PP
+The following impairments are implemented. For the exact format of the parameters see the
+.BR "PARAMETERS" " section."
+.TP
+.B Continuous loss (-1closs loss)
+.RB "This impairment will make continuous" " loss" " % frame loss."
+.TP
+.B Bursty loss (-1bloss loss -1blossm max -1blossl length -1blossp period)
+.RB "This impairment implements bursty losses. Periodically, within each" " period" " there will be"
+.RB "a loss burst with" " lenght" " length, and" " loss" " % frame loss. With the" " max" " parameter"
+it is possible to maximize the number of lost frames in the burst.
+.TP
+.B Delay (-1delay delay)
+This implements continuous delay.
+.TP
+.B Continuous jitter (-1cjitter jitter)
+.RB "This implements continuous random jitter between 0 and" " jitter" "."
+.TP
+.B Jitter spikes (-1jitter jitter -1jitterl loss -1jitteru up -1jitterk keep -1jitterd down -1jitterp period)
+.RB "This modul implements periodic jitter spikes. Within each" " period" " period there will be one jitter spike"
+.RB "with trapezoid shape."
+.RB "During the spike the jitter will go up from 0 to" " jitter" " within" " up" " time. It will keep that jitter for"
+.BR "keep" " time, and then will go down to 0 within" " down" " time. During the keep period" " loss" " % loss is implemented."
+(It can be set to 0 if not needed.)
+.PP
+Any of these impairments can be used together, and their effect is additive. A frame is lost if any of the loss impairments
+decides so. The delay and jitter values from the different impairments are simply added together.
+
+.SH PARAMETERS
+.PP
+.B Loss values
+.PP
+.RB "The loss values" " (-1closs -1bloss -1jitterl)" " are specified in percentage without the % symbol.
+Note that these values will be converted to "1 out of x" internally, so the actual loss ratio
+might not exactly match the requested one, especially with high loss ratios.
+For example any values above 50% will result in 100% loss.
+Please check the actual values with the
+.BR "-get" " command."
+.PP
+.B Time values
+.PP
+.RB "The time values" " (-1blossl -1blossp -1delay -1cjitter -1jitter -1jitteru -1jitterk -1jitterd -1jitterp)"
+are specified in time format. By default the number indicate seconds, while a postfix of "m" and "u" indicates
+milli and micro seconds respectively.
+.PP
+
+.SH "NOTES"
+You must be root to run the emulator client.
+
+.SH "EXAMPLES"
+To implement 10 ms delay, and 1% loss ratio:
+.IP "" 3
+nemu -reset -1delay 10m -1closs 1
+.PP
+To implement 20 ms delay plus a queue build-up every minute, with build-up and drain time of 1 sec, a keep time of 10 sec,
+and 30% loss during the keep time, and 100 ms queue size:
+.IP "" 3
+nemu -reset -1delay 20m -1jitter 100m -1jitterl 30 -1jitteru 1 -1jitterk 10 -1jitterd 1 -1jitterp 60
+.PP
+To implement 5 consecutive frame loss every minute:
+.IP "" 3
+nemu -reset -1bloss 100 -1blossm 5 -1blossl 1 -1blossp 60
+
+.SH "SEE ALSO"
+.B ntools(1), nemud(1).
+
+.SH AUTHOR
+Norbert Vegh, ntools@norvegh.com
+
+.SH COPYRIGHT
+.BR "nemu " "is (C) 2002-2010 Norbert Vegh"
+.br
+The program was originally developed in Telia Research AB.
+.PP
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation;
+either version 2 of the License, or (at your option)
+any later version.
+.PP
+This software is provided without any warranty.

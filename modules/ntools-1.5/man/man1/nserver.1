@@ -1,0 +1,65 @@
+.\" Man page for nserver
+.\"
+.\" Copyright (C) 2008, Norbert Vegh
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License Verson 2, or any later version at your option.
+.\"
+.\" Norbert Vegh
+.\" ntools@norvegh.com
+.\"
+.TH nserver 1 "April 20, 2010" "1.5"
+
+.SH NAME
+.BR "nserver" " - the TCP server program of ntools"
+
+.SH SYNOPSIS
+.BR "nserver" " [" "-port" " port] [" "-prec" " precedence] [" "-tos" " tos]"
+
+.SH DESCRIPTION
+.B nserver
+is the TCP server program of
+.B ntools
+that emulates a Web server.
+When it is started, it binds itself to the specified port, and waits for
+incoming connections. For each connection, it starts a new thread,
+reads the number of bytes that has to be sent, and after sending the
+requested number of bytes, it terminates the connection.
+.B nserver
+can also set the precedence or TOS value for the generated packets.
+
+.SH OPTIONS
+.TP
+.BR \-port " port"
+The TCP port where
+.B nserver
+will wait for incoming connections.
+If not specified, the default value is 8888.
+.TP
+.BR \-prec " precedence"
+Sets the precedence value to be used for packet sending.
+Its valid range is 0..7, the default is 0.
+.TP
+.BR \-tos " tos"
+Sets the Type of Service value to be used for packet sending.
+Its valid range is 0..255, the default is 0.
+Note that for TCP streams the last 2 bits will be cleared by the kernel.
+
+.SH "SEE ALSO"
+.B ntools(1), nclient(1).
+
+.SH AUTHOR
+Norbert Vegh, ntools@norvegh.com
+
+.SH COPYRIGHT
+.BR "nserver" " is (C) 2002-2010 Norbert Vegh"
+.br
+The program was originally developed in Telia Research AB.
+.PP
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation;
+either version 2 of the License, or (at your	option)
+any later version.
+.PP
+This software is provided without any warranty.

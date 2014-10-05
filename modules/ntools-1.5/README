@@ -1,0 +1,96 @@
+NTools traffic generator/analyzer package for Linux v1.5
+(C) 2002-2010, Norbert Vegh, ntools@norvegh.com
+
+
+Changes
+-------
+v.1.5:
+NTools now supports the CONFIG_PREEMPT_RT kernel patch.
+With this patch active wating for ngen and nemud is not required.
+Support for multicast.
+The sending and receiving interface must be set for ngen and nrecv.
+All delay and jitter values are shown in millisec.
+The logfile format has been cleaned up.
+Packets are sent with a specific data pattern and the receiver actually checks whether
+the packets were sent by ngen or not. Foreign packets are ignored.
+A bug has been fixed related to displaying percentile statistics. Now only those percentiles
+are displayed that were defined.
+A bug has been fixed with TCP streams. Now the TCP ACKS are sent with the correct
+IP precedence value.
+Lost TCP sessions now are automatically restored if possible.
+The level parameters are gone, packet size and rates are on L2 (Ethernet-level) now.
+For TCP streams nrecv shows goodput.
+A number of bugfixes and other small changes.
+
+v1.4.1:
+A minor bug has been fixed. When writing statistics to a file the first timestamp was
+occasionally incorrect.
+A new option gives the possibility to select whether L2 or L3 rates shall be displayed.
+
+v1.4:
+New network emulation tool, nemu is added, that emulates loss, delay and jitter for
+impairment testing.
+nrecv now uses real-time scheduler which gives much better jitter accuracy.
+This feature requires a 2.6 kernel.
+
+v1.3:
+VLAN support has been added for UDP streams. Configurable VLAN ID and p-bits.
+
+v1.2:
+Now rates can be specified up to 1 Gbps.
+
+v1.1:
+The code has been fixed, now it compiles on RH 8.0 with gcc 3.
+
+
+Documentation
+-------------
+See the man pages.
+
+
+Installation
+------------
+Go to the src directory.
+You can modify some built-in parameters in defs.h.
+After you made your changes, you can edit the Makefile
+to set your C++ compiler and installation directories.
+The default compiler is gcc. The default installation
+directory is /usr/local/bin for the binaries, and
+/usr/local/man for the man pages.
+Type 'make' and 'make install'.
+If you ever want to uninstall the package,
+type 'make uninstall'.
+
+
+Requirements
+------------
+NTools runs only on Linux.
+To be able to compile and use it, you need
+a 2.6 or higher kernel with packet socket support.
+
+To make use of the real-time scheduler for better delay measurements, and get rid of active waiting
+install the CONFIG_PREEMPT_RT kernel patch. (https://rt.wiki.kernel.org/index.php/Main_Page)
+
+
+Copyright
+---------
+NTools traffic generator, analyzer and network emulator package for Linux
+Copyright 2002-2010, Norbert Vegh
+The program was originally developed in Telia Research AB.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+A copy of the GNU General Public License should be present with the
+code, in file GPL.txt.
+
+
+More information
+----------------
+The officical home page for ntools is http://norvegh.com/ntools/.

@@ -1,0 +1,128 @@
+.\" Man page for nclient
+.\"
+.\" Copyright (C) 2008, Norbert Vegh
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License Verson 2, or any later version at your option.
+.\"
+.\" Norbert Vegh
+.\" ntools@norvegh.com
+.\"
+.TH nclient 1 "April 20, 2010" "1.5"
+
+.SH NAME
+.BR "nclient " "- the TCP client program of ntools"
+
+.SH SYNOPSIS
+.BR "nclient -ip " "server [" "-port" " port] [" "-max" " maxclients] [" "-file" " distfile]"
+.RB "[" "-wait" " waittime] [" "-prec" " prec] [" "-tos" " tos] [" "-int" " statinterval]"
+.RB "[" "-stat" " statfile]"
+
+.SH DESCRIPTION
+.B nclient
+is the TCP client program of
+.B ntools
+that emulates a number of Web clients. Each client connects to
+.B nserver
+at the specified address, downloads a number of bytes, and exits.
+.B nclient
+starts the client threads with poissonian process, which means
+that the time between the start of the threads is exponential.
+You can set the average of this time with the
+.B waittime
+parameter. You can also set an upper limit on the number of active threads
+with the
+.B maxclients
+paramter. If this limit is reached, the program will not start new downloads.
+.PP
+The number of bytes to be downloaded is generated randomly based on the
+.B distfile
+distribution file.
+.PP
+.B nclient
+also provides statistics about the downloads: it dumps the number of downloads,
+and the average download time for each file size. The first entry in the
+statistics is special, it shows the number of incomplete downloads, where
+the connection got broken before the download could be finished.
+
+.SH OPTIONS
+.TP
+.BR -ip " server"
+The IP address of the host where
+.B nserver
+is running.
+.TP
+.BR -port " port"
+The TCP port where
+.B nserver
+waits for incoming connections. If not specified, the default value is 8888.
+.TP
+.BR -max " maxclients"
+The maximum number of client threads that can run on the machine.
+The default is 10.
+.TP
+.BR -file " distfile"
+The distribution file with the file sizes. The default is 'distfile' in the local
+directory.
+.TP
+.BR -wait " waittime"
+The average time in seconds between the start time of the client threads.
+The default is 1. Postfix of 'm' can be used for millisec.
+.TP
+.BR -prec " precedence"
+Sets the precedence value to be used for packet sending.
+Its valid range is 0..7, the default is 0.
+.TP
+.BR -tos " tos"
+Sets the Type of Service value to be used for packet sending.
+Its valid range is 0..255, the default is 0.
+Note that for TCP streams the last 2 bits will be cleared by the kernel.
+.TP
+.BR -int " statinterval"
+Sets the statistical interval in seconds. The program generates statistics in each
+interval. The default is 1.
+.TP
+.BR -stat " statfile"
+If this parameter is set, the program will also save the statistics to the
+given file.
+
+.SH DISTRIBUTION FILE
+This file contains entries in the following manner:
+.IP
+.B "size   probability"
+.PP
+.B size
+specifies a file size in bytes,
+.B probability
+is the relative probability for this size. (E.g. if probability for size1 is 10,
+and probability for size2 is 1, then the first file size will be downloaded 10 times
+more than the second.)
+.PP
+Only 100 entries are processed from the file, and the sum of the probabilities
+must not be bigger than 1000. (If you don't like these restrictions, you can
+modify the
+.B defs.h
+header file, and recompile the package.) Everything after '#'
+on a line is considered as comment and ignored.
+
+.SH "NOTES"
+.BR nserver " must be running before starting " nclient "."
+
+.SH "SEE ALSO"
+.B ntools(1), nserver(1).
+
+.SH AUTHOR
+Norbert Vegh, ntools@norvegh.com
+
+.SH COPYRIGHT
+.BR "nclient " "is (C) 2002-2010 Norbert Vegh"
+.br
+The program was originally developed in Telia Research AB.
+.PP
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation;
+either version 2 of the License, or (at your	option)
+any later version.
+.PP
+This software is provided without any warranty.

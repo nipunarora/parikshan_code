@@ -1,0 +1,68 @@
+.\" Man page for nemud
+.\"
+.\" Copyright (C) 2008, Norbert Vegh
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License Verson 2, or any later version at your option.
+.\"
+.\" Norbert Vegh
+.\" ntools@norvegh.com
+.\"
+.TH nemud 1 "July 12, 2008" "1.5"
+
+.SH NAME
+.BR "nemud " "- the network emulator daemon of ntools"
+
+.SH SYNOPSIS
+.BR "nemud -1if" " interface1" " -2if" " interface2"
+
+.SH DESCRIPTION
+.B nemud
+is the network emulator daemon of
+.BR ntools ". It forwards traffic between the two specified interfaces,"
+and can emulate different kind of errors, including loss, delay and jitter impairments.
+
+.B Support for real-time Linux
+.PP
+.BR "nemud " "supports the CONFIG_PREEMPT_RT kernel patch for precisely timing packet sending."
+.RB "Without this patch " "nemud " "has to use active waiting"
+to time packet sending, which will result in constant 100% CPU usage.
+Upon startup the program checks whether the kernel has the RT support and use it if available.
+.PP
+For more information about the RT patch visit the following link:
+.br
+https://rt.wiki.kernel.org/index.php/Main_Page
+
+.SH OPTIONS
+.TP
+.BR \-1if " interface1"
+.TP
+.BR \-2if " interface2"
+
+.SH "NOTES"
+You must be root to run the emulator daemon.
+.PP
+The throughput of the emulator depends on the CPU speed, the frame size,
+and the complexity of the involved impairments.
+It is advisable to run some benchmarking with a test instrument before running
+live tests. It is recommended to shut down all unnecessary daemons/processes,
+and to verify that DMA is enabled on the hard drive with the "hdparm /dev/hda" command.
+
+.SH "SEE ALSO"
+.B ntools(1), nemu(1).
+
+.SH AUTHOR
+Norbert Vegh, ntools@norvegh.com
+
+.SH COPYRIGHT
+.BR "nemud " "is (C) 2002-2010 Norbert Vegh"
+.br
+The program was originally developed in Telia Research AB.
+.PP
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation;
+either version 2 of the License, or (at your	option)
+any later version.
+.PP
+This software is provided without any warranty.
