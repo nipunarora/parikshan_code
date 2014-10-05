@@ -10,6 +10,9 @@
 
 #define _GNU_SOURCE
 
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <libgen.h>
@@ -62,8 +65,10 @@ typedef enum {TRUE = 1, FALSE = 0} bool;
  void receive_data_asynch(int source_sock);
  void forward_data_pipe(int destination_sock);
  int parse_options(int argc, char *argv[]);
-
- int pfds[2];
+ void setBufferSize(int fd, int buffer);
+ void getPipeSize(int pipe_in, int pipe_out);
+ 
+int pfds[2];
  int buffer_size;
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
  char *remote_host, *duplicate_host, *cmd_in, *cmd_out;
@@ -286,6 +291,7 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 		
 		if(b)
 		  setBufferSize(pfds[1],buffer_size);
+		
 	}
 
 
@@ -339,6 +345,16 @@ T2: Create a fork to forward data from remote host to client
 	  	exit(0);
 	  }
   }
+
+  /*  
+  if(fork() == 0){
+    while(1)
+      {
+	sleep(1);
+	getPipeSize(pfds[0], pfds[1]);
+      }
+  }
+  */
 
   /*
   Close all socket opened in this handle
@@ -508,9 +524,9 @@ void forward_data_asynch(int source_sock, int destination_sock) {
     	send(destination_sock, buffer, n, 0); // send data to output socket
 		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
 		{
-			perror("Error in writing to pipe");
+		  perror("Buffer overflow? ");
 		}
-		DEBUG_PRINT("Data sent to pipe %s \n", buffer);
+		//DEBUG_PRINT("Data sent to pipe %s \n", buffer);
 	}
 
   shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
@@ -529,8 +545,9 @@ void forward_data_pipe(int destination_sock) {
   //put in error condition for -1, currently the socket is shutdown
   while ((n = read(pfds[0], buffer, BUF_SIZE)) > 0)// read data from pipe socket 
   	{ 
-	DEBUG_PRINT("Data received in pipe %s \n", buffer);
-    	send(destination_sock, buffer, n, 0); // send data to output socket
+	  //sleep(1);
+	  //DEBUG_PRINT("Data received in pipe %s \n", buffer);
+	  send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
   shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
@@ -571,9 +588,53 @@ int setNonblocking(int fd)
 set buffer size to given value
 */
 
-int setBufferSize(int fd, int buffer){
-	if(fcntl(fd, F_SETPIPE_SZ, buffer)<0){
-		perror("Error in setting pipe size");
-	}
+void setBufferSize(int fd, int buffer)
+{
+  if(fcntl(fd, F_SETPIPE_SZ, buffer)<0)
+    {
+      perror("Error in setting pipe size");
+    }
 }
 
+/**
+get pipe Buffer size
+*/
+/*
+void getPipeSize(int pipe_in, int pipe_out){
+  int buf_in_size;
+  int buf_out_size;
+
+  if(ioctl(pipe_in, FIONREAD, &buf_in_size)<0)
+    {
+      perror("Error \n");
+      exit(0);
+    }
+  if(ioctl(pipe_out, FIONREAD, &buf_out_size)<0)
+    {
+      perror("Error \n");
+      exit(0);
+    }
+
+  printf(" Pipe Buffer Size %d \n", (buf_in_size + buf_out_size));
+}
+*/
+
+void getPipeSize(int pipe_in, int pipe_out){
+
+  struct stat sb;
+
+  if (fstat(pipe_in, &sb) == -1) {
+    perror("stat");
+    exit(EXIT_FAILURE);
+  }
+  printf("File size 1: %lld bytes\n", (long long) sb.st_size);
+
+
+  if (fstat(pipe_out, &sb) == -1) {
+    perror("stat");
+    exit(EXIT_FAILURE);
+  }
+  printf("File size 2: %lld bytes\n", (long long) sb.st_size);
+
+
+}
