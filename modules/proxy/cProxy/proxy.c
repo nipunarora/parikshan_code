@@ -98,7 +98,7 @@ int create_file(){
  	int c, local_port;
  	pid_t pid;
 
-	create_file();
+	//create_file();
 
  	local_port = parse_options(argc, argv);
 
@@ -290,7 +290,9 @@ void server_loop()
 void handle_client(int client_sock, struct sockaddr_in client_addr)
 {
 	//create connection to main production server
-	fprintf(stats_file, " Created connection\n");
+	//fprintf(stats_file, " Created connection\n");
+  DEBUG_PRINT(" Created connection\n");
+  print_timeofday();
   if ((remote_sock = create_connection()) < 0) {
 		perror("Cannot connect to host");
 		return;
@@ -298,7 +300,9 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	
 	//if duplication is chosen either synch or asynch must be specified
 	if(synch||asynch){
-    fprintf(stats_file, " Created duplicate connection\n");
+    DEBUG_PRINT(" Created duplicate connection\n");
+    print_timeofday();
+    //fprintf(stats_file, " Created duplicate connection\n");
 		if((duplicate_destination_sock = create_dup_connection_synch()) < 0){
 			perror("Could not connect to to duplicate host");
 			return;
@@ -313,7 +317,7 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 		}
 
 		setNonblocking(pfds[1]);
-		fprintf(stats_file, "buffer size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));
+		DEBUG_PRINT("pipe size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));
 	 
 		
 		if(b)
@@ -556,8 +560,9 @@ void forward_data_asynch(int source_sock, int destination_sock) {
     	send(destination_sock, buffer, n, 0); // send data to output socket
 		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
 		{
-      fprintf(stats_file,"buffer_overflow \n");
-		  perror("Buffer overflow? ");
+      //fprintf(stats_file,"buffer_overflow \n");
+		  print_timeofday();
+      perror("Buffer overflow? ");
 		}
 		//DEBUG_PRINT("Data sent to pipe %s \n", buffer);
 	}
@@ -658,7 +663,7 @@ void getPipeSize(int pipe_in, int pipe_out){
 }
 
 
-
+/*
 void getPipeSize2(int pipe_in, int pipe_out){
 
   struct stat sb;
@@ -676,6 +681,7 @@ void getPipeSize2(int pipe_in, int pipe_out){
   }
   printf("File size 2: %lld bytes\n", (long long) sb.st_size);
 }
+*/
 
 void print_timeofday(){
   char buffer[30];
@@ -683,6 +689,6 @@ void print_timeofday(){
   gettimeofday(&tv, NULL);
 
   strftime(buffer,30,"%m-%d-%Y  %T.",localtime(&curtime));
-  printf("%s%ld\n",buffer,tv.tv_usec);
+  DEBUG_PRINT("%s%ld\n",buffer,tv.tv_usec);
 
 }
