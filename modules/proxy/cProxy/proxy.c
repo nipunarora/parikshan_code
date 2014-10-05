@@ -686,7 +686,10 @@ void getPipeSize2(int pipe_in, int pipe_out){
 void print_timeofday(){
   char buffer[30];
   struct timeval tv;
+  time_t curtime;
+
   gettimeofday(&tv, NULL);
+  curtime=tv.tv_sec;
 
   strftime(buffer,30,"%m-%d-%Y  %T.",localtime(&curtime));
   DEBUG_PRINT("%s%ld\n",buffer,tv.tv_usec);
