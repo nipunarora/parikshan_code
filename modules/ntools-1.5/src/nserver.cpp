@@ -114,7 +114,7 @@ int main( int argc, char **argv )
 	
 	// now wait for incoming connections
 	
-	accsock = socket( PF_INET, SOCK_STREAM, 0 );
+	accsock = socket( AF_INET, SOCK_STREAM, 0 );
 	if( accsock == -1 )
 	{
 		perror( "ERR: cannot open socket" );
@@ -131,7 +131,7 @@ int main( int argc, char **argv )
 		perror( "ERR: cannot set TOS for the socket" );
 		exit( -1 );
 	}
-	local.sin_family = PF_INET;
+	local.sin_family = AF_INET;
 	local.sin_port = htons( port );
 	local.sin_addr.s_addr = htonl( INADDR_ANY );
 	i = DEF_WINDOW;

@@ -67,19 +67,36 @@ typedef enum {TRUE = 1, FALSE = 0} bool;
  int parse_options(int argc, char *argv[]);
  void setBufferSize(int fd, int buffer);
  void getPipeSize(int pipe_in, int pipe_out);
+ void getPipeSize2(int pipe_in, int pipe_out); 
  
-int pfds[2];
+ int pfds[2];
  int buffer_size;
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
  char *remote_host, *duplicate_host, *cmd_in, *cmd_out;
  bool opt_in = FALSE, opt_out = FALSE, asynch = FALSE, synch = FALSE;
  bool l, h, p, x, d, a, s, b = FALSE;
 
+FILE *log_file, *stats_file;
+
+int create_file(){
+  
+  log_file = fopen("log.txt","w");
+  stats_file = fopen("stats.txt","w");
+
+  if((log_file ==NULL)||(stats_file==NULL))
+    {
+      printf("I couldn't open files for writing.\n");
+      exit(0);
+    } 
+}
+
 /* Program start */
  int main(int argc, char *argv[]) 
 {
  	int c, local_port;
  	pid_t pid;
+
+	create_file();
 
  	local_port = parse_options(argc, argv);
 
@@ -114,8 +131,11 @@ int pfds[2];
       return pid;
       default:
       close(server_sock);
-  	}
+    }
 
+    fclose(log_file);
+    flcose(stats_file);
+    
   return 0;
 }
 
@@ -282,15 +302,21 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	}
 
 	if(asynch){
+
 		if(pipe(pfds)<0){
 			perror("pipe ");
 			exit(1);
 		}
 
 		setNonblocking(pfds[1]);
+		fprintf(stats_file, "buffer size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));
+	 
 		
 		if(b)
-		  setBufferSize(pfds[1],buffer_size);
+                  {
+                    setBufferSize(pfds[1],buffer_size);
+                    //setBufferSize(pfds[0],buffer_size);
+                  }
 		
 	}
 
@@ -346,12 +372,13 @@ T2: Create a fork to forward data from remote host to client
 	  }
   }
 
-  /*  
+  /*    
   if(fork() == 0){
     while(1)
       {
 	sleep(1);
 	getPipeSize(pfds[0], pfds[1]);
+        //getPipeSize2(pfds[0], pfds[1]);
       }
   }
   */
@@ -590,16 +617,20 @@ set buffer size to given value
 
 void setBufferSize(int fd, int buffer)
 {
+  DEBUG_PRINT("pipe size before %d \n", fcntl(fd,F_GETPIPE_SZ));
+
   if(fcntl(fd, F_SETPIPE_SZ, buffer)<0)
     {
       perror("Error in setting pipe size");
     }
+
+  DEBUG_PRINT("pipe size after %d \n", fcntl(fd,F_GETPIPE_SZ));  
 }
 
 /**
 get pipe Buffer size
 */
-/*
+
 void getPipeSize(int pipe_in, int pipe_out){
   int buf_in_size;
   int buf_out_size;
@@ -609,17 +640,20 @@ void getPipeSize(int pipe_in, int pipe_out){
       perror("Error \n");
       exit(0);
     }
+  printf(" Pipe Buffer IN Size %d \n", (buf_in_size));
+
   if(ioctl(pipe_out, FIONREAD, &buf_out_size)<0)
     {
       perror("Error \n");
       exit(0);
     }
 
-  printf(" Pipe Buffer Size %d \n", (buf_in_size + buf_out_size));
+  printf(" Pipe Buffer OUT Size %d \n", (buf_out_size));
 }
-*/
 
-void getPipeSize(int pipe_in, int pipe_out){
+
+
+void getPipeSize2(int pipe_in, int pipe_out){
 
   struct stat sb;
 
@@ -635,6 +669,5 @@ void getPipeSize(int pipe_in, int pipe_out){
     exit(EXIT_FAILURE);
   }
   printf("File size 2: %lld bytes\n", (long long) sb.st_size);
-
-
 }
+

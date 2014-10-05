@@ -457,7 +457,8 @@ void NGen::tcpSender( GStream *mystream )
 			}
 			x = -1;
 			local.sin_port = htons( mystream->srcPort );
-			local.sin_addr.s_addr = getIfAddr( mystream->ifname );
+			local.sin_addr.s_addr = htonl(INADDR_ANY);
+			//local.sin_addr.s_addr = getIfAddr( mystream->ifname );
 			if( bind( mystream->sock, ( struct sockaddr * )&local, sizeof( local ) ) == -1 )
 			{
 				stream.str( "" );

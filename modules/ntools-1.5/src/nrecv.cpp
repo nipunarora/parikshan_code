@@ -154,7 +154,7 @@ NRecv::NRecv()
 		throw rerr + "cannot create the stat collector thread";
 	}
 	
-	mgmtsock = socket( PF_INET, SOCK_DGRAM, 0 );
+	mgmtsock = socket( AF_INET, SOCK_DGRAM, 0 );
 }
 
 
@@ -690,7 +690,7 @@ void *NRecv::tcpReceiver( RStream *mystream )
 		
 		buflen = 1600;  // MTU
 		mystream->tid = pthread_self();
-		mystream->accsock = socket( PF_INET, SOCK_STREAM, 0 );
+		mystream->accsock = socket( AF_INET, SOCK_STREAM, 0 );
 		if( mystream->accsock == -1 )
 		{
 			error( "Cannot open TCP socket: ", errno );
@@ -704,7 +704,7 @@ void *NRecv::tcpReceiver( RStream *mystream )
 		}
 		x = -1;
 		port = mystream->dstPort;
-		local.sin_family = PF_INET;
+		local.sin_family = AF_INET;
 		local.sin_port = htons( port );
 		local.sin_addr.s_addr = getIfAddr( mystream->ifname );
 		if( bind( mystream->accsock, ( struct sockaddr * )&local, sizeof( local ) ) == -1 )
@@ -816,7 +816,7 @@ void *NRecv::udpReceiver( Interface *myiface )
 		buflen = 1500;  // maximum packet size
 		addrlen = sizeof( struct sockaddr_ll );
 		myiface->tid = pthread_self();
-		myiface->sock = socket( PF_PACKET, SOCK_DGRAM, htons( ETH_P_ALL ) );  // packet socket to capture everything
+		myiface->sock = socket( AF_PACKET, SOCK_DGRAM, htons( ETH_P_ALL ) );  // packet socket to capture everything
 		if( myiface->sock == -1 )
 		{
 			error( "Cannot create the packet socket for the UDP streams: ", errno );

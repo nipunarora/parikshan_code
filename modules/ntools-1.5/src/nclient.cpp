@@ -366,10 +366,10 @@ void *receiver( void *arg )
 	struct timeval start, end;
 	Statistics *mystat;
 
-	remote.sin_family = PF_INET;
+	remote.sin_family = AF_INET;
 	remote.sin_port = htons( g_port );
 	remote.sin_addr.s_addr = g_ip;
-	sock = socket( PF_INET, SOCK_STREAM, 0 );
+	sock = socket( AF_INET, SOCK_STREAM, 0 );
 	if( sock == -1 )
 	{
 		perror( "ERR: cannot open socket" );

@@ -163,7 +163,7 @@ int main( int argc, char **argv )
 
 	for( i = 0; i  < 2; i++ )
 	{ 
-		sock[i] = socket( PF_PACKET, SOCK_RAW, htons( ETH_P_ALL ) );  // packet socket to capture everything
+		sock[i] = socket( AF_PACKET, SOCK_RAW, htons( ETH_P_ALL ) );  // packet socket to capture everything
 		if( sock[i] == -1 )
 		{
 			cerr << "Cannot create the packet socket for " << ifname[i] << endl;
