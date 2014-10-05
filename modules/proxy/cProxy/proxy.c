@@ -14,6 +14,8 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+ #include <sys/time.h>
+#include <time.h>
 #include <errno.h>
 #include <libgen.h>
 #include <netdb.h>
@@ -288,13 +290,15 @@ void server_loop()
 void handle_client(int client_sock, struct sockaddr_in client_addr)
 {
 	//create connection to main production server
-	if ((remote_sock = create_connection()) < 0) {
+	fprintf(stats_file, " Created connection\n");
+  if ((remote_sock = create_connection()) < 0) {
 		perror("Cannot connect to host");
 		return;
 	}
 	
 	//if duplication is chosen either synch or asynch must be specified
 	if(synch||asynch){
+    fprintf(stats_file, " Created duplicate connection\n");
 		if((duplicate_destination_sock = create_dup_connection_synch()) < 0){
 			perror("Could not connect to to duplicate host");
 			return;
@@ -313,10 +317,10 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	 
 		
 		if(b)
-                  {
-                    setBufferSize(pfds[1],buffer_size);
-                    //setBufferSize(pfds[0],buffer_size);
-                  }
+    {
+        setBufferSize(pfds[1],buffer_size);
+        //setBufferSize(pfds[0],buffer_size);
+    }
 		
 	}
 
@@ -399,6 +403,7 @@ int create_dup_connection_synch() {
 	struct hostent *server;
 	int sock;
 
+  
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("Client socket error");
 		return CLIENT_SOCKET_ERROR;
@@ -432,7 +437,7 @@ int create_dup_connection_synch() {
 int create_connection() {
 
   DEBUG_PRINT("creating connection... \n");
-        
+
 	struct sockaddr_in server_addr;
 	struct hostent *server;
 	int sock;
@@ -551,6 +556,7 @@ void forward_data_asynch(int source_sock, int destination_sock) {
     	send(destination_sock, buffer, n, 0); // send data to output socket
 		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
 		{
+      fprintf(stats_file,"buffer_overflow \n");
 		  perror("Buffer overflow? ");
 		}
 		//DEBUG_PRINT("Data sent to pipe %s \n", buffer);
@@ -671,3 +677,12 @@ void getPipeSize2(int pipe_in, int pipe_out){
   printf("File size 2: %lld bytes\n", (long long) sb.st_size);
 }
 
+void print_timeofday(){
+  char buffer[30];
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+
+  strftime(buffer,30,"%m-%d-%Y  %T.",localtime(&curtime));
+  printf("%s%ld\n",buffer,tv.tv_usec);
+
+}

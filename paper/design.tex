@@ -191,6 +191,15 @@ Hence a layer 2 level network solution is not possible as some context of the ad
 Network proxies can be created at different levels in the network stack, for our purposes we have created a TCP proxy which mirrors the incoming traffic.
 The TCP level duplicator is configured with the client facing ip address (hence it becomes a proxy), and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
 
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{figs/network_dup.eps}
+    \caption{Description of the Network Duplicator. In \textit{synchronized} mode: there are 2 threads for each connection, Thread 1 executes steps [1,3,5], and Thread 2 executes [2,4,6] sequentially, hence the speed of packets sent to the production and the test container are synchronized. In \textit{asynchronous} mode, there are 4 threads for each connection, Thread 1 executes steps [1,3], Thread 2 executes [2,4], Thread 3 executes [5], and Thread 4 executes [6]. Hence communication to the test container and production container are asynchronous}
+    \label{fig:duplicator}
+  \end{center}
+\end{figure}
+
+
 \iffalse
 
 \begin{figure}[t]
