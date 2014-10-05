@@ -12,6 +12,7 @@
 *************************************************************************/
 
 #include <iostream>
+#include <unistd.h>
 #include <stdlib.h>
 #include <sys/socket.h>
 #include "statistics.h"

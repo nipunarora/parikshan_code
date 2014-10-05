@@ -8,6 +8,8 @@
  * Description: 
  */
 
+#define _GNU_SOURCE
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <libgen.h>
@@ -22,7 +24,7 @@
 #include <wait.h>
 #include <fcntl.h>
 
-#define DEBUG
+#define DEBUG TRUE
 
 #ifdef DEBUG
 #define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
@@ -45,7 +47,7 @@
 #define CREATE_PIPE_ERROR -8
 #define BROKEN_PIPE_ERROR -9
 
- typedef enum {TRUE = 1, FALSE = 0} bool;
+typedef enum {TRUE = 1, FALSE = 0} bool;
 
  int create_socket(int port);
  void sigchld_handler(int signal);
@@ -197,11 +199,13 @@ int create_socket(int port) {
 	struct sockaddr_in server_addr;
 
 	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		return SERVER_SOCKET_ERROR;
+	  DEBUG_PRINT("socket counld not be created ");
+	  return SERVER_SOCKET_ERROR;
 	}
 
 	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
-		return SERVER_SETSOCKOPT_ERROR;
+	  DEBUG_PRINT("setsockopt error");
+	  return SERVER_SETSOCKOPT_ERROR;
 	}
 
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -210,11 +214,13 @@ int create_socket(int port) {
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind(server_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
-		return SERVER_BIND_ERROR;
+	  DEBUG_PRINT("bind error");
+	  return SERVER_BIND_ERROR;
 	}
 
 	if (listen(server_sock, 20) < 0) {
-		return SERVER_LISTEN_ERROR;
+	  DEBUG_PRINT("listen error");
+	  return SERVER_LISTEN_ERROR;
 	}
 
 	return server_sock;
@@ -277,7 +283,9 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 		}
 
 		setNonblocking(pfds[1]);
-		//setBufferSize(pfds[1],buffer_size);
+		
+		if(b)
+		  setBufferSize(pfds[1],buffer_size);
 	}
 
 
@@ -320,7 +328,6 @@ T2: Create a fork to forward data from remote host to client
   T3: Create a fork to forward data asynchrounously to duplicate
   */	  
 	  if(fork() == 0){
-	  	sleep(10);
 	  	forward_data_pipe(duplicate_destination_sock);
 	  	exit(0);		
 	  }
@@ -380,11 +387,14 @@ int create_dup_connection_synch() {
 
 /* Create client connection */
 int create_connection() {
+
+  DEBUG_PRINT("creating connection... \n");
+        
 	struct sockaddr_in server_addr;
 	struct hostent *server;
 	int sock;
 
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((sock = socket(AF_INET,SOCK_STREAM, 0)) < 0) {
 		return CLIENT_SOCKET_ERROR;
 	}
 	//usage production host
@@ -560,10 +570,10 @@ int setNonblocking(int fd)
 /**
 set buffer size to given value
 */
-/*
+
 int setBufferSize(int fd, int buffer){
 	if(fcntl(fd, F_SETPIPE_SZ, buffer)<0){
 		perror("Error in setting pipe size");
 	}
 }
-*/
+
