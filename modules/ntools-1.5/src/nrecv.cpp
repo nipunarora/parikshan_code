@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
 #include <sys/time.h>
