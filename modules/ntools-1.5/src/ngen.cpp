@@ -240,7 +240,7 @@ void NGen::udpSender()
 		udph->check = 0;
 		
 		// create the packet socket
-		packetsock = socket( PF_PACKET, SOCK_DGRAM, htons( ETH_P_IP ) );
+		packetsock = socket( AF_PACKET, SOCK_DGRAM, htons( ETH_P_IP ) );
 		if( packetsock == -1 )
 		{
 			error( "Cannot create a packet socket: ", errno );
@@ -248,13 +248,13 @@ void NGen::udpSender()
 		}
 	
 		// open the raw socket for normal udp streams
-		rawsock = socket( PF_INET, SOCK_RAW, IPPROTO_RAW );
+		rawsock = socket( AF_INET, SOCK_RAW, IPPROTO_RAW );
 		if( rawsock == -1 )
 		{
 			error( "Cannot create the raw socket: ", errno );
 			pthread_exit( NULL );
 		}
-		udpremote.sin_family = PF_INET;
+		udpremote.sin_family = AF_INET;
 		udpremote.sin_port = htons( IPPROTO_UDP );
 		
 		// traffic generation
@@ -437,7 +437,7 @@ void NGen::tcpSender( GStream *mystream )
 		
 		while( -1 )
 		{
-			mystream->sock = socket( PF_INET, SOCK_STREAM, 0 );
+			mystream->sock = socket( AF_INET, SOCK_STREAM, 0 );
 			if( mystream->sock == -1 )
 			{
 				error( "Cannot open TCP mystream->socket: ", errno );
@@ -457,7 +457,8 @@ void NGen::tcpSender( GStream *mystream )
 			}
 			x = -1;
 			local.sin_port = htons( mystream->srcPort );
-			local.sin_addr.s_addr = getIfAddr( mystream->ifname );
+			//local.sin_addr.s_addr = getIfAddr( mystream->ifname );
+			local.sin_addr.s_addr = htonl(INADDR_ANY);
 			if( bind( mystream->sock, ( struct sockaddr * )&local, sizeof( local ) ) == -1 )
 			{
 				stream.str( "" );
@@ -466,7 +467,7 @@ void NGen::tcpSender( GStream *mystream )
 				error( stream.str().c_str() );
 				pthread_exit( NULL );
 			}
-			remote.sin_family = PF_INET;
+			remote.sin_family = AF_INET;
 			remote.sin_addr.s_addr = mystream->dstIp;
 			remote.sin_port = htons( mystream->dstPort );
 				

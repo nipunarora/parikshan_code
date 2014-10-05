@@ -29,7 +29,7 @@
 using namespace std;
 
 // for the ioctls
-static int sock = socket( PF_INET, SOCK_DGRAM, 0 );
+static int sock = socket( AF_INET, SOCK_DGRAM, 0 );
 
 const unsigned long ULONG_HALF = ULONG_MAX/2;
 

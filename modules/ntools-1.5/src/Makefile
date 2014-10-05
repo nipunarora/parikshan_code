@@ -27,7 +27,7 @@ ifeq ( $(DEBUG), YES )
 endif
 
 CFLAGS = -Wall -O3 $(DEBUGDEF)
-LDFLAGS = $(CFLAGS) -lstdc++ -lpthread
+LDFLAGS = $(CFLAGS) -lstdc++ -lpthread -lm
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $<
