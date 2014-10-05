@@ -20,6 +20,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <wait.h>
+#include <fcntl.h>
+
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
+#else
+#define DEBUG_PRINT(fmt, args...)    /* Don't do anything in release builds */
+#endif
 
 #define BUF_SIZE 1024
 
@@ -45,14 +54,19 @@
  void handle_client(int client_sock, struct sockaddr_in client_addr);
  void forward_data(int source_sock, int destination_sock);
  //void forward_data_ext(int source_sock, int destination_sock, char *cmd);
+ void forward_data_asynch(int source_sock, int destination_sock);
  void forward_data_synch(int source_sock, int destination_sock, int duplicate_destination_sock);
  void receive_data_synch(int source_sock, int destination_sock, int duplicate_destination_sock);
+ void receive_data_asynch(int source_sock);
+ void forward_data_pipe(int destination_sock);
  int parse_options(int argc, char *argv[]);
 
+ int pfds[2];
+ int buffer_size;
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
  char *remote_host, *duplicate_host, *cmd_in, *cmd_out;
  bool opt_in = FALSE, opt_out = FALSE, asynch = FALSE, synch = FALSE;
- bool l, h, p, x, d, a, s = FALSE;
+ bool l, h, p, x, d, a, s, b = FALSE;
 
 /* Program start */
  int main(int argc, char *argv[]) 
@@ -64,7 +78,7 @@
 
  	if (local_port < 0) 
  	{
- 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port [-i \"input parser\"] [-o \"output parser\"]\n", argv[0]);
+ 		printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) -b buffer_size \n", argv[0]);
  		return 0;
  	}
 
@@ -101,59 +115,66 @@
 /* Parse command line options */
 int parse_options(int argc, char *argv[]) 
 {
+	
 	int c, local_port;
 	l = h = p = x = d = FALSE;
 
-	while ((c = getopt(argc, argv, "l:h:p:x:d:i:o:as")) != -1) 
+	while ((c = getopt(argc, argv, "l:h:p:x:d:b:as")) != -1) 
 	{
 		switch(c) 
 		{
 			case 'l':
 			local_port = atoi(optarg);
 			l = TRUE;
+			DEBUG_PRINT("local_port =  %d ", local_port);
 			break;
 
 			case 'h':
 			remote_host = optarg;
 			h = TRUE;
+			DEBUG_PRINT("remote_host =  %s ", remote_host);
 			break;
 	
 			case 'p':
 			remote_port = atoi(optarg);
 			p = TRUE;
+			DEBUG_PRINT("production_port =  %d ", remote_port);			
 			break;
 	
 			case 'x':
 			duplicate_host = optarg;
 			x = TRUE;
+			DEBUG_PRINT("duplicate_host =  %s ", duplicate_host);
 			break;
 	
 			case 'd':
 			duplicate_port = atoi(optarg);
 			d = TRUE;
-			break;
-	
-			case 'i':
-			opt_in = TRUE;
-			cmd_in = optarg;
-			break;
-
-			case 'o':
-			opt_out = TRUE;
-			cmd_out = optarg;
+			DEBUG_PRINT("duplicate_port =  %d ", duplicate_port);
 			break;
 
 			case 'a':
 			a = TRUE;
 			asynch = TRUE;
+			DEBUG_PRINT("asynchrounous mode ");
 			break;
 
 			case 's':
 			s = TRUE;
 			synch = TRUE;
+			DEBUG_PRINT("synchrounous mode ");
 			break;
+
+			case 'b':
+			b = TRUE;
+			buffer_size = atoi(optarg);
+			DEBUG_PRINT("buffer_size = %d ", buffer_size);
+			break;
+
 		}
 	}
+
+	DEBUG_PRINT("\n");
 
 	//if asynch or synch are not specified only local port, remote host, and remote port are required
 	// if either asynch or synch are specified both the duplicate port, and duplicate host must also be specified
@@ -175,13 +196,11 @@ int create_socket(int port) {
 	int server_sock, optval;
 	struct sockaddr_in server_addr;
 
-	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-	{
+	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		return SERVER_SOCKET_ERROR;
 	}
 
-	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) 
-	{
+	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
 		return SERVER_SETSOCKOPT_ERROR;
 	}
 
@@ -211,6 +230,7 @@ void sigterm_handler(int signal)
 {
 	close(client_sock);
 	close(server_sock);
+	close(duplicate_destination_sock);
 	exit(0);
 }
 
@@ -244,51 +264,147 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 	
 	//if duplication is chosen either synch or asynch must be specified
 	if(synch||asynch){
-		if((duplicate_destination_sock = create_dup_connection()) < 0){
-			perror("Could not connec to to duplicate host");
+		if((duplicate_destination_sock = create_dup_connection_synch()) < 0){
+			perror("Could not connect to to duplicate host");
 			return;
 		}	
 	}
 
+	if(asynch){
+		if(pipe(pfds)<0){
+			perror("pipe ");
+			exit(1);
+		}
+
+		setNonblocking(pfds[1]);
+		//setBufferSize(pfds[1],buffer_size);
+	}
+
+
+
 /**
-Create a fork to forward data from client to remote host
+T1: Create a fork to forward data from client to remote host
 */		
-  if (fork() == 0) { // a process forwarding data from client to remote socket
-  	if (opt_out) 
-  	{
-		//forward_data_ext(client_sock, remote_sock, cmd_out);
-  	} 
-  	else 
-  	{
-  		if(!synch && !asynch)
-	  		forward_data(client_sock, remote_sock);
-	  	if(synch){
-	  		forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
-	  	}
-  	}
-  	exit(0);
-  }
-/**
-Create a fork to forward data from remote host to client
-*/
   if (fork() == 0) 
-  { // a process forwarding data from remote socket to client
-  	if (opt_in) 
-  	{
-  		//forward_data_ext(remote_sock, client_sock, cmd_in);
-  	} 
-  	else 
-  	{
-		if(!synch && !asynch)
-			forward_data(remote_sock, client_sock);
-		if(synch)
-			receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
+  { 
+  	if(!synch && !asynch)
+  		//write to remote socket
+  		forward_data(client_sock, remote_sock);
+  	if(synch){
+  		//write to remote socket and duplicate socket
+  		forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
   	}
+  	if(asynch){
+  		//write to remote socket and pipe
+  		forward_data_asynch(client_sock,remote_sock);
+  	}
+  
   	exit(0);
   }
 
+/**
+T2: Create a fork to forward data from remote host to client
+*/
+  if (fork() == 0) 
+  { 
+	if(!synch)
+		forward_data(remote_sock, client_sock);
+	if(synch)
+		receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
+  	
+  	exit(0);
+  }
+
+  if(asynch){
+  /**
+  T3: Create a fork to forward data asynchrounously to duplicate
+  */	  
+	  if(fork() == 0){
+	  	sleep(10);
+	  	forward_data_pipe(duplicate_destination_sock);
+	  	exit(0);		
+	  }
+ /**
+  T4: Create a fork to read data asynchrounously to duplicate
+  */
+	  if(fork() == 0){
+	 	receive_data_asynch(duplicate_destination_sock); 	
+	  	exit(0);
+	  }
+  }
+
+  /*
+  Close all socket opened in this handle
+  */
   close(remote_sock);
   close(client_sock);
+  close(duplicate_destination_sock);
+
+}
+
+/* Create connection to duplicate host*/
+int create_dup_connection_synch() {
+	
+	struct sockaddr_in server_addr;
+	struct hostent *server;
+	int sock;
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("Client socket error");
+		return CLIENT_SOCKET_ERROR;
+	}
+	//usage duplicate host
+	//printf("Host %s \n", duplicate_host);
+
+	if ((server = gethostbyname(duplicate_host)) == NULL) {
+		errno = EFAULT;
+		printf("Client resolve error");
+		return CLIENT_RESOLVE_ERROR;
+	}
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+	//usage duplicate_port
+	server_addr.sin_port = htons(duplicate_port);
+	
+	//printf("Port ID %d \n", duplicate_port);
+
+	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+		printf("Client connect error");
+		return CLIENT_CONNECT_ERROR;
+	}
+
+	return sock;
+}
+
+/* Create client connection */
+int create_connection() {
+	struct sockaddr_in server_addr;
+	struct hostent *server;
+	int sock;
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		return CLIENT_SOCKET_ERROR;
+	}
+	//usage production host
+	if ((server = gethostbyname(remote_host)) == NULL) {
+		errno = EFAULT;
+		return CLIENT_RESOLVE_ERROR;
+	}
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+	
+	//usage production port
+	server_addr.sin_port = htons(remote_port);
+
+	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+		return CLIENT_CONNECT_ERROR;
+	}
+
+	return sock;
 }
 
 /* Forward data between sockets */
@@ -297,8 +413,8 @@ void forward_data(int source_sock, int destination_sock) {
 	int n;
 
   //put in error condition for -1, currently the socket is shutdown
-  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) 
-  	{ // read data from input socket
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
+  	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
@@ -371,59 +487,83 @@ void forward_data_synch(int source_sock, int destination_sock, int duplicate_des
   	close(source_sock);
 }
 
-/* Create connection to duplicate host*/
-int create_dup_connection() {
-	struct sockaddr_in server_addr;
-	struct hostent *server;
-	int sock;
+/* Forward data between sockets */
+void forward_data_asynch(int source_sock, int destination_sock) {
+	char buffer[BUF_SIZE];
+	int n;
 
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		return CLIENT_SOCKET_ERROR;
-	}
-	//usage duplicate host
-	if ((server = gethostbyname(duplicate_host)) == NULL) {
-		errno = EFAULT;
-		return CLIENT_RESOLVE_ERROR;
-	}
-
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-	//usage duplicate_port
-	server_addr.sin_port = htons(duplicate_port);
-
-	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		return CLIENT_CONNECT_ERROR;
+  //put in error condition for -1, currently the socket is shutdown
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
+  	{ 
+    	send(destination_sock, buffer, n, 0); // send data to output socket
+		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
+		{
+			perror("Error in writing to pipe");
+		}
+		DEBUG_PRINT("Data sent to pipe %s \n", buffer);
 	}
 
-	return sock;
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
+  close(destination_sock);
+
+  shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
+  close(source_sock);
 }
 
-/* Create client connection */
-int create_connection() {
-	struct sockaddr_in server_addr;
-	struct hostent *server;
-	int sock;
+/* Forward data from pipe to duplicate */
+void forward_data_pipe(int destination_sock) {
 
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		return CLIENT_SOCKET_ERROR;
-	}
-	//usage production host
-	if ((server = gethostbyname(remote_host)) == NULL) {
-		errno = EFAULT;
-		return CLIENT_RESOLVE_ERROR;
+	char buffer[BUF_SIZE];
+	int n;
+
+  //put in error condition for -1, currently the socket is shutdown
+  while ((n = read(pfds[0], buffer, BUF_SIZE)) > 0)// read data from pipe socket 
+  	{ 
+	DEBUG_PRINT("Data received in pipe %s \n", buffer);
+    	send(destination_sock, buffer, n, 0); // send data to output socket
 	}
 
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-	
-	//usage production port
-	server_addr.sin_port = htons(remote_port);
-
-	if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-		return CLIENT_CONNECT_ERROR;
-	}
-
-	return sock;
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
+  close(destination_sock);
 }
+
+void receive_data_asynch(int source_sock){
+	char buffer[BUF_SIZE];
+	int n;
+
+ 	while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) // read data from input socket
+
+	shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
+  	close(source_sock);
+}
+
+/**
+Make file descriptor non blocking
+*/
+int setNonblocking(int fd)
+{
+    int flags;
+
+    /* If they have O_NONBLOCK, use the Posix way to do it */
+#if defined(O_NONBLOCK)
+    /* Fixme: O_NONBLOCK is defined but broken on SunOS 4.1.x and AIX 3.2.5. */
+    if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
+        flags = 0;
+    return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+#else
+    /* Otherwise, use the old way of doing it */
+    flags = 1;
+    return ioctl(fd, FIOBIO, &flags);
+#endif
+}     
+
+/**
+set buffer size to given value
+*/
+/*
+int setBufferSize(int fd, int buffer){
+	if(fcntl(fd, F_SETPIPE_SZ, buffer)<0){
+		perror("Error in setting pipe size");
+	}
+}
+*/
