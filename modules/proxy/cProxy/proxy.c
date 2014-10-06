@@ -135,8 +135,8 @@ int create_file(){
       close(server_sock);
     }
 
-    fclose(log_file);
-    fclose(stats_file);
+//    fclose(log_file);
+//    fclose(stats_file);
     
   return 0;
 }
