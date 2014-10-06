@@ -70,7 +70,7 @@ typedef enum {TRUE = 1, FALSE = 0} bool;
  void setBufferSize(int fd, int buffer);
  void getPipeSize(int pipe_in, int pipe_out);
  void getPipeSize2(int pipe_in, int pipe_out); 
- 
+ void print_timeofday();
  int pfds[2];
  int buffer_size;
  int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
@@ -136,7 +136,7 @@ int create_file(){
     }
 
     fclose(log_file);
-    flcose(stats_file);
+    fclose(stats_file);
     
   return 0;
 }
