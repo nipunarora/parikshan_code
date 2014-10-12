@@ -2,7 +2,28 @@
 \section{Implementation}
 \label{sec:implementation}
 
-\textit{Parikshan} has been implemented in a small cluster environment, with physical hosts running KVM based virtual machines.
-Each VM is considered as a host-os for our implementation test bed.
-User-Space Container virtualization is done using OpenVZ\cite{openvz}, in Centos 6.4 kernels.
-Each container layout is managed using PLOOP\cite{ploop} devices to enable faster and easier migration.
+\parikshan is built on top of a production user-space container virtualization software, OpenVZ \cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32.
+Each container layout is managed using PLOOP\cite{ploop} devices to enable faster and easier cloning.
+The OpenVZ functionality, was extended to enable live-cloning as explained in section\ref{sec:design}.
+We modified and used the OpenVZ toolkit vzctl version 4.7 to create our cloning, creation and destroy scripts for the container. 
+While the technology has also been tested on Debian systems, the evaluation in this paper has been done on RHEL(Centos) Systems. 
+For our evaluation, we have not put in resource restriction on the containers (i.e. the containers have access to the same hardware resources as the host machine).
+Users using \parikshan may put resource restriction as required.
+%\parikshan also requires a number of commonly available linux modules to allow for network connectivity and 
+
+We have tested the system in 3 different configurations. 
+In the first case we tested \parikshan 's internal mode configuration by installing \parikshan in a single host OS, with Intel Core 7 CPU, 8 Cores, 16GB RAM, and running Ubuntu 14.04. 
+\parikshan was installed on multiple VM's running on the host OS using KVM based virtualization. 
+Containers were cloned across these machines, with a seperate VM acting as the client.
+We used NAT, and ip namespaces for network access to the VM's.
+
+In the second mode, we tested our system's external mode by installing \parikshan on the base kernel in identical host nodes. 
+Each of these host nodes have an Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
+
+In the third mode, we tested our system on Google's Cloud Infrastructure (Google Compute \cite{gcompute}).
+The production and the test container's were run on different virtual nodes, with 2 VCPU's and 4G RAM. 
+The main advantage of using the Google Compute Engine was to run our cloning scripts on real data-centers, and also to scale out our evaluation. 
+
+The network proxy was implemented in C/C++.
+The forwarding in the proxy is done by forking off multiple processes each handling one send/or receive connection in a loop.
+Data from processes handling communication with the production container, is  transferred to those handling communication with the test containers using pipes. 

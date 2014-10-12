@@ -1,6 +1,8 @@
 \subsection{Impact}
 \label{sec:impact}
 
+The main advantage of \parikshan is that it provides an open platform which allows the user to do any kind of debugging/testing on a live clone of the production system which is also receiving the user input.
+Natrually, this allows the user to run 
 The impact of sandbox testing can be seen in several different ways
 
 \begin{itemize}
@@ -11,7 +13,7 @@ Most user-end applications have monitoring mechanisms to capture the health of t
 Such monitoring mechanisms can often indicate problems in the systems showing spikes or slowdown in CPU usage, memory footprint, cache misses etc.
 Very often problems in stable production systems are either (1) restricted to only a small percentage of transactions, (2) are system wide, but have minimal effect on the user (cumulative effect of slow memory leak etc.).
 Such problems often do not necessitate taking down the system or lead to a crash
-\textit{Parikshan} can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, and light weight testing to localize the errors without worrying about the slowdown to the production system.
+\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, and light weight testing to localize the errors without worrying about the slowdown to the production system.
 %Hence giving an insight into what could have caused the problem, without needing to bring the entire application server down.
 %We have tried and tested this in particular for unit-testing cases. 
 %While unit-testing cases are undoubtedly self contained, and can be designed like assertions such that they have no after effect on the any subsequent executions, any failure in these test-cases can definetely result in an unclean state.
@@ -19,7 +21,7 @@ Such problems often do not necessitate taking down the system or lead to a crash
 %We believe \emph{Parikshan} can be an effective tool to test and analyze unit tests.
 
   \item \textbf{Fault Tolerance Testing}
-    A possible implementation of the \emph{Parikshan} test harness is to do Fault Tolerance Testing.
+    A possible implementation of the \parikshan test harness is to do Fault Tolerance Testing.
 As mentioned earlier testing and recreating large-scale configurations is extremely difficult.
 Additionally testing scalable aspects is costly as a significantly large test-bed is required to replicate loads. 
 Recent large scale fault tolerance testing approaches has been to use fault injection at random places.
@@ -30,7 +32,7 @@ The key intuition behind this approach is, that faults in an ever evolving large
 However, in the cases when it is unable to do so, Netflix wants to learn from failures, by forcing them in scheduled low-traffic hours.
 
 Natrually such in production fault-injection mechanisms will always effect the user. 
-An alternate mechanism proposed by \emph{Parikshan} is to use the test-container to inject faults. 
+An alternate mechanism proposed by \parikshan is to use the test-container to inject faults. 
 As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.
 
   \item \textbf{Testing Software Updates - AB Testing}
@@ -39,8 +41,8 @@ These may not necessarily change the user-facing input and can be optimizations 
 Such patches can be first tested in the test-container to verify that they are correctly behaving before doing the release.
 A similar approach called A/B Testing\cite{abtesting} is commonly used in mobile and web-applications, which randomly forwards a small percentage of user traffic to a backend server B  a modified version of the backend server(A is the original server). 
 This gives the developer a controlled experiment scenario where he can see if the updates work without effecting too many users.
-\textit{Parikshan} can potentially extend this by testing all user input since it does not effect the user experience at all.
+\parikshan can potentially extend this by testing all user input since it does not effect the user experience at all.
 
-  \item \textbf{Verification}
+%\item \textbf{Verification}
 
 \end{itemize}

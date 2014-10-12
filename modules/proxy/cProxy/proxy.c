@@ -14,7 +14,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
- #include <sys/time.h>
+#include <sys/time.h>
 #include <time.h>
 #include <errno.h>
 #include <libgen.h>
@@ -440,7 +440,7 @@ int create_dup_connection_synch() {
 /* Create client connection */
 int create_connection() {
 
-  DEBUG_PRINT("creating connection... \n");
+	DEBUG_PRINT("creating connection... \n");
 
 	struct sockaddr_in server_addr;
 	struct hostent *server;
