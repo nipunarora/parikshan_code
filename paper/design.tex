@@ -1,8 +1,10 @@
 \section{Design}
 \label{sec:design}
 
-%In this section we begin with an explanation of live cloning to explain to the reader some the key challenges in designing a sandbox. We then give a system overview of \texttt{Parikshan}, explaining each of its components. 
-%Next, we explain how it inserts test cases, into the test harness, and finally we explain how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
+%In this section we begin with an explanation of live cloning to explain to the reader some the key challenges in designing a sandbox. 
+%We then give a system overview of \texttt{Parikshan}, explaining each of its components. 
+%Next, we explain how it inserts test cases, into the test harness, and finally we explain 
+%how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
 
 \begin{figure}[t]
   \begin{center}
@@ -16,7 +18,10 @@
 %\label{sec:workflowArch}
 
 %The basic workflow of \parikshan is as described in Figure \ref{fig:workflow}. 
-%\parikshan can be applied at the boundary of every tier of a multi-tier system. In figure \ref{fig:workflow} we show parikshan being applied to a single tier boundary( communication from a webserver to a backend server) to showcase a simple example, this process can be easily scaled depending on the complexity of the system design. 
+%\parikshan can be applied at the boundary of every tier of a multi-tier system. 
+%In figure \ref{fig:workflow} we show parikshan being applied to a single tier boundary 
+%(communication from a webserver to a backend server) to showcase a simple example, 
+%this process can be easily scaled depending on the complexity of the system design. 
 %The architecture is driven by a proxy request duplication agent( see section \ref{ and a live clone manager.
 
 \subsection{System Overview}
@@ -70,10 +75,10 @@ Network namespaces(see internal mode, figure.\ref{fig:modesCloning}) is a defini
 This is slightly more scalable and has clear separation of network and compute resources. 
 However, an obvious downside to this approach is that it needs a new VM to be allocated.
 This leads us to two different modes of implementation, which we discuss in the next section.
+
 %As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
 %Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
 %To allow for some load-balancing and an application aware buffer, we went for a web application level proxy server to duplicate traffic to both containers. 
-%
 %Further in this section we explain how we deal with these challenges.
 
 \subsubsection{Basic Design \& Modes}
@@ -114,9 +119,13 @@ As we can see in figure.\ref{fig:modesCloning} the production container P1 and t
 
 %\\ \\
 %\noindent \textbf{Implementation}\\
+
 \subsubsection{Algorithm}
+
 %The Clone Manager is responsible for creating a live running ``clone'' of the production container and launch it as the test-container. 
-%In our current setup cloning is done for each target production environment in the same physical host machine (we can clone to a different physical host as well, however for optimization purposes we have assumed that they will always be in the same local network).
+%In our current setup cloning is done for each target production environment in the same physical host machine 
+%(we can clone to a different physical host as well, however for optimization purposes we have assumed that they will always be in the same local network).
+
 In our current implementation, we are using OpenVZ\cite{openvz} as our container engine, and have modified the migration mechanism in vzctl \cite{vzctl} to make it work for live cloning instead. 
 We tested this out on multiple VM's acting as host nodes for OpenVZ containers. 
 To make the cloning easier and faster, we used OpenVZ's \textit{ploop} devices \cite{ploop} to host the containers. 
@@ -156,11 +165,14 @@ A few iteration of cloning a container back and forth between two OpenVZ instanc
 %add citation for OpenVZ Live Migration performance iteration testbed http://openvz.livejournal.com/47780.html
 This is nearly the same as that of native live migration\cite{openvzLiveMigrationPerf}, and has lesser suspend time for the production container as we do not include the \textit{``copy dump file''}, or the \textit{``undump and resume phase''} for production containers. 
 In section \ref{sec:performance}, we evaluate the performance of live cloning while doing increasing amount of random I/O write operations, as well as with doing page fetches  from webserver running the production container.
+
 %The same amount of resources as the production container are reserved for the test-container. 
 %After doing the pre-copy, we do a pause for syncing the two containers, and start them together. 
 %Subsequent clone operations are optimized as they only require rsync for the change that has happened to the base image and in memory operation.
 %After the intial setup, the frequency of cloning depends on the slowdown experienced by the test-container, and requirement of the test-case (some test cases may not require a long running test-window).
+
 \iffalse
+
 \begin{table}[t]
   \centering
     \begin{tabular}{ | p{2.2cm} | l | l | l | l | l | l | l |}
@@ -176,7 +188,9 @@ In section \ref{sec:performance}, we evaluate the performance of live cloning wh
 \caption{Performance of Live Cloning (external mode) with a random file dump process running in the container}
 \label{table:clonePerf}
 \end{table}
+
 \fi
+
 \subsection{Proxy Network Duplicator} 
 \label{sec:proxyDuplicator}
 
@@ -253,11 +267,16 @@ Hence if the speed of link 5 is $Z$ $Mbps$, where $Z < Y$, and $Z < X$, then the
 
 Such a communication model effects the user-experienced delay for the targeted SOA application, and is against the guiding principal of \parikshan.
 To avoid the test-container to effect the communication between the client and the production server, we propose an asynchronous packet forwarding model discussed next.
-%It especially works well with standard SOA architectures with small incoming packet flows, as it means that the delay caused in the test and production container would be minimal.
-%However, a major disadvantage of this approach is that every connection received would finish a round trip connection with production container before sending the packets to the test-container.
+
+%It especially works well with standard SOA architectures with small incoming packet flows, 
+%as it means that the delay caused in the test and production container would be minimal.
+%However, a major disadvantage of this approach is that every connection received would 
+%finish a round trip connection with production container before sending the packets to the test-container.
 %This would obviously delay all communication to the test-container by the amount of time it takes for the production container to respond. 
-%However, more importantly it also effects the speed of the production container for every subsequent flow, since it will have to wait for the time taken to send the packets to the test container.
-%We assume a worker thread model for our proxy, where each connection is managed separately by one worker thread, since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
+%However, more importantly it also effects the speed of the production container for every subsequent flow, 
+%since it will have to wait for the time taken to send the packets to the test container.
+%We assume a worker thread model for our proxy, where each connection is managed separately by one worker thread, 
+%since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
 
 \item \textbf{Asynchronous Packet Forwarding Model}
 
@@ -293,11 +312,14 @@ The algorithm for each of the packet forwarding modes has been described in Algo
 
 
 \iffalse
+
 Since the speed of input from the client is not in sync production-container, we need to buffer incoming traffic and relay it to the the TCP Connector(Node 6, figure \ref{fig:duplicator}) as soon as the test-container is ready for new traffic. 
 Since parallel connections can be initiated by the client on the same TCP port, the Buffer-Manager creates multiple buffers for each connection, and initiates new connections by following the same causal flow of the packets received from the client. 
 Unlike record-replay systems \parikshan does not claim to have strong consistency requirements, and does not need to exactly follow the production container as the goal is not reproduce all non-determinism in the production environment, but instead capture input non-determinism, and complete system state from a given point of time.
 We discuss consistency requirements further in section \ref{sec:consistency}
+
 \fi
+
 \subsection{Testing Window}
 \label{sec:window}
 
@@ -315,6 +337,7 @@ Hence in some cases \parikshan analysis, has to be restricted to a time-window d
 %Let the rate of incoming traffic be \lambda
 
 \iffalse
+
 \subsection{Network State Model}
 \label{sec:networkStateModel}
 
@@ -329,4 +352,5 @@ While TCP is slower than UDP it is preferred for most normal connections between
 Since the UDP protocol has no error management mechanism, it automatically follows that machine state in a UDP connection is not important.
 Hence in our design the duplicator can easily flood packets to the cloned UDP server by simply sending packets to the targeted host and port. 
 Our solution for this is 
+
 \fi

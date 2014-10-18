@@ -3,46 +3,46 @@
 In this section we present the evaluation of Parikshan. 
 The key questions facing us were:
 \begin{itemize}
-  \item How can \parikshan be used in the real world? 
-  \item Does the test container faithfully represent the execution and the state of the production container? 
+%  \item How can \parikshan be used in the real world? 
+%  \item Does the test container faithfully represent the execution and the state of the production container? 
    \item How does cloning the container effect the performance of the production container?
-   \item How does running tests in the test-container effect the performance of the production container? 
+   \item How does running tests in the test-container effect the performance of the production container?
+   \item How long of a testing-window do we have? 
 \end{itemize}
 
-\subsection{CaseStudies}
-\label{sec:casestudy}
+In order to answer these questions, we seperated our evaluation in looking at two different stages: cloning stage, time-window analysis.
 
-Parikshan enables the users to freely run any test-case in the test-container while not effecting the production container. 
-At the same time the output of these tests should not effect the functionality or the performance of the production system.
-The main advantage of such a system can be seen in service oriented applications which are user facing and can hence ill-afford to be shutdown for inspecting bugs.
-As mentioned earlier, another major advantage is that we are able to capture live user-input. \\
-
-\par \noindent \textbf{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}: \\ 
-Performance profiling such as function execution trace, execution time, resource usage etc., is often used to indicate and localize performance bugs in real world systems. 
-While performance profiling is simple to implement, it obviously incurs an overhead and will effect user-experience of the target system.
-Effectively, this means that despite it's advantages, the amount of profiling that can be done in a production system is extremely limited. 
-
-As our first case study we focused on profiling and capturing a performance bug in a session with several randomly created user transactions to MySQL. 
-It was observed, that some of the user requests were running significantly slower than others. 
-Hence 
-
-\par \noindent \textbf{CaseStudy 2: Performance Profiling, using dyninst}
-%Demand Driven Testing - https://www.cs.virginia.edu/~soffa/Soffa_Pubs_all/Conferences/Demand-driven.Misurda.2005.pdf 
-
-%@Nipun- I don't think either of the next two make a lot of sense
-\par \noindent \textbf{CaseStudy 3: A/B Testing}
-A/B Testing 
-%http://www.polteq.com/wp-content/uploads/2013/02/testingexperience20_12_12_Marc_van_t_Veer.pdf
-
-\par \noindent \textbf{CaseStudy 4: Fault Tolerance Testing}
-Fault Injection to look at fault tolerance
-%Fault Injection in netflix http://techblog.netflix.com/2012/07/chaos-monkey-released-into-wild.html
-Security Honeypots? 
-
-\subsection{Performance}
+\subsection{Cloning: Micro-Benchmarks}
 \label{sec:performance}
 
-In order to evaluate the performance of sandbox testing, we seperated our evaluation in looking at two different stages
-\subsubsection{Micro-benchmarks}
-\label{sec:micro}
+\begin{table*}[ht]
+  \centering
+    \begin{tabular}{ | p{4cm} | l | l | l | l | l | l | l | l | l |}
+    \hline
+    \textbf{Modes} & \multicolumn{3}{|c|}{\textbf{Internal Mode}} & \multicolumn{3}{|c|}{\textbf{External Mode}} & \multicolumn{3}{|c|}{\textbf{Google Compute}}\\\hline
+    \textbf{ } & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} \\ \hline
+    \hline
+    \textbf{Throughput} & -- & 1691.0 req/s & 1509 req/s & -- & 712 & 625 & -- & 510 & 450\\ \hline
+    \hline
+    \textbf{Suspend + Dump} & 0.00 & -- & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Pcopy after suspend} &  -- & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Copy Dump File} & 0.00 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Undump and Resume} & 0.00 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline 
+    %\textbf{--------------} & --- & --- & --- & --- & --- & --- & --- & --- & --- \\ 
+    \hline
+    \textbf{Total Suspend Time} & 0.60 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
+    \end{tabular}
+\caption{Performance of Live Cloning (external mode) with a random file dump process running in the container}
+\label{table:clonePerf}
+\end{table*}
+
+
+We first looked at the performance of the cloning operation to look at the time taken to do cloning while. In figure \ref {fig: clonePerf}, the first column gives the average performance of 
+
+
+As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a followup rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
+The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.
+The main factor that effects this is the number of ``dirty pages'' in the suspend phase, which have not copied over in the pre-commit rsync operation.
+Natrually, the number of write operations in the container while cloning the container, will increase the number of dirty pages, and increase the time of the suspend operation.
+
 
