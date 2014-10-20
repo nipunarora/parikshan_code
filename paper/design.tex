@@ -325,14 +325,35 @@ We discuss consistency requirements further in section \ref{sec:consistency}
 
 At the time of the live cloning, the testing container has an identical status and receives the same input as the production container. 
 Hence, any test-cases run in the testing container, should faithfully represent the status of the production container.
-However, an obvious down-side to any testing is that it will have an overhead on the performance of the container as compared to the production environment.
+However, an obvious down-side to any debugging/testing is that it will add an overhead on the performance of the test-container as compared to the production environment.
+%This would mean that the execution of requests in the test-container will lag behind the production container. 
+To avoid this slowdown impacting the actual production container, we discussed an asynchronous forwarding strategy in section \ref{sec:dupModes}, where an unblocking send forwards traffic to a seperate thread which manages communication to the test-container. 
+The thread has an internal buffer where all incoming requests are queued, the incoming request rate is dependent on how fast the production container manages the requests, where as the outgoing rate from the buffer is dependent on how fast the test-container processes the requests.
+Depending on the workload, and the overhead induced in the test-container, can eventually lead to a buffer overflow. 
+The time period till buffer overflow happens is called the testing-window.
+For the duration of the testing-window, the test-container faithfully represents the production container as the testing-window of the test container. 
+Once the buffer has overflown, the production container must be cloned again to ensure it has the same state.
+
+In this section we try to model the testing window by using concepts well used in queuing theory(for the sake of brevity we will avoid going into too much detail, readers can find more about queueing theory models in \cite{queueWiki}).
+The buffer overflow of our test-container can be modelled as a M/M/c/K queue (Kendall's notation\cite{kendall}), for our simplest asynchronous model, and as a M/M/c/K queue in the asynchoronous loadbalanced model.
+An M/M/1/K queue, denotes a queue where requests arrive according to a poisson process with rate $\lambda$, that is the interarrival times are independent, exponentially distributed random variables with parameter $\lambda$ . 
+The service times are also assumed to be independent and exponentially distributed with parameter $\mu$. Furthermore, all the involved random variables are supposed to be independent of each other. 
+Further, the notation specifies that there are $c$ queues/ or alternatively $c$ servers managing the requests, and the queues is of a finite capacity, i.e. the queue can accommodate a maximum of K requests.
+In our case $\lambda$ denotes the rate at which requests arrive to the buffer from the production container, and $\mu$ denotes the processing time overhead of each request in the test-container (to simplify the problem, we ignore the actual processing time of the test-container, as the incoming rate $\lambda$ is already synchronized with the production container processing time, and it is only the overhead added by the test-container which matters). 
+In our simple asynchronous forwarding strategy, we have $c=1$ as we have only a single test-container, potentially as explained earlier, in a load-balanced asynchronous model this could be extended to $c$ servers to increase the time window.
+
+Now based on this notation the expected size of the time window is :
+
+
+%In queueing theory terms, the size of the testing window can be modelled as a special case of continuous-time Markov process also called the \emph{birth-death} process. 
+%For the sake of brevity we will only briefly explain the basics of queueing theory
+
 %It is possible that in heavy load conditions the buffers in the Buffer Manager may overflow. 
 %Depending on the use-case the BufferManager can then trigger the CloneManager, which closes the analysis time-window and launches a fresh clone.
-Incoming traffic may potentially have a cumulative effect which will eventually lead to a buffer overflow in the BufferManager, hence leading to packet drops, and eventually leading to a modified state in the testing container, which can no longer faithfully represent the production container.
-We call the time period in which the test-container faithfully represents the production container as the testing-window of the test container. 
-This behavior is similar to packet dropping in classical TCP buffers, which rely on re-transmission of incoming packets from the client.
-However in our case if packets are dropped the client cannot re-transmit them as it not in sync with the test container.
-Hence in some cases \parikshan analysis, has to be restricted to a time-window dependent on the load of incoming traffic and the slowdown experienced by the test-container.
+%Incoming traffic may potentially have a cumulative effect which will eventually lead to a buffer overflow in the BufferManager, hence leading to packet drops, and eventually leading to a modified state in the testing container, which can no longer faithfully represent the production container.
+%This behavior is similar to packet dropping in classical TCP buffers, which rely on re-transmission of incoming packets from the client.
+%However in our case if packets are dropped the client cannot re-transmit them as it not in sync with the test container.
+%Hence in some cases \parikshan analysis, has to be restricted to a time-window dependent on the load of incoming traffic and the slowdown experienced by the test-container.
 
 %Let the rate of incoming traffic be \lambda
 

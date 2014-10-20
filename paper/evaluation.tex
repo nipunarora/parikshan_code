@@ -24,21 +24,29 @@ In order to answer these questions, we seperated our evaluation in looking at tw
     \hline
     \textbf{Throughput} & -- & 1691.0 req/s & 1509 req/s & -- & 712 & 625 & -- & 510 & 450\\ \hline
     \hline
-    \textbf{Suspend + Dump} & 0.00 & -- & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
-    \textbf{Pcopy after suspend} &  -- & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
-    \textbf{Copy Dump File} & 0.00 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
-    \textbf{Undump and Resume} & 0.00 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline 
+    \textbf{Suspend + Dump} & 0.49 & -- & 0.46 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Pcopy after suspend} & 0.22 & -- & 0.27 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Copy Dump File} & 0.62 &  -- & 0.64 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Undump and Resume} & 1.33 &  -- & 1.53 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline 
     %\textbf{--------------} & --- & --- & --- & --- & --- & --- & --- & --- & --- \\ 
     \hline
-    \textbf{Total Suspend Time} & 0.60 &  -- & 0.57 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Total Suspend Time} & 2.66 &  -- & 2.91 & 0.74 & 0.59 & 0.65 & 0.00 & 0.00 & 0.00\\ \hline
     \end{tabular}
 \caption{Performance of Live Cloning (external mode) with a random file dump process running in the container}
 \label{table:clonePerf}
 \end{table*}
 
-
-We first looked at the performance of the cloning operation to look at the time taken to do cloning while. In figure \ref {fig: clonePerf}, the first column gives the average performance of 
-
+The profile of the cloning operation can be divided in 4 stages: 
+(1) Suspend \& Dump: this is the time taken to suspend the container, 
+(2) Pcopy after suspend: which does the rsync after the suspend of the file system of the container, 
+(3) Copy Dump File: which copies the process state, and finally 
+(4) Undump and Resume: which is the time taken to resume the containers. 
+We first looked at the performance of the cloning operation to look at the time taken to do cloning while. 
+In table \ref {table:clonePerf}, we show the suspend times in all 3 modes: internal, external, and google-compute, while comparing it with a production container, that is idle vs. a container which is running an apache hog benchmark \cite{httperf} on it. 
+The first column gives the average performance of the cloning operation without any hog operation running on it.  
+An idle or a containter with minimal processing is cloned relatively fast ~ 2.66 seconds on the idle container. 
+We then tried to run an apache hog to make a baseline of apache's performance without cloning, and found that a simple page fetch gave us a throughput of 1691 req/s (internal mode), and then we tried to do cloning of the same container while running the hog. and found negligible change in the cloning performance.
+The key idea behind this performance 
 
 As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a followup rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
 The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.
