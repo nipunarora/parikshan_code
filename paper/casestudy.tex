@@ -1,0 +1,29 @@
+\section{CaseStudies}
+\label{sec:casestudy}
+
+Parikshan enables the users to freely run any test-case in the test-container while not effecting the production container. 
+At the same time the output of these tests should not effect the functionality or the performance of the production system.
+The main advantage of such a system can be seen in service oriented applications which are user facing and can hence ill-afford to be shutdown for inspecting bugs.
+As mentioned earlier, another major advantage is that we are able to capture live user-input. \\
+
+\par \noindent \textbf{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}: \\ 
+Performance profiling such as function execution trace, execution time, resource usage etc., is often used to indicate and localize performance bugs in real world systems. 
+While performance profiling is simple to implement, it obviously incurs an overhead and will effect user-experience of the target system.
+Effectively, this means that despite it's advantages, the amount of profiling that can be done in a production system is extremely limited. 
+
+As our first case study we focused on profiling and capturing a performance bug in a session with several randomly created user transactions to MySQL. 
+It was observed, that some of the user requests were running significantly slower than others. 
+Hence 
+
+\par \noindent \textbf{CaseStudy 2: Performance Profiling, using dyninst}
+%Demand Driven Testing - https://www.cs.virginia.edu/~soffa/Soffa_Pubs_all/Conferences/Demand-driven.Misurda.2005.pdf 
+
+%@Nipun- I don't think either of the next two make a lot of sense
+\par \noindent \textbf{CaseStudy 3: A/B Testing}
+A/B Testing 
+%http://www.polteq.com/wp-content/uploads/2013/02/testingexperience20_12_12_Marc_van_t_Veer.pdf
+
+\par \noindent \textbf{CaseStudy 4: Fault Tolerance Testing}
+Fault Injection to look at fault tolerance
+%Fault Injection in netflix http://techblog.netflix.com/2012/07/chaos-monkey-released-into-wild.html
+Security Honeypots? 
