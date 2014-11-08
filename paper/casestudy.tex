@@ -6,16 +6,31 @@ At the same time the output of these tests should not effect the functionality o
 The main advantage of such a system can be seen in service oriented applications which are user facing and can hence ill-afford to be shutdown for inspecting bugs.
 As mentioned earlier, another major advantage is that we are able to capture live user-input. \\
 
-\par \noindent \textbf{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}: \\ 
+%\par \noindent
+\subsection{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}  
 Performance profiling such as function execution trace, execution time, resource usage etc., is often used to indicate and localize performance bugs in real world systems. 
 While performance profiling is simple to implement, it obviously incurs an overhead and will effect user-experience of the target system.
 Effectively, this means that despite it's advantages, the amount of profiling that can be done in a production system is extremely limited. 
 
 As our first case study we focused on profiling and capturing a performance bug in a session with several randomly created user transactions to MySQL. 
-It was observed, that some of the user requests were running significantly slower than others. 
-Hence 
+It was reported by users, that some of the user requests were running significantly slower than others.
+To test out \parikshan to catch this bug, we re-created a 2 tier client-server setup with the server(container) running a buggy mysql server application, and made a random workload with several repetitive instances of queries triggering the bug.
+We initiated debugging by creating a live clone of the container running the mysql server.
+Using a trial and error method we profiled high granularity functions in mysql and gradually looked at finer granularity modules to isolate the performance problem.
+This allowed us to successfully isolate the function with the performance problem.
 
-\par \noindent \textbf{CaseStudy 2: Performance Profiling, using dyninst}
+We believe this case study shows a classical performance bug, where \parikshan can be used.
+Firstly, it's a performance bug which is non-critical i.e. does not lead to crashes etc.
+\parikshan has been designed to look into real live bug diagnosis, rather than looking at bugs after a crash etc.
+\footnote{A lot of SOA applications are fault tolerant, and can continue even after the crash by relaunching processes etc. Potentially \parikshan can also be used in such a scenario to trace the crash itself.}
+Secondly, we assume that the user-input (which caused the bug), occurs fairly frequently.
+In this case, a database query which looks into data containing chinese characters, or japanese characters could be a fairly common occurence.
+In our experience we found several such performance bugs which occur in only a small percentage of user transactions.
+These bugs are often diffcult to catch as they happen only in corner case inputs, and generally do not lead to application crashes.
+\parikshan would be useful to debug such performance errors, by giving deep insight in a live running system.
+
+%\par \noindent
+\subsection {CaseStudy 2: Performance Profiling, using dyninst}
 %Demand Driven Testing - https://www.cs.virginia.edu/~soffa/Soffa_Pubs_all/Conferences/Demand-driven.Misurda.2005.pdf 
 
 %@Nipun- I don't think either of the next two make a lot of sense

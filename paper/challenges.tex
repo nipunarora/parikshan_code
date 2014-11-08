@@ -1,16 +1,35 @@
-\section{Challenges}
+\section{Discussion and Challenges}
 \label{sec:challenges}
+
+In this section we describe some of the challenges, and limitations 
 
 \subsection{Non-Determinism}
 \label{sec:nonDeterminism}
 
-While the test container is a clone of production container, and they receive the same input simultaneously. 
-They still suffer from aspects of non-determinism.
-Non-Determinism, can be triggered by multi-process servers, caching, or in rare circumstances it can happen because of non-determinism in the order of processing of input requests. 
-While the change in system state between the production and test containers, may not be too important initially, we believe that the cumulative effect of non-determinism may change the 
+Execution of the same input in different conditions can produce different outputs from an application, this behavior is referred to as non-deterministic execution.
+With the exception of dedicated controlled executions in embedded systems etc., most large scale applications and complex systems exhibit non-determinism, which is what makes debugging a challenge.
+Broadly non-determinism can be caused because of the following reasons: 1. Input non-determinism, 2. Configuration non-determinism, 3. Concurrency based non-determinism.
+
+Input non-determinism is non-deterministic behavior caused because of different input received by the application (eg. requests to the server, user input etc.). 
+Obviously, any output in the application and it's execution trace, will depend on the input it receives. 
+In offline debugging it is often difficult to capture all possible inputs, and hence deal with input non-determinism.
+In order to avoid input non-determinism, \parikshan uses a network proxy to send all inputs received in the production container also to the test-container. 
+Hence both of them behave in almost the same fashion.
+
+Configuration non-determinism relates to the state of the container, the application configuration, system/kernel parameters, hardware resources etc.
+Once again, this can often effect the logic of the application.
+For eg. max no. of theads is a common configuration parameter in several multi-process server applications, and can effect the performance of the application in high workloads.
+\parikshan can deal with most configuration/state non-determinism as it captures the state of the production container at the time of cloning, and creates an exact replica.
+This replica should have an identical behavior to the original and should have similar memory consumption, threading behavior etc. 
+However, some amount of inconsistency between the test-container and production container is possible.
+
+Another kind of non-determinism is caused by concurrent applications or parallel applications which may behave differently in each execution.
+Capturing this kind of non-determinism is important to debug bugs such as race-conditions, locks etc.
+Unfortunately, the current system design of \parikshan cannot capture concurrency based non-determinism, we hope to revise and include this in future versions.
 
 \subsection{Slowdown}
 \label{sec:slowdown}
+
 
 \subsection{Consistency Requirements}
 \label{sec:consistency}

@@ -1,4 +1,4 @@
-% This is "sig-alternate.tex" V2.0 May 2012
+%$ $  $ $% This is "sig-alternate.tex" V2.0 May 2012
 % This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
 %
 % This example file demonstrates the use of the 'sig-alternate.cls'
@@ -50,7 +50,11 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{paralist,algorithm}
 \usepackage{float}
+\usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{epstopdf}
+%\usepackage{epsfig}
+%\epstopdfsetup{outdir=./}
 %\usepackage[showframe=true]{geometry}
 \usepackage{enumitem}
 
@@ -171,7 +175,7 @@ Franjo Ivancic\\
 
 \keywords{ACM proceedings, \LaTeX, text tagging}
 
-
+\newcommand{\iprobe}{\texttt{iProbe}}
 \newcommand{\parikshan}{\texttt{Parikshan} }
 
 \input{introduction}
@@ -181,7 +185,7 @@ Franjo Ivancic\\
 \input{challenges}
 \input{trigger}
 \input{network-issues}
-\input{Evaluation}
+\input{evaluation}
 \input{casestudy}
 \input{related}
 \input{conclusion}

@@ -57,7 +57,7 @@ This gives them an immediate insight as to whether the application is behaving c
 Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
 The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging of production applications in order to significantly reduce the time towards bug resolution.
 We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
-Leveraging this abundance of resources, and recent advances in user-space virtualization technology(OpenVZ/LXC\cite{openvz,linux}) we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment wotjpit effecting the actual application: thereby, enabling real-time diagnosis.
+Leveraging this abundance of resources, and recent advances in user-space virtualization technology(OpenVZ/LXC\cite{openvz,lxc}) we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment wotjpit effecting the actual application: thereby, enabling real-time diagnosis.
 
  Our system called \parikshan\footnote{Parikshan is the Sanskrit word for testing} allows capturing the context of application, 
 for tests to be run without effecting the sanctity and performance of the actual user-facing application. 

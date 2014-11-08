@@ -1,13 +1,13 @@
 \section{Evaluation}
 \label{sec:evaluation}
-In this section we present the evaluation of Parikshan. 
+In this section we present the evaluation of \parikshan. 
 The key questions facing us were:
 \begin{itemize}
 %  \item How can \parikshan be used in the real world? 
 %  \item Does the test container faithfully represent the execution and the state of the production container? 
-   \item How does cloning the container effect the performance of the production container?
+     \item How does cloning the container effect the performance of the production container?
+     \item How long of a testing-window do we have? 
    \item How does running tests in the test-container effect the performance of the production container?
-   \item How long of a testing-window do we have? 
 \end{itemize}
 
 In order to answer these questions, we seperated our evaluation in looking at two different stages: cloning stage, time-window analysis.
@@ -46,11 +46,39 @@ In table \ref {table:clonePerf}, we show the suspend times in all 3 modes: inter
 The first column gives the average performance of the cloning operation without any hog operation running on it.  
 An idle or a containter with minimal processing is cloned relatively fast ~ 2.66 seconds on the idle container. 
 We then tried to run an apache hog to make a baseline of apache's performance without cloning, and found that a simple page fetch gave us a throughput of 1691 req/s (internal mode), and then we tried to do cloning of the same container while running the hog. and found negligible change in the cloning performance.
-The key idea behind this performance 
+The key thing to note in these experiments for all 3 modes, was that we \textbf{did not have any connection failiure or connection refused, and only a slight decline in the throughput during the cloning operation}. 
+Natrually, at the application layer, the tcp packet drops are hidden as packet resends from within tcp protocol hides the performance impact.
+To further investigate the tcp packet dropping, we ran an iperf\cite{iprobe}( a tool to measure tcp benchmark) server while cloning the production container. 
+We were indeed able to observe packet dropping for about 2 seconds in the iperf client, however, the important point to note is that there were no requests dropped for the application while doing cloning. 
 
-As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a followup rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
+As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a follow-up rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
 The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.
 The main factor that effects this is the number of ``dirty pages'' in the suspend phase, which have not copied over in the pre-commit rsync operation.
 Natrually, the number of write operations in the container while cloning the container, will increase the number of dirty pages, and increase the time of the suspend operation.
+To understand the effect that i/o operations have on the cloning operation, we ran a controlled experiment gradually increasing the number of i/o writes. 
+We use fio(flexible io tool for linux)\cite{fio}, to increase the number of i/o operations while doing cloning. 
+Specifically, we do random-write operations of a 500MB file with fixed i/o bandwidth rates.
+As shown in figure \ref{fig:io_ops}, the cloning operation has minimal impact till a fairly decent i/o bandwidth for write operations(~ 100Kbps). 
+However, it increased exponentially beyond that, we attribute this to a caching behavior, but in general the increased cloning time confirmed our intuition that the cloning operation will be impacted when running an i/o intensive application.
+Current research in live migration has looked into further decreasing the sync time by doing active migration, and trigger page fault for the dirty bits which were not copied over.
+This is a similar to a copy-on-write method, that could possibly reduce our suspend time.
+However, it would impact, the overall performance of both systems as it would do the rsync operation for a much longer time-period.
 
+\subsection{Time-Window Size Evaluation}
+\label{sec:timewindowPerformance}
 
+As explained in section \ref{sec:timewindowPerformance} if the overhead of the test-container is too high, the buffer may overflow.
+This indirectly means that the test-container and the production-container are potentially out of sync.
+In our current design we re-initiate the test-container by cloning again, and we call the time taken to reach a buffer overflow the "time-window" for the test-container.
+As explained earlier, the size of this test-container, depends both on the overhead of the "test"/"instrumentation", as well as the incoming workload.
+
+In this section we evaluate the testing window size using varying amounts of instrumentation, and the workload.
+For the purpose of this evaluation, we keep a fixed buffer size. 
+First we use a controlled workload rate, and gradually increase the overhead, then we use another scenario, where we keep the try to keep the same overhead, and try to increase the workload.
+We also use real-world network packet capture data, to simulate a realistic workload and gradually increase the overhead there
+
+\subsection{Overhead while Running tests}
+\label{sec:overhead}
+
+One of the most important goals of using \parikshan is to allow debugging without having any overhead on the actual application.
+In this section we verify that this goal of \parikshan holds true i.e. debugging in the sandbox-container, does not effect the performance container. 
