@@ -1,4 +1,4 @@
-\section{Triggering and Inserting Analysis}
+\section{Inserting probes and Performance Analysis}
 \label{sec:trigger}
 
 The key idea behind sandbox testing is to debug problems in real-world scenarios
@@ -21,7 +21,7 @@ The path taken and the value of the variables are important as they explain the 
 To generate this trace, we insert probes or watch points for variables in the application similar to existing development phase debugging tools such as GDB(gnu debugger) \cite{gdb}.
 Inserting probes in the sandbox can be done using any existing dynamic instrumentation tools  such as PIN \cite{pin}, Valgrind \cite{valgrind}, Dyninst \cite{dyninst}.
 For our purposes we used \iprobe\footnote{we have used iProbe only because of our familiarity} \cite{iProbe} a dynamic binary instrumentation tool designed by the authors to insert probes in running applications. 
- \iprobe uses compile time flags to generate placeholders in the binary, and inserts instrumentation probes in the binary at run-time.
+ \iprobe  uses compile time flags to generate placeholders in the binary, and inserts instrumentation probes in the binary at run-time.
 Users can use it to insert print statements on function executions. 
 
 

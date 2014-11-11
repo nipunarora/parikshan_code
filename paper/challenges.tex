@@ -18,12 +18,12 @@ Hence both of them behave in almost the same fashion.
 
 Configuration non-determinism relates to the state of the container, the application configuration, system/kernel parameters, hardware resources etc.
 Once again, this can often effect the logic of the application.
-For eg. max no. of theads is a common configuration parameter in several multi-process server applications, and can effect the performance of the application in high workloads.
+For eg. max no. of threads is a common configuration parameter in several multi-process server applications, and can effect the performance of the application in high workloads.
 \parikshan can deal with most configuration/state non-determinism as it captures the state of the production container at the time of cloning, and creates an exact replica.
 This replica should have an identical behavior to the original and should have similar memory consumption, threading behavior etc. 
 However, some amount of inconsistency between the test-container and production container is possible.
 
-Another kind of non-determinism is caused by concurrent applications or parallel applications which may behave differently in each execution.
+Another kind of non-determinism is caused by parallel applications which may behave differently in each execution.
 Capturing this kind of non-determinism is important to debug bugs such as race-conditions, locks etc.
 Unfortunately, the current system design of \parikshan cannot capture concurrency based non-determinism, we hope to revise and include this in future versions.
 

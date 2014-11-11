@@ -7,13 +7,13 @@ However, most such record-replay systems have a high recording overhead and are 
 
 In this work we present a harness for production systems which allows users to debug the target system (run test-cases, debug, or profile etc.) in a sandbox environment cloned from a live running system at any point in it's execution.
 % of a service oriented application. 
-The paper leverages, user-space containers (OpenVZ/ LXCs) to launch a container cloned and migrated from a running instances of an application, thereby launching two containers: production (which provides the real output), test-container (for debugging/testing). 
+The paper leverages, user-space containers (OpenVZ/ LXC) to launch a container cloned and migrated from a running instances of an application, thereby launching two containers: production (which provides the real output), test-container (for debugging/testing). 
 This \emph{test-container} provides a sandbox environment, for safe execution of test-cases/debugging done by the users without any perturbation to the execution environment. 
 %Test cases are initiated using user-defined probe points which launch test-cases using the execution context of the probe point. 
-Our sandboxes provide a have namespace, and resource management for the processes executing the test/debug cases.
+Our sandboxes provide a have name-space, and resource management for the processes executing the test/debug cases.
 A customized-network proxy agent replicates inputs from clients to both the production and test-container, as well safely discard all outputs from the test-container.
 %, and manage the file system such that existing and newly created file descriptors are safely managed.
 %Further we explain fidelity guarantees of our proposed system
-We believe our tool provides a mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
+With increased emphasis on user-space container based virtualization technologies, we believe our tool provides a mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
 %In our evaluation provide a number of use-cases to show the utility of our tool.  
 \end{abstract}

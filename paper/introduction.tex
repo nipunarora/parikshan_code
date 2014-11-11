@@ -12,7 +12,7 @@
 \begin{figure*}[ht]
   \begin{center}
     \includegraphics[width=0.7\textwidth]{figs/motivation.eps}
-    \caption{Here (i). shows a workflow of a simple 2 tier system without \parikshan where the user has to do offline debugging, and will have to figure out someway to capture the user input/bug symptoms/system state, (ii) is the same system running with \parikshan, which allows the user to do online debugging in a parallel test-container cloned from the backend server, which receives the same input}
+    \caption{Here (i). shows a workflow of a simple 2 tier system without \parikshan where the user has to do offline debugging, and will have to figure out someway to capture the user input/bug symptoms/system state, (ii) is the same system running with \parikshan, which allows the user to do online debugging in a parallel test-container cloned from the back-end server, which receives the same input}
     \label{fig:motivation}
   \end{center}
 \end{figure*}
@@ -52,12 +52,12 @@ However, despite a clear need, testing in the wild has never gotten much tractio
 %Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
 %This often allows for redundant computation, which can be used for testing purposes. 
 
-The main reason that debugging in the development environment is easier, is because developers can trace the execution flow of the program using tools such as gdb, valgrind etc. and look at variable values for the given input. 
+The main reason that debugging in the development environment is easier, is because developers can trace the execution flow of the program using tools such as gdb\cite{gdb}, valgrind\cite{valgrind} etc. and look at variable values for the given input. 
 This gives them an immediate insight as to whether the application is behaving correctly, and where the bug could be.
 Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
 The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging of production applications in order to significantly reduce the time towards bug resolution.
 We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
-Leveraging this abundance of resources, and recent advances in user-space virtualization technology(OpenVZ/LXC\cite{openvz,lxc}) we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment wotjpit effecting the actual application: thereby, enabling real-time diagnosis.
+Leveraging this abundance of resources, and recent advances in user-space virtualization technology(OpenVZ/LXC\cite{openvz,lxc}) we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment without effecting the actual application: thereby, enabling real-time diagnosis.
 
  Our system called \parikshan\footnote{Parikshan is the Sanskrit word for testing} allows capturing the context of application, 
 for tests to be run without effecting the sanctity and performance of the actual user-facing application. 
@@ -71,14 +71,13 @@ We clone the production and test containers using a variant of live migration wi
 
 %\textit{Parikshan}
 %We provide a flexible framework which allows user access to a parallel test-container which behaves identically as the production container. 
-While we discuss several case-studies to debug/test production applications that show how our framework can be used, 
-we wish to stress that \textbf{the main advantage of \parikshan is a harness/framework for testing/debugging in a live environment rather than a new testing methedology}. 
+While we discuss several case-studies to debug/ test production applications that show how our framework can be used, we wish to stress that \textbf{the main advantage of \parikshan is a harness/ framework for testing/ debugging in a live environment rather than a new testing methodology}. 
 The key contributions of this paper are:
 
 \begin{itemize}
 
 \item A tool which provides a sandbox environment to debug the production environment. 
-This allows for a safe and secure mechanism to perturb and dianose the application, \textbf{without effecting the functionality} of the  production container.
+This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
 
 \item A testing harness, and proxy which ensures non-blocking message forwarding to the test-container, which ensures \textbf{no performance impact} on the production container. 
 
