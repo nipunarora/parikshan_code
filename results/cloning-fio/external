@@ -1,0 +1,121 @@
+
+1. No I/O ops
+
+        Suspend + Dump:   0.10
+   Pcopy after suspend:   0.44
+        Copy dump file:   0.28
+       Undump + Resume:   0.84
+                        ------
+  Total suspended time:   1.67
+
+2.a 1K I/O ops
+
+        Suspend + Dump:   0.21
+   Pcopy after suspend:   1.23
+        Copy dump file:   0.84
+       Undump + Resume:   1.53
+                        ------
+  Total suspended time:   3.81
+
+2.b 1K I/O ops
+
+        Suspend + Dump:   0.21
+   Pcopy after suspend:   1.34
+        Copy dump file:   0.74
+       Undump + Resume:   1.48
+                        ------
+  Total suspended time:   3.77
+
+
+3.a. 2K I/O ops
+
+        Suspend + Dump:   0.21
+   Pcopy after suspend:   1.65
+        Copy dump file:   0.74
+       Undump + Resume:   0.97
+                        ------
+  Total suspended time:   3.57
+
+3.b. 2K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend:   1.89
+        Copy dump file:   0.74
+       Undump + Resume:   0.99
+                        ------
+  Total suspended time:   3.81
+
+4.a. 4K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend:   3.11
+        Copy dump file:   0.73
+       Undump + Resume:   1.58
+                        ------
+  Total suspended time:   5.62
+
+4.b. 4K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend:   3.80
+        Copy dump file:   0.73
+       Undump + Resume:   0.92
+                        ------
+  Total suspended time:   5.66
+
+5.a. 16K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend:   8.51
+        Copy dump file:   0.73
+       Undump + Resume:   1.51
+                        ------
+  Total suspended time:  10.96
+
+5.b. 16K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend:  10.36
+        Copy dump file:   0.74
+       Undump + Resume:   1.04
+                        ------
+  Total suspended time:  12.34
+
+6.a. 100K I/O ops
+
+        Suspend + Dump:   0.21
+   Pcopy after suspend:  57.58
+        Copy dump file:   0.73
+       Undump + Resume:   1.35
+                        ------
+  Total suspended time:  59.88
+
+6.b. 100K I/O ops
+
+       Suspend + Dump:   0.22
+   Pcopy after suspend:  53.94
+        Copy dump file:   0.74
+       Undump + Resume:   1.20
+                        ------
+  Total suspended time:  56.10
+
+7.a. 250K I/O ops
+
+ Suspend + Dump:   0.23
+   Pcopy after suspend: 217.98
+        Copy dump file:   0.74
+       Undump + Resume:   1.49
+                        ------
+  Total suspended time: 220.43
+
+8.a. 500K I/O ops
+
+        Suspend + Dump:   0.20
+   Pcopy after suspend: 444.34
+        Copy dump file:   0.73
+       Undump + Resume:   1.66
+                        ------
+  Total suspended time: 446.94
+
+
+8.b. 500K I/O ops 

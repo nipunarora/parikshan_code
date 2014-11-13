@@ -8,6 +8,7 @@
 *.rel
 *.o
 *.~
+*~
 #*
 *#
 modules/ntools-1.5/src/nclient
