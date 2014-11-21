@@ -66,7 +66,7 @@ We duplicate the incoming traffic to both the production container and the test 
 The debugging on the test-container is done on the fly using dynamic instrumentation, hence any set of test-cases can be turned on whenever required. 
 %This is achieved by using dynamic instrumentation mechanisms to clone a VM by forking off from a running executed state and encapsulating the forked execution in a VM.
 %The user can pre-define probe points for dynamically inserting test-cases (by default the entry and exit of each function is considered a probe point).
-Since the test is executed in a VM it acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or effecting the sanity of the responses to the production client. 
+Since the test is executed in a container it acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or effecting the sanity of the responses to the production client. 
 We clone the production and test containers using a variant of live migration without suspending the services of the production server, and follow it up with frequent synchronization for long running tests.
 
 %\textit{Parikshan}
@@ -79,16 +79,17 @@ The key contributions of this paper are:
 \item A tool which provides a sandbox environment to debug the production environment. 
 This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
 
-\item A testing harness, and proxy which ensures non-blocking message forwarding to the test-container, which ensures \textbf{no performance impact} on the production container. 
+\item A testing harness, and proxy which ensures non-blocking request duplication to the test-container, which ensures \textbf{no performance impact} on the production container. 
 
 \item Our tool tracks the \textbf{fidelity of the test-container} ( if the test-container faithfully represents the production container) and creates a flag whenever the containers are out-of-sync. 
-The time till which the test-container maintains fidelity is called it's \emph{testing-window}( see section \ref{sec:window}.
+The time till which the test-container maintains fidelity is called it's \emph{testing-window}( see section \ref{sec:window}).
 
 \item We allow for \textbf{dynamic insertion of probes}, and safely capturing the execution trace of the application. 
 Dynamically inserting probes is important to avoid relaunching binaries in the test-container. 
 Restarting binaries would break active network connections, and destroy the in memory state of the test container(note: configuration/file-system state is still preserved).
+In our case studies we show how dynamic instrumentation mechanisms can be used with \parikshan
 
-\item One of the key advantages of our approach is that it is \textbf{language and platform agnostic}. 
+\item One of the key advantages of our approach is that it is \textbf{language agnostic}. 
 Since the underlying mechanism takes advantage of containers as a platform to do the cloning, the language or interface does not matter as far as cloning is concerned. 
 %Of-course testing mechanisms may differ depending upon different languages.
 

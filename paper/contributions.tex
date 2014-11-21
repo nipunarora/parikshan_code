@@ -2,7 +2,6 @@
 \label{sec:impact}
 
 The main advantage of \parikshan is that it provides an open platform which allows the user to do any kind of debugging/testing on a live clone of the production system which is also receiving the user input.
-Naturally, this allows the user to run 
 The impact of sandbox testing can be seen in several different ways
 
 \begin{itemize}
@@ -15,10 +14,11 @@ The impact of sandbox testing can be seen in several different ways
  Examples of this are configuration bugs, performance bugs, or slow memory leaks, which do not necessarily stop all services, but need to be fixed quickly so as to avoid degradation in the quality of service.
  \parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, thereby capturing the state, configuration and user-input to assist the debugger.
 
-  \item \textbf{Monitoring Application Health}
+\item \textbf{Monitoring Application Health/User usage statistics}
     %The main motivations leading to \emph{Parikshan} is to provide a harness to allow the user to test live applications. 
 As explained in section \ref{sec:motivation}, most user-end applications have monitoring mechanisms to capture the health of the application built within the system.
 Such monitoring mechanisms can often indicate problems in the systems showing spikes or slowdown in CPU usage, memory footprint, cache misses etc.
+Additionally, business intelligence and future product enhancements often rely on understanding how the user is using the application.
 %Very often problems in stable production systems are either (1) restricted to only a small percentage of transactions, (2) are system wide, but have minimal effect on the user (cumulative effect of slow memory leak etc.).
 %Such problems often do not necessitate taking down the system or lead to a crash. 
 \parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, and light weight testing to localize the errors without worrying about the slowdown to the production system.
@@ -45,13 +45,12 @@ Naturally such in production fault-injection mechanisms will always effect the u
 An alternate mechanism proposed by \parikshan is to use the test-container to inject faults. 
 As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.
 
-  \item \textbf{Testing Software Updates - AB Testing}
+  \item \textbf{Testing Software Updates}
 Software patches for performance or functional updates are frequently done on backend servers. 
 These may not necessarily change the user-facing input and can be optimizations internal in the back-end server.
 Such patches can be first tested in the test-container to verify that they are correctly behaving before doing the release.
-A similar approach called A/B Testing\cite{abtesting} is commonly used in mobile and web-applications, which randomly forwards a small percentage of user traffic to a backend server B  a modified version of the backend server(A is the original server). 
-This gives the developer a controlled experiment scenario where he can see if the updates work without effecting too many users.
-\parikshan can potentially extend this by testing all user input since it does not effect the user experience at all.
+This gives the developer a controlled experiment scenario where he can see if the updates working properly.
+%\parikshan can potentially extend this by testing all user input since it does not effect the user experience at all.
 
 %\item \textbf{Verification}
 

@@ -1,0 +1,20 @@
+\begin{abstract}
+  
+%Existing Testing and Verification technologies, are impractical for testing large scale softwares. 
+%One of the biggest problems faced by developers debugging large scale systems is replicating the deployed environment to figure out errors.
+%Additionally, most modern companies are combining their development and operation management activities (DevOps), which has led to an increased emphasis on fast bug resolution.
+%In recent years there has been a lot of work in record-and-replay systems which captures traces from live production systems, and replays them.
+%However, most such record-replay systems have a high recording overhead and are still not practical to be used in production environments without paying a penalty in terms of user-experience. 
+In this work we present a framework which allows users to debug a target production system (execution tracing, profile, breakpoint etc.) in a sandbox environment cloned from the live running system at any point in its execution.
+% of a service oriented application. 
+The paper leverages user-space containers (OpenVZ/LXC) to launch a container cloned and migrated from running instances of an application, thereby launching two containers: production (which provides the real output), and debug-container (for debugging). 
+This \emph{debug-container} provides a sandbox environment for safe application of instrumentation tools without any perturbation to the actual production environment. 
+%Test cases are initiated using user-defined probe points which launch test-cases using the execution context of the probe point. 
+%Our sandboxes provide name-space, and resource management for the processes executing the test/debug cases.
+A customized-network proxy agent replicates inputs from clients to both the production and debug-container, as well as safely discards all outputs from the debug-container.
+%These sandboxed test-containers can be run either on the same physical host as the production container, or scaled out on dedicated physical test servers.
+%, and manage the file system such that existing and newly created file descriptors are safely managed.
+%Further we explain fidelity guarantees of our proposed system
+We believe our tool provides a novel mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
+%In our evaluation provide a number of use-cases to show the utility of our tool.  
+\end{abstract}
