@@ -44,13 +44,13 @@
 %(3) Copy Dump File: which copies the process state, and finally 
 %(4) Undump and Resume: which is the time taken to resume the containers. 
 
-\textbf{ Q1: How does cloning impact production systems and how fast is cloning?  }
+\noindent \textbf{ Q1: How does cloning impact production systems and how fast is cloning?  }
 In Table \ref {table:clonePerf}, we show the suspend times when cloning a production container (webserver) that is idle vs. a container which is running an Apache hog benchmark \cite{httperf} on it. 
 The first column gives the average performance of the cloning operation without any hog operation running on it.  
 An idle or a container with minimal processing is cloned relatively fast: 2.66 seconds on the idle container. 
-We then tried to run an Apache hog to make a baseline of Apache's performance without cloning, and found that a simple page fetch gave us a throughput of 1601 req/s (internal mode). Then we tried to do cloning of the same container while running the hog, and found minimal change in the cloning performance.
+We then tried to run an Apache hog to make a baseline of Apache's performance without cloning, and found that a page fetch gave us a throughput of 1601 req/s (internal mode). Then we tried to do cloning of the same container while running the hog, and found minimal change (1509 req/s) in the performance of the hog, and very little impact on the suspend time of live cloning.
 The key thing to note in these experiments was that we \textbf{did not have any connection failure or connection refused, and only a slight decline in the throughput during the cloning operation}. 
-At the application layer, the TCP packet drops are hidden as packet resends from within TCP.
+At the application layer, the TCP packet drops are hidden as packets are resent from within the TCP protocol.
 %To further investigate the tcp packet dropping, we ran an iperf\cite{iperf}( a tool to measure tcp benchmark) server while cloning the production container. 
 %We were indeed able to observe packet dropping for about 2 seconds in the iperf client, however, the important point to note is that there were no requests dropped for the application while doing cloning. 
 \iffalse
@@ -65,7 +65,7 @@ At the application layer, the TCP packet drops are hidden as packet resends from
 %As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a follow-up rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
 %The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.
 
-\textbf{ Q2: What factors effect cloning performance? }
+\noindent \textbf{ Q2: What factors effect cloning performance? }
 The main factor that effects suspend time is the number of ``dirty pages'' in the suspend phase, which have not copied over in the pre-commit rsync operation.
 %Naturally, the number of write operations in the container while cloning the container, will increase the number of dirty pages, and increase the time of the suspend operation.
 %To understand the effect that I/O operations have on the cloning operation, we ran a controlled experiment gradually increasing the number of I/O writes and writes. 
@@ -81,7 +81,7 @@ However, it increased rapidly beyond that. Thus, the increased cloning time conf
 %While for lower I/O operations, the performance of both were similar, as we go higher, the external mode which uses the network to transfer the dirty pages during the cloning operations becomes a bottleneck. 
 %The internal mode is much faster as both the production and test-container are hosted in the same physical device, so they have a much higher bandwidth between them.
 %We can also see that the majority of the time is spent in pcopy after suspend, which is doing the copy of the dirty bits after suspend, especially for higher I/O's the other operations become negligible in comparison.
-We would like to point out here, that most SOA application are heavily skewed to read or CPU intensive operations, and several studies have shown live migration performance to be acceptable\cite{vmperformance} for most application SLA's. 
+We would like to point out here, that most SOA application are usually read or CPU intensive operations, and several studies have shown live migration performance to be acceptable\cite{vmperformance} for most application SLA's. 
 To conclude, we validated that live cloning generally takes less than two seconds  and is not disruptive to application clients (there is no loss of service visible). 
 However, in high I/O write intensive workloads, the amount of time taken to clone can reach one or two minutes.
 In such cases, we did observe retries and the performance of the server did suffer. 

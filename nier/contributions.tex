@@ -11,7 +11,6 @@
 
  \parikshan can be useful in several scenarios, such as for debugging non-crashing bugs such as configuration bugs, performance bugs, or slow memory leaks: such bugs do not necessarily crash all services, but need to be fixed quickly so as to avoid degradation in the quality of service.
 % \parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, thereby capturing the state, configuration and user-input to assist the debugger.
-
 %\textbf{Monitoring Application Health/User usage statistics}
     %The main motivations leading to \emph{Parikshan} is to provide a harness to allow the user to test live applications. 
 %As explained in section \ref{sec:motivation}, m
@@ -20,7 +19,7 @@ Such monitoring mechanisms can often indicate problems in the systems showing sp
 Additionally, business intelligence and future product enhancements often rely on understanding how the user is using the application.
 %Very often problems in stable production systems are either (1) restricted to only a small percentage of transactions, (2) are system wide, but have minimal effect on the user (cumulative effect of slow memory leak etc.).
 %Such problems often do not necessitate taking down the system or lead to a crash. 
-\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, and light weight testing to localize the errors without worrying about the slowdown to the production system.
+\parikshan can be used to do a live analysis from the point of time when the clone is done. It allows the user to do deeper monitoring, debugging to localize the errors, and to gather performance profiles without worrying about the slowdown to the production system.
 %While several tools allow for dynamic instrumentation, in practice the amount of instrumentation cannot be increased because it adds too much overhead.
 %With \parikshan users can avoid this problem, and have a deeper insight into the system.
 %Hence giving an insight into what could have caused the problem, without needing to bring the entire application server down.

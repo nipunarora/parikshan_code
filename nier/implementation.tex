@@ -4,7 +4,7 @@
 
 \parikshan is built on top of a production user-space container virtualization software, OpenVZ \cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32.
 Each container layout is managed using PLOOP\cite{ploop} devices to enable faster and easier cloning.
-PLOOP devices is the storage layout for the container, they have the entire file system of a container in a single file, which helps to optimize live cloning, and clearly seperates file systems of each container.
+PLOOP devices is a type of storage system for the OpenVZ containers, they have the entire file system of a container in a single file, which helps to optimize live cloning, and clearly seperates file systems of each container.
 %In both internal, and external mode there is no restriction in sharing of resources of the server.
 %\parikshan also requires a number of commonly available linux modules to allow for network connectivity and 
 
@@ -14,7 +14,8 @@ We have tested the system in 3 different configurations. In the first case we te
 We used NAT, and IP namespaces for network access to the VMs.
 In the second mode, we tested our system's external mode by installing \parikshan on the base kernel in identical host nodes. 
 Each of these host nodes have an Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
-In the third mode, we tested our system on Google's Cloud Infrastructure.
+In the third mode, we tested our system as external customers of the Google Cloud infrastructure.
+%In the third mode, we tested our system on Google's Cloud Infrastructure.
 The production and the debug containers were run on different virtual nodes, with 2 VCPU's and 4G RAM. 
 %The main advantage of using the Google Compute Engine was to run our cloning scripts on real data-centers, and also to scale out our evaluation. 
 The network proxy is a multi-process program implemented in C/C++.

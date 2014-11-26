@@ -12,12 +12,12 @@
 %As our first case study we focused on profiling and capturing a performance bug in a session with several randomly created user transactions to MySQL. 
 It was reported by users \cite{mysqlbug}, that some of the user requests for the MySQL server were running significantly slower than others.
 To test out \parikshan to catch this bug, we re-created a 2 tier client-server setup with the server(container) running a buggy MySQL server application, and made a random workload with several repetitive instances of queries triggering the bug.
-We initiated debugging by creating a live clone of the container running the MySQL server.
+We initiated debugging by creating a live clone of the MySQL server container.
 We profiled high granularity functions in MySQL and investigated progressively finer granularity modules to isolate the performance problem.
-This allowed us to successfully isolate the function with the performance problem.
+%This allowed us to successfully isolate the function with the performance problem.
 
 Finally, we used breakpoints to go step by step into the function and observe its execution trace as well as object values.
-We were able to verify, that for complex character sets like Chinese or Japenese, the string matching function was taking redundantly long checks.
+We were able to find that for complex character sets like Chinese or Japenese, the string matching function was sub-optimal (had a lot of redundant computation).
 We believe this case study shows a classical performance bug, where \parikshan can be beneficial.
 %% FI Firstly, it's a performance bug which is non-critical i.e. does not lead to crashes.
 %% FI This is important as \parikshan has been designed to look into real live bug diagnosis.

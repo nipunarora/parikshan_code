@@ -57,13 +57,13 @@ What makes debugging easier in the development environment? The main reason is b
 Furthermore the input and the system configuration is available to them.
 %This gives them an immediate insight as to whether the application is behaving correctly, and where the bug could be.
 Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
-We envision providing \textbf{``real-time bug diagnosis as a service''} for in-production applications in order to significantly reduce the time towards bug resolution.
+We envision providing \textbf{``live debugging''} for in-production applications in order to significantly reduce the time towards bug resolution.
 Most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
 We propose leveraging this abundance of resources for on the fly debugging.
 Using user-space virtualization technology(OpenVZ/LXC\cite{openvz,lxc}), we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment without effecting the actual application, thereby enabling real-time diagnosis.
 \fi
 
-\textbf{The future: } We envision providing \textbf{``real-time bug diagnosis as a service''} for in-production applications in order to significantly reduce the time towards bug resolution.
+\textbf{The future: } We envision providing \textbf{``live debugging functionality''} for in-production applications in order to significantly reduce the time towards bug resolution.
 Most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
 We propose leveraging this abundance of resources for on the fly debugging.
 Using user-space virtualization technology(OpenVZ/LXC\cite{openvz,lxc}), we present a debugging mechanism which allows the user to dynamically insert instrumentation in a \emph{cloned} production environment without impacting the actual application, thereby enabling real-time diagnosis.
@@ -84,7 +84,7 @@ We introduce ``live cloning'' a process similar to ``live migration'' \cite{vmpe
 \begin{itemize}[leftmargin=*]
 
  \item The developer can use the \textbf{sandbox environment to  safely and securely debug} the production application.
- This includes adding watchpoints, breakpoints, increasing instrumentation, back-im-time debugging  etc..  
+ This includes adding watchpoints, breakpoints, increasing instrumentation, back-in-time debugging  etc..  
 %This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
 
  \item A debugging harness, and proxy that does non-blocking request duplication to the debug-container, which ensures \textbf{no performance impact} on the production container. 
