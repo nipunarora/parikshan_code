@@ -596,7 +596,7 @@ void receive_data_asynch(int source_sock){
 	char buffer[BUF_SIZE];
 	int n;
 
- 	while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) // read data from input socket
+ 	while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0); // read data from input socket
 
 	shutdown(source_sock, SHUT_RDWR); // stop other processes from using socket
   	close(source_sock);
