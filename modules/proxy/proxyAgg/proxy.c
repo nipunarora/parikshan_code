@@ -270,115 +270,125 @@ void sigterm_handler(int signal)
 /* Main server loop */
 void server_loop() 
 {
-	struct sockaddr_in client_addr;
-	int addrlen = sizeof(client_addr);
+  struct sockaddr_in client_addr;
+  int addrlen = sizeof(client_addr);
 
-	while (TRUE) 
-	{
-		client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addrlen);    	
-    	if (fork() == 0) 
-    	{ // handle client connection in a separate process
-    		close(server_sock);
-    		handle_client(client_sock, client_addr);
-    		exit(0);
-    	}	
-    	close(client_sock);
-	}
+  while (TRUE) 
+    {
+      client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addrlen);    	
+      if (fork() == 0) 
+        { // handle client connection in a separate process
+          close(server_sock);
+          handle_client(client_sock, client_addr);
+          exit(0);
+        }	
+      close(client_sock);
+    }
 }
 
 /* Handle client connection */
 void handle_client(int client_sock, struct sockaddr_in client_addr)
 {
-	//create connection to main production server
-	//fprintf(stats_file, " Created connection\n");
+  //create connection to main production server
+  //fprintf(stats_file, " Created connection\n");
   DEBUG_PRINT(" Created connection\n");
   print_timeofday();
-  if ((remote_sock = create_connection()) < 0) {
-		perror("Cannot connect to host");
-		return;
-	}
-	
-	//if duplication is chosen either synch or asynch must be specified
-	if(synch||asynch){
-    DEBUG_PRINT(" Created duplicate connection\n");
-    print_timeofday();
-    //fprintf(stats_file, " Created duplicate connection\n");
-		if((duplicate_destination_sock = create_dup_connection_synch()) < 0){
-			perror("Could not connect to to duplicate host");
-			return;
-		}	
-	}
-
-	if(asynch){
-
-		if(pipe(pfds)<0){
-			perror("pipe ");
-			exit(1);
-		}
-
-		setNonblocking(pfds[1]);
-		DEBUG_PRINT("pipe size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));
-	 
-		
-		if(b)
+  if ((remote_sock = create_connection()) < 0) 
     {
-        setBufferSize(pfds[1],buffer_size);
-        //setBufferSize(pfds[0],buffer_size);
+      perror("Cannot connect to host");
+      return;
     }
-		
-	}
+  
+  //if duplication is chosen either synch or asynch must be specified
+  if(synch||asynch)
+    {
+      DEBUG_PRINT(" Created duplicate connection\n");
+      printf("format string" ,a0,a1);
+      int_timeofday();
+      //fprintf(stats_file, " Created duplicate connection\n");
+      
+      if((duplicate_destination_sock = create_dup_connection_synch()) < 0)
+        {
+          perror("Could not connect to to duplicate host");
+          return;
+        }	
+    }
 
-
+  if(asynch)
+    {
+    
+      if(pipe(pfds)<0)
+        {
+          perror("pipe ");
+          exit(1);
+        }
+    
+      setNonblocking(pfds[1]);
+      DEBUG_PRINT("pipe size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));    
+      
+      if(b)
+        {
+          setBufferSize(pfds[1],buffer_size);
+          //setBufferSize(pfds[0],buffer_size);
+        }      
+    }
 
 /**
 T1: Create a fork to forward data from client to remote host
 */		
+
   if (fork() == 0) 
-  { 
-  	if(!synch && !asynch)
-  		//write to remote socket
-  		forward_data(client_sock, remote_sock);
-  	if(synch){
-  		//write to remote socket and duplicate socket
-  		forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
+    { 
+      if(!synch && !asynch)
+        //write to remote socket
+        forward_data(client_sock, remote_sock);
+      if(synch)
+        {
+          //write to remote socket and duplicate socket
+          forward_data_synch(client_sock, remote_sock, duplicate_destination_sock);
+        }
+      if(asynch)
+        {
+          //write to remote socket and pipe
+          forward_data_asynch(client_sock,remote_sock);
   	}
-  	if(asynch){
-  		//write to remote socket and pipe
-  		forward_data_asynch(client_sock,remote_sock);
-  	}
-  
-  	exit(0);
-  }
+      
+      exit(0);
+    }
 
 /**
 T2: Create a fork to forward data from remote host to client
 */
   if (fork() == 0) 
-  { 
-	if(!synch)
-		forward_data(remote_sock, client_sock);
-	if(synch)
-		receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
-  	
-  	exit(0);
+    { 
+      if(!synch)
+        forward_data(remote_sock, client_sock);
+      if(synch)
+        receive_data_synch(remote_sock,client_sock,duplicate_destination_sock);
+    
+      exit(0);
   }
 
-  if(asynch){
-  /**
-  T3: Create a fork to forward data asynchrounously to duplicate
-  */	  
-	  if(fork() == 0){
-	  	forward_data_pipe(duplicate_destination_sock);
-	  	exit(0);		
-	  }
- /**
-  T4: Create a fork to read data asynchrounously to duplicate
-  */
-	  if(fork() == 0){
-	 	receive_data_asynch(duplicate_destination_sock); 	
-	  	exit(0);
-	  }
-  }
+  if(asynch)
+    {
+      
+      /**
+         T3: Create a fork to forward data asynchrounously to duplicate
+      */	  
+      if(fork() == 0)
+        {        
+          forward_data_pipe(duplicate_destination_sock);
+          exit(0);		
+        }
+      /**
+         T4: Create a fork to read data asynchrounously to duplicate
+      */
+      if(fork() == 0)
+        {
+          receive_data_asynch(duplicate_destination_sock); 	
+          exit(0);
+        }
+    }
 
   /*    
   if(fork() == 0){
@@ -688,7 +698,6 @@ void print_timeofday(){
   struct timeval tv;
   time_t curtime;
 
-  gettimeofday(&tv, NULL);
   curtime=tv.tv_sec;
 
   strftime(buffer,30,"%m-%d-%Y  %T.",localtime(&curtime));
