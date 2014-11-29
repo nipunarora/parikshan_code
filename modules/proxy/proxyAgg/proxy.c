@@ -80,25 +80,11 @@ typedef enum {TRUE = 1, FALSE = 0} bool;
 
 FILE *log_file, *stats_file;
 
-int create_file(){
-  
-  log_file = fopen("log.txt","w");
-  stats_file = fopen("stats.txt","w");
-
-  if((log_file ==NULL)||(stats_file==NULL))
-    {
-      printf("I couldn't open files for writing.\n");
-      exit(0);
-    } 
-}
-
 /* Program start */
  int main(int argc, char *argv[]) 
 {
  	int c, local_port;
  	pid_t pid;
-
-	//create_file();
 
  	local_port = parse_options(argc, argv);
 
@@ -289,6 +275,7 @@ void server_loop()
 /* Handle client connection */
 void handle_client(int client_sock, struct sockaddr_in client_addr)
 {
+
   //create connection to main production server
   //fprintf(stats_file, " Created connection\n");
   DEBUG_PRINT(" Created connection\n");
@@ -316,16 +303,13 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 
   if(asynch)
     {
-    
       if(pipe(pfds)<0)
         {
           perror("pipe ");
           exit(1);
         }
-    
       setNonblocking(pfds[1]);
       DEBUG_PRINT("pipe size %d \n",fcntl(pfds[1],F_GETPIPE_SZ));    
-      
       if(b)
         {
           setBufferSize(pfds[1],buffer_size);
@@ -540,7 +524,7 @@ void forward_data_synch(int source_sock, int destination_sock, int duplicate_des
   	while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) // read data from input socket
   	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
-      	send(duplicate_destination_sock, buffer, n, 0);// duplicate data to duplicate socket
+      send(duplicate_destination_sock, buffer, n, 0);// duplicate data to duplicate socket
   	}
 
   	/*
@@ -560,7 +544,8 @@ void forward_data_synch(int source_sock, int destination_sock, int duplicate_des
 }
 
 /* Forward data between sockets */
-void forward_data_asynch(int source_sock, int destination_sock) {
+void forward_data_asynch(int source_sock, int destination_sock) 
+{
 	char buffer[BUF_SIZE];
 	int n;
 
@@ -568,14 +553,14 @@ void forward_data_asynch(int source_sock, int destination_sock) {
   while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0)// read data from input socket 
   	{ 
     	send(destination_sock, buffer, n, 0); // send data to output socket
-		if( write(pfds[1],buffer,n) < 0 )//send data to pipe
-		{
-      //fprintf(stats_file,"buffer_overflow \n");
-		  print_timeofday();
-      perror("Buffer overflow? ");
-		}
+		  if( write(pfds[1],buffer,n) < 0 )//send data to pipe
+		  {
+        //fprintf(stats_file,"buffer_overflow \n");
+		    print_timeofday();
+        perror("Buffer overflow? ");
+		  }
 		//DEBUG_PRINT("Data sent to pipe %s \n", buffer);
-	}
+	   }
 
   shutdown(destination_sock, SHUT_RDWR); // stop other processes from using socket
   close(destination_sock);
@@ -702,5 +687,4 @@ void print_timeofday(){
 
   strftime(buffer,30,"%m-%d-%Y  %T.",localtime(&curtime));
   DEBUG_PRINT("%s%ld\n",buffer,tv.tv_usec);
-
 }
