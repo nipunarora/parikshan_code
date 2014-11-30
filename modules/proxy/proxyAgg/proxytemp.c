@@ -11,7 +11,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <wait.h>
+//#include <wait.h>
 #include <fcntl.h>
 #include <pthread.h>
 
@@ -51,11 +51,14 @@ int main(int argc, char *argv[])
     int c, local_port;
     pid_t pid;
 
-    local_port = parse_options(argc, argv);
+    int server_sock, local_port, remote_port;
+    char *remote_host, *prod_source, *dup_source;
+
+
+    local_port = parse_options(argc, argv, remote_host, prod_source, dup_source, local_port, remote_port);
 
     if (local_port < 0) {
-        printf("Syntax: %s -l local_port -h remote_host -p remote_port 
-            -x prod_source -y dup_source \n", argv[0]);
+        printf("Syntax: %s -l local_port -h remote_host -p remote_port -x prod_source -y dup_source \n", argv[0]);
         return 0;
     }
 
@@ -63,9 +66,6 @@ int main(int argc, char *argv[])
         perror("Cannot run server");
         return server_sock;
     }
-
-    signal(SIGCHLD, sigchld_handler); // prevent ended children from becoming zombies
-    signal(SIGTERM, sigterm_handler); // handle KILL signal
 
     switch(pid = fork()) {
         case 0:
@@ -82,8 +82,9 @@ int main(int argc, char *argv[])
 }
 
 /* Parse command line options */
-int parse_options(int argc, char *argv[]) 
+int parse_options(int argc, char *argv[], char *remote_host, char *prod_source, char *dup_source, int &local_port, int &remote_port) ;
 {
+
     bool l, h, p;
     int c, local_port;
 
@@ -106,11 +107,11 @@ int parse_options(int argc, char *argv[])
                 p = TRUE;
                 break;
             case 'x':
-                prod_source = atoi(optarg);
+                prod_source = optarg;
                 x = TRUE;
                 break;
             case 'y':
-                dup_source = atoi(optarg);
+                dup_source = optarg;
                 y = TRUE;
                 break;
         }
@@ -280,31 +281,12 @@ void *handle_client(void *arguments)
      // handle client connection in a separate process
     getpeerinfo(client_sock);
 
-    if ((remote_sock = create_connection()) < 0) 
-    {
-        perror("Cannot connect to host");
-        return;
-    }
-
-    if (fork() == 0) 
-    { // a process forwarding data from client to remote socket
-        forward_data(client_sock, remote_sock);
-        exit(0);
-    }
-
-    if (fork() == 0) 
-    { // a process forwarding data from remote socket to client
-        forward_data(remote_sock, client_sock);
-        exit(0);
-    }
-
-    close(remote_sock);
-    close(client_sock);
+   
 }
-
+/*
 //COMMUNICATION WITH THE PRODUCTION --> START
 
-/* Forward data from production container to backend */
+// Forward data from production container to backend 
 void forward_data(int source_sock, int destination_sock) 
 {
     char buffer[BUF_SIZE];
@@ -345,7 +327,7 @@ void receive_data_asynchronous(int source_sock, int destination_sock)
 
 //COMMUNICATION WITH THE DUPLICATE --> START
 
-/* Forward data from duplicate container to nowhere */
+// Forward data from duplicate container to nowhere 
 void forward_data_drop(int source_sock, int destination_sock) 
 {
     char buffer[BUF_SIZE];
@@ -380,7 +362,7 @@ void receive_pipe_data(int source_sock, int destination_sock)
 
 //COMMUNICATION WITH THE DUPLICATE END
 
-/* Create client connection */
+// Create client connection 
 int create_connection() 
 {
     struct sockaddr_in server_addr;
@@ -410,3 +392,4 @@ int create_connection()
 
     return sock;
 }
+*/
