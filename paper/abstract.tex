@@ -7,11 +7,11 @@ Additionally, most modern companies are combining their development and operatio
 %However, most such record-replay systems have a high recording overhead and are still not practical to be used in production environments without paying a penalty in terms of user-experience. 
 In this work we present a framework which allows users to debug the target production system (run test-cases, debug, or profile etc.) in a sandbox environment cloned from the live running system at any point in it's execution.
 % of a service oriented application. 
-The paper leverages, user-space containers (OpenVZ/ LXC) to launch a container cloned and migrated from running instances of an application, thereby launching two containers: production (which provides the real output), and test-container (for debugging). 
+The paper leverages user-space containers (OpenVZ/ LXC) to launch a container cloned and migrated from running instances of an application, thereby launching two containers: production (which provides the real output), and test-container (for debugging). 
 This \emph{test-container} provides a sandbox environment, for safe execution of test-cases/debugging done by the users without any perturbation to the execution environment. 
 %Test cases are initiated using user-defined probe points which launch test-cases using the execution context of the probe point. 
 Our sandboxes provide name-space, and resource management for the processes executing the test/debug cases.
-A customized-network proxy agent replicates inputs from clients to both the production and test-container, as well safely discard all outputs from the test-container.
+A customized-network proxy agent replicates inputs from clients to both the production and test-container, as well as safely discard all outputs from the test-container.
 These sandboxed test-containers can be run either on the same physical host as the production container, or scaled out on dedicated physical test servers.
 %, and manage the file system such that existing and newly created file descriptors are safely managed.
 %Further we explain fidelity guarantees of our proposed system

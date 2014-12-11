@@ -207,16 +207,19 @@ int parse_options(int argc, char *argv[])
 /* 
 Create server socket this is socket at which the proxy is binded and listens for incoming connections
 */
-int create_socket(int port) {
+int create_socket(int port) 
+{
 	int server_sock, optval;
 	struct sockaddr_in server_addr;
 
-	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+  {
 	  DEBUG_PRINT("socket counld not be created ");
 	  return SERVER_SOCKET_ERROR;
 	}
 
-	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
+	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) 
+  {
 	  DEBUG_PRINT("setsockopt error");
 	  return SERVER_SETSOCKOPT_ERROR;
 	}
@@ -226,12 +229,14 @@ int create_socket(int port) {
 	server_addr.sin_port = htons(port);
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(server_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
+	if (bind(server_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) 
+  {
 	  DEBUG_PRINT("bind error");
 	  return SERVER_BIND_ERROR;
 	}
 
-	if (listen(server_sock, 20) < 0) {
+	if (listen(server_sock, 20) < 0) 
+  {
 	  DEBUG_PRINT("listen error");
 	  return SERVER_LISTEN_ERROR;
 	}

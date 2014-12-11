@@ -56,11 +56,12 @@ int main(int argc, char *argv[])
 
 
     local_port = parse_options(argc, argv, remote_host, prod_source, dup_source, local_port, remote_port);
-
     if (local_port < 0) {
         printf("Syntax: %s -l local_port -h remote_host -p remote_port -x prod_source -y dup_source \n", argv[0]);
         return 0;
     }
+    DEBUG_PRINT ("local_port: %d remote_port %d remote_host %s prod_source %s dup_source %s \n", local_port,remote_port, )
+
 
     if ((server_sock = create_socket(local_port)) < 0) { // start server
         perror("Cannot run server");

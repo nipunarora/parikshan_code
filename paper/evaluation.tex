@@ -15,6 +15,36 @@ In order to answer these questions, we separated our evaluation in looking at tw
 \subsection{Cloning: Micro-Benchmarks}
 \label{sec:performance}
 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	ybar stacked,
+	bar width=15pt,
+%	nodes near coords,
+	enlargelimits=0.15,
+	legend style={at={(0.5,-0.25)},
+		anchor=north,legend columns=-1},
+	ylabel={\#Time(seconds)},
+	symbolic x coords={Basic, Apache, Thttpd, TradeBeans, TradeSoap, 
+		PetStore, MySQL},
+	xtick=data,
+	x tick label style={rotate=45,anchor=east},
+	]
+	\addplot+[ybar] plot coordinates {(Basic,0.49) (Apache,0.46) (Thttpd,0.21) (TradeBeans,3.10) (TradeSoap,3.68) (PetStore,0) (MySQL,2) };
+	\addplot+[ybar] plot coordinates {(Basic,0.22) (Apache,0.27) (Thttpd,0.50) (TradeBeans,0.44) (TradeSoap,0.25) (PetStore,1) (MySQL,1) };
+	\addplot+[ybar] plot coordinates {(Basic,0.62) (Apache,0.64) (Thttpd,0.57) (TradeBeans,5.47) (TradeSoap,5.03) (PetStore,6) (MySQL,5) };
+	\addplot+[ybar] plot coordinates {(Basic,1.33) (Apache,1.53) (Thttpd,2.14) (TradeBeans,2.51) (TradeSoap,2.57) (PetStore,3) (MySQL,2) };
+	\addlegendentry{\strut Suspend + Dump}
+	\addlegendentry{\strut Pcopy after suspend}
+%	\legend{\strut Suspend + Dump, \strut Pcopy after suspend, \strut Copy Dump File, \strut Undump and Resume}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Suspend time for live cloning, when running a representative benchmark}
+	\label{fig:stats}
+\end{figure}
+
+
 \begin{table*}[ht]
   \centering
     \begin{tabular}{ | p{4cm} | l | l | l | l | l | l | l | l | l |}
