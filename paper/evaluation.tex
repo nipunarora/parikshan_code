@@ -15,35 +15,109 @@ In order to answer these questions, we separated our evaluation in looking at tw
 \subsection{Cloning: Micro-Benchmarks}
 \label{sec:performance}
 
-\begin{figure}
-	\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	ybar stacked,
-	bar width=15pt,
-%	nodes near coords,
-	enlargelimits=0.15,
-	legend style={at={(0.5,-0.25)},
-		anchor=north,legend columns=-1},
-	ylabel={\#Time(seconds)},
-	symbolic x coords={Basic, Apache, Thttpd, TradeBeans, TradeSoap, 
-		PetStore, MySQL},
-	xtick=data,
-	x tick label style={rotate=45,anchor=east},
-	]
-	\addplot+[ybar] plot coordinates {(Basic,0.49) (Apache,0.46) (Thttpd,0.21) (TradeBeans,3.10) (TradeSoap,3.68) (PetStore,0) (MySQL,2) };
-	\addplot+[ybar] plot coordinates {(Basic,0.22) (Apache,0.27) (Thttpd,0.50) (TradeBeans,0.44) (TradeSoap,0.25) (PetStore,1) (MySQL,1) };
-	\addplot+[ybar] plot coordinates {(Basic,0.62) (Apache,0.64) (Thttpd,0.57) (TradeBeans,5.47) (TradeSoap,5.03) (PetStore,6) (MySQL,5) };
-	\addplot+[ybar] plot coordinates {(Basic,1.33) (Apache,1.53) (Thttpd,2.14) (TradeBeans,2.51) (TradeSoap,2.57) (PetStore,3) (MySQL,2) };
-	\addlegendentry{\strut Suspend + Dump}
-	\addlegendentry{\strut Pcopy after suspend}
-%	\legend{\strut Suspend + Dump, \strut Pcopy after suspend, \strut Copy Dump File, \strut Undump and Resume}
-	\end{axis}
-	\end{tikzpicture}
+
+%\begin{figure*}
+%	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{figure}
+		%[b]{0.45\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+				\begin{tikzpicture}
+				\begin{axis}[
+				xmode=log,
+				legend style={at={(0.5,-0.25)},anchor=north,legend columns=2},
+				xlabel=I/O ops(Kbps),
+				ylabel=Time (secs)]
+				\addplot[color=red,mark=x] coordinates {
+					(0,1.85)
+					(250,1.99)
+					(500,1.93)
+					(1000,1.97)
+					(2000,2.49)
+					(5000,2.51)
+					(10000,2.77)
+					(20000,2.86)
+				};
+				\addlegendentry{read-internalMode}
+				\addplot[color=green,mark=x] coordinates {
+					(0,1.97)
+					(250,2.19)
+					(500,2.23)
+					(1000,2.67)
+					(2000,3.19)
+					(5000,3.51)
+					(10000,3.87)
+					(20000,4.01)
+				};
+				\addlegendentry{read-externalMode}				
+				\addplot[color=blue,mark=x] coordinates {
+					(0,1.85)
+					(250,2.31)
+					(500,2.48)
+					(1000,4.00)
+					(2000,4.29)
+					(5000,5.51)
+					(10000,6.55)
+					(20000,15.86)
+				};
+				\addlegendentry{write-internalMode}				
+				\addplot[color=yellow,mark=x] coordinates {
+					(0,1.87)
+					(250,2.51)
+					(500,2.98)
+					(1000,4.50)
+					(2000,4.99)
+					(5000,7.71)
+					(10000,10.85)
+					(20000,17.86)
+				};
+				\addlegendentry{write-externalMode}
+				\end{axis}
+				\end{tikzpicture}
+		}
+		\captionsetup{justification=centering}
+		\caption{Live Cloning suspend time whith increasing amounts of I/O operations }
+		\label{fig:subfig8}
+	\end{figure}
+%	\end{subfigure}
+%	 \begin{subfigure}[b]{0.45\textwidth}
+	\begin{figure}
+		%[b]{0.45\textwidth}
+	 	\centering
+	 	\resizebox{\linewidth}{!}{
+	 	\begin{tikzpicture}
+	 	\begin{axis}[
+	 	ybar stacked,
+	 	bar width=15pt,
+	 	%	nodes near coords,
+	 	enlargelimits=0.15,
+	 	legend style={at={(0.5,-0.25)},anchor=north,legend columns=-1},
+	 	ylabel={Time(seconds)},
+	 	symbolic x coords={Basic, Apache, Thttpd, TradeBeans, TradeSoap, 
+	 		PetStore, MySQL},
+	 	xtick=data,
+	 	x tick label style={rotate=45,anchor=east},
+	 	]
+	 	\addplot+[ybar] plot coordinates {(Basic,0.49) (Apache,0.46) (Thttpd,0.21) (TradeBeans,3.10) (TradeSoap,3.68) (PetStore,0) (MySQL,2) };
+	 	\addplot+[ybar] plot coordinates {(Basic,0.22) (Apache,0.27) (Thttpd,0.50) (TradeBeans,0.44) (TradeSoap,0.25) (PetStore,1) (MySQL,1) };
+	 	\addplot+[ybar] plot coordinates {(Basic,0.62) (Apache,0.64) (Thttpd,0.57) (TradeBeans,5.47) (TradeSoap,5.03) (PetStore,6) (MySQL,5) };
+	 	\addplot+[ybar] plot coordinates {(Basic,1.33) (Apache,1.53) (Thttpd,2.14) (TradeBeans,2.51) (TradeSoap,2.57) (PetStore,3) (MySQL,2) };
+	 	\addlegendentry{\strut Suspend + Dump}
+	 	\addlegendentry{\strut Pcopy after suspend}
+	 	%	\legend{\strut Suspend + Dump, \strut Pcopy after suspend, \strut Copy Dump File, \strut Undump and Resume}
+	 	\end{axis}
+	 	\end{tikzpicture}
+	 }
+	\captionsetup{justification=centering}
 	\caption{Suspend time for live cloning, when running a representative benchmark}
 	\label{fig:stats}
-\end{figure}
+	\end{figure}
+%	 \end{subfigure}
+%	\caption{} 
+%	\label{}
+%\end{figure*}
 
+\iffalse
 
 \begin{table*}[ht]
   \centering
@@ -62,9 +136,11 @@ In order to answer these questions, we separated our evaluation in looking at tw
     \hline
     \textbf{Total Suspend Time} & 2.66 &  -- & 2.91 & 1.67 & -- & 1.83 & 0.00 & 0.00 & 0.00\\ \hline
     \end{tabular}
-\caption{Performance of httpd throughput, and cloning time in external vs internal vs google compute modes}
-\label{table:clonePerf}
+    \captionsetup{justification=centering}
+	\caption{Performance of httpd throughput, and cloning time in external vs internal vs google compute modes}
+	\label{table:clonePerf}
 \end{table*}
+\fi
 
 The profile of the cloning operation can be divided in 4 stages: 
 (1) Suspend \& Dump: this is the time taken to suspend the container, 
@@ -82,6 +158,7 @@ Naturally, at the application layer, the tcp packet drops are hidden as packet r
 To further investigate the tcp packet dropping, we ran an iperf\cite{iperf}( a tool to measure tcp benchmark) server while cloning the production container. 
 We were indeed able to observe packet dropping for about 2 seconds in the iperf client, however, the important point to note is that there were no requests dropped for the application while doing cloning. 
 
+\iffalse
 \begin{figure*}[t]
 	\begin{center}
 		\includegraphics[width=1\textwidth]{figs/fioResult.png}
@@ -89,6 +166,7 @@ We were indeed able to observe packet dropping for about 2 seconds in the iperf 
 		\label{fig:fioResults}
 	\end{center}
 \end{figure*}
+\fi
 
 As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a follow-up rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
 The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.

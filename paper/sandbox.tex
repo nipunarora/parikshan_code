@@ -49,11 +49,17 @@
 
 \usepackage[noend]{algpseudocode}
 \usepackage{paralist,algorithm}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{multirow}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{pgfplots}
 \usepackage{amssymb}
 \usepackage{epstopdf}
+\usepackage{tikz}
+\usepackage{tkz-tab}
+
 %\usepackage{epsfig}
 %\epstopdfsetup{outdir=./}
 %\usepackage[showframe=true]{geometry}
@@ -131,16 +137,16 @@
 % 1st. author
 
 %Author if only Nipun
-
+\iffalse
 \numberofauthors{1}
 \author{
 \alignauthor
 Anonymous Submission
 }
-
+\fi
 
 %All Authors
-\iffalse 
+%\iffalse 
 \numberofauthors{3}
 \author{
 \alignauthor
@@ -150,7 +156,7 @@ Nipun Arora\\
        \email{nipun@nec-labs.com}
 % 2nd. author
 \alignauthor
-Franjo Ivancic\\
+Franjo Ivan\v{c}i\'{c}\\
        \affaddr{Google}\\
        \affaddr{New York, NY, USA}\\
        \email{ivancic@google.com}
@@ -160,7 +166,7 @@ Franjo Ivancic\\
        \affaddr{New York, NY, USA}\\
        \email{kaiser@cs.columbia.edu}\\
 }
-\fi
+%\fi
 
 %\date{28 April 2014}
 \maketitle

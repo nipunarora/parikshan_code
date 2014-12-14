@@ -6,6 +6,28 @@ At the same time the output of these tests should not effect the functionality o
 The main advantage of such a system can be seen in service oriented applications which are user facing and can hence ill-afford to be shutdown for inspecting bugs.
 As mentioned earlier, another major advantage is that we are able to capture live user-input. \\
 
+\begin{table*}[ht]
+	
+	\begin{tabular}{@{}|c|c|c|c|c|c|c|c|c|c|@{}}
+		\toprule
+		Bug Type                                                                       & Bug ID & Application      & \begin{tabular}[c]{@{}c@{}}Tool \\ Used\end{tabular} & \begin{tabular}[c]{@{}c@{}}Debug \\ Mechanism\end{tabular} & Slowdown & Continuous & \begin{tabular}[c]{@{}c@{}}N.o of \\ Re-Cloning\end{tabular} & \begin{tabular}[c]{@{}c@{}}Nodes\\ Cloned\end{tabular} & Divergence \\ \midrule
+		\multirow{3}{*}{\begin{tabular}[c]{@{}c@{}}Performance \\ Bug\end{tabular}}    &        & MySQL            & iProbe                                               & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular} & 1.5x     &            & 0                                                            & 1                                                      &            \\ \cmidrule(l){2-10} 
+		&        & Apache           & iProbe                                               & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular} &          &            & 0                                                            & 1                                                      &            \\ \cmidrule(l){2-10} 
+		&        & MySQL            & iProbe                                               & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular} &          &            & 0                                                            & 1                                                      &            \\ \midrule
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Memory \\ Leak\end{tabular}}        &        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \cmidrule(l){2-10} 
+		&        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \midrule
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Configuration \\ Bugs\end{tabular}} &        & PetStore - JBOSS &                                                      &                                                            &          &            &                                                              & 3                                                      &            \\ \cmidrule(l){2-10} 
+		&        & PetStore         &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \midrule
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Concurrency \\ Bug\end{tabular}}    &        & Apache           &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \cmidrule(l){2-10} 
+		&        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \midrule
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Integration\\ Bugs\end{tabular}}    &        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \cmidrule(l){2-10} 
+		&        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \midrule
+		Crash Bugs                                                                     &        &                  &                                                      &                                                            &          &            &                                                              &                                                        &            \\ \bottomrule
+	\end{tabular}
+	\captionsetup{justification=centering}
+	\caption{List of bug cases with debugging techniques employed in sandbox debugging, slowdown due to the debug mechanism, no of nodes cloned, number of recloning effort to localize the bug, and whether or not the cloning mechanism allows for continuous debugging}
+\end{table*}
+
 %\par \noindent
 \subsection{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}  
 Performance profiling such as function execution trace, execution time, resource usage etc., is often used to indicate and localize performance bugs in real world systems. 
@@ -26,7 +48,7 @@ Firstly, it's a performance bug which is non-critical i.e. does not lead to cras
 Secondly, we assume that the user-input (which caused the bug), occurs fairly frequently.
 In this case, a database query which looks into data containing chinese characters, or japanese characters could be a fairly common occurence.
 In our experience we found several such performance bugs which occur in only a small percentage of user transactions.
-These bugs are often diffcult to catch as they happen only in corner case inputs, and generally do not lead to application crashes.
+These bugs are often difficult to catch as they happen only in corner case inputs, and generally do not lead to application crashes.
 \parikshan would be useful to debug such performance errors, by giving deep insight in a live running system.
 
 %\par \noindent
