@@ -68,6 +68,7 @@ int main(int argc, char **argv) {
   int optval; /* flag value for setsockopt */
   int n; /* message byte size */
 
+  int totalcount = 0;
   /* 
    * check command line arguments 
    */
@@ -125,44 +126,54 @@ int main(int argc, char **argv) {
    * then close connection.
    */
   clientlen = sizeof(clientaddr);
-  while (1) {
-
-    /* 
-     * accept: wait for a connection request 
-     */
-    childfd = accept(parentfd, (struct sockaddr *) &clientaddr, &clientlen);
-    if (childfd < 0) 
-      error("ERROR on accept");
+  
+  while (1) 
+    {
+      /* 
+       * accept: wait for a connection request 
+       */
+      childfd = accept(parentfd, (struct sockaddr *) &clientaddr, &clientlen);
+      if (childfd < 0) 
+        error("ERROR on accept");
     
-    /* 
-     * gethostbyaddr: determine who sent the message 
-     */
-    hostp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr, 
-			  sizeof(clientaddr.sin_addr.s_addr), AF_INET);
-    if (hostp == NULL)
-      error("ERROR on gethostbyaddr");
-    hostaddrp = inet_ntoa(clientaddr.sin_addr);
-    if (hostaddrp == NULL)
-      error("ERROR on inet_ntoa\n");
-    printf("server established connection with %s (%s)\n", 
-	   hostp->h_name, hostaddrp);
+      if (fork() == 0)
+        {
+          /* 
+           * gethostbyaddr: determine who sent the message 
+           */
+          hostp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr, 
+                                sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+          if (hostp == NULL)
+            error("ERROR on gethostbyaddr");
+          hostaddrp = inet_ntoa(clientaddr.sin_addr);
+          if (hostaddrp == NULL)
+            error("ERROR on inet_ntoa\n");
+          printf("server established connection with %s (%s)\n", 
+                 hostp->h_name, hostaddrp);
     
-    /* 
-     * read: read input string from the client
-     */
-    bzero(buf, BUFSIZE);
-    n = read(childfd, buf, BUFSIZE);
-    if (n < 0) 
-      error("ERROR reading from socket");
-    printf("server received %d bytes: %s", n, buf);
+          /* 
+           * read: read input string from the client
+           */
+          bzero(buf, BUFSIZE);
+          n = read(childfd, buf, BUFSIZE);
+          totalcount = n;
+          while(n>0)
+            {
+              printf("server received %d bytes\n",n);
+              //printf("server received %d bytes: %s", n, buf);
     
-    /* 
-     * write: echo the input string back to the client 
-     */
-    n = write(childfd, buf, strlen(buf));
-    if (n < 0) 
-      error("ERROR writing to socket");
-
-    close(childfd);
-  }
+              /* 
+               * write: echo the input string back to the client 
+               */
+              n = write(childfd, buf, strlen(buf));
+              if (n < 0) 
+                error("ERROR writing to socket");
+              n = read(childfd, buf, BUFSIZE);
+              totalcount = totalcount + n;
+            }
+          printf("total count of bytes received %d \n", totalcount);
+        }
+      close(childfd);
+     
+    }
 }

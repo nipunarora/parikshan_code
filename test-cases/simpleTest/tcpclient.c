@@ -27,15 +27,16 @@ int main(int argc, char **argv) {
   struct hostent *server;
   char *hostname;
   char buf[BUFSIZE];
+  int count;
 
   /* check command line arguments */
-  if (argc != 3) {
-    fprintf(stderr,"usage: %s <hostname> <port>\n", argv[0]);
+  if (argc != 4) {
+    fprintf(stderr,"usage: %s <hostname> <port> <count_number_repetitions of sending message>\n", argv[0]);
     exit(0);
   }
   hostname = argv[1];
   portno = atoi(argv[2]);
-
+  count = atoi(argv[3]);
   /* socket: create the socket */
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) 
@@ -64,10 +65,13 @@ int main(int argc, char **argv) {
   bzero(buf, BUFSIZE);
   fgets(buf, BUFSIZE, stdin);
 
+  int i = 0;
+  for (i=0;i<count;i++){
   /* send the message line to the server */
   n = write(sockfd, buf, strlen(buf));
   if (n < 0) 
     error("ERROR writing to socket");
+  }
 
   /* print the server's reply */
   bzero(buf, BUFSIZE);
