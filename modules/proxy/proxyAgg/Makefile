@@ -1,8 +1,23 @@
-all:
-	gcc -O2 -s -o proxy proxy.c
-tomato:
-	mipsel-uclibc-gcc -O2 -s -o proxy proxy.c
-openwrt:
-	mipsel-linux-uclibc-gcc -O2 -s -o proxy proxy.c
+
+IDIR =./include
+ODIR=./obj
+SRC=./src
+
+CC=gcc
+CFLAGS=-I$(IDIR)
+
+
+_DEPS = queue.h shm_incr.h network_comm.h pipe_input.h input.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+_OBJ = queue.o shm_incr.o network_comm.o pipe_input.o proxyAgg.o
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+$(ODIR)/%.o: $(SRC)/%.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+proxyAgg: $(OBJ)
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+
 clean:
-	rm -rf proxy proxy.exe
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
