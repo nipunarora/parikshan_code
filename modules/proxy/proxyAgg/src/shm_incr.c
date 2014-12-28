@@ -44,6 +44,8 @@ void create_shm_seg(){
       The 0 arguments let the OS decide where to map it.
   */
   shmptr = (int *) shmat( shmid, 0, 0 );
+  shmptr = malloc(sizeof(int)*2);
+
   if ( shmptr == (int *) -1 )
     fatalsys("shmat failed");
 

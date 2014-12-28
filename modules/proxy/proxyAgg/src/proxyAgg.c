@@ -37,11 +37,17 @@
 
 bool l, h, p_flag, x, d, a, s, b = FALSE;
 bool asynch = FALSE, synch = FALSE;
+int pipes_arr[NUM_CONNS][2];
 
 void server_loop();
 void handle_client(int client_sock, struct sockaddr_in client_addr);
+
+void handle_prod_client(int client_sock, struct sockaddr_in client_addr);
 void forward_data(int source_sock, int destination_sock);
+void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pipe);
+
 void print_timeofday();
+void create_pipes();
   
 /* Program start */
 int main(int argc, char *argv[]) {
@@ -77,6 +83,21 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
+}
+
+void create_pipes(){
+  int i;
+  for (i=0; i<NUM_CONNS;i++){
+    
+    if(pipe(pipes_arr[i])<0){
+      perror("pipe");
+      exit(1);
+    }
+    
+    setNonblocking(pipes_arr[i][1]);
+//  setBufferSize(pipes_arr[i][1],buffer_size);
+    
+  }
 }
 
 /* Parse command line options */
@@ -176,6 +197,8 @@ void server_loop() {
   struct sockaddr_in client_addr;
   int addrlen = sizeof(client_addr);
 
+  create_pipes();
+
   while (TRUE){
     client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addrlen);    	
     if (fork() == 0){ // handle client connection in a separate process
@@ -196,12 +219,75 @@ void handle_client(int client_sock, struct sockaddr_in client_addr){
   getpeerinfo(client_sock, &temp[0], &temp_port);
 
   if(strcmp(&temp[0], remote_host)==0){
-    
+    handle_prod_client(client_sock, client_addr);
   }
 
 }
 
-
+// ---> 
 void handle_prod_client(int client_sock, struct sockaddr_in client_addr){
 
+  if ((remote_sock = create_connection()) < 0) {
+    perror("Cannot connect to host");
+    return;
+  }
+
+  int c = get_shm_counter();
+  increment_shm_counter();
+
+  if (fork() == 0) { // a process forwarding data from client to
+    forward_data(client_sock, remote_sock);
+  }
+
+  if (fork() == 0) { // a process forwarding data from remote socket
+    forward_data_to_dest_and_pipe(remote_sock, client_sock, pipes_arr[c][1]);
+  }
+}
+
+/* Forward data between sockets */
+void forward_data(int source_sock, int destination_sock) {
+  char buffer[BUF_SIZE];
+  int n;
+
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) { // read
+    send(destination_sock, buffer, n, 0); // send data to output
+  }
+
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from
+  close(destination_sock);
+
+  shutdown(source_sock, SHUT_RDWR); // stop other processes from using
+  close(source_sock);
+}
+
+void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pipe){
+  char buffer[BUF_SIZE];
+  int n;
+
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0) { // read
+    send(destination_sock, buffer, n, 0); // send data to output
+    if(write(pipe,buffer,n)<0){
+      perror("Buffer Overflow \n");
+    }
+  }
+
+  shutdown(destination_sock, SHUT_RDWR); // stop other processes from
+  close(destination_sock);
+
+  shutdown(source_sock, SHUT_RDWR); // stop other processes from using
+  close(source_sock);
+}
+
+
+// ---> HANDLE DUPLICATE CLIENT
+
+void handle_prod_client(int client_sock){
+
+  if (fork() == 0) { // a process forwarding data from client to
+    read_data_and_drop(client_sock);
+  }
+
+  if (fork() == 0) { // a process forwarding data from remote socket
+    forward_data_to_dest_and_pipe(remote_sock, client_sock, pipes_arr[c][1]);
+  }
 }
