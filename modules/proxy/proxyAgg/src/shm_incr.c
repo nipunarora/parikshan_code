@@ -18,7 +18,7 @@
 #include <sys/sem.h>
 
 const int IPC_KEY = IPC_PRIVATE; /* for parent-child sharing only */
-const int SHM_SIZE = sizeof( int );
+const int SHM_SIZE = sizeof( int )*2;
 const int SHM_MODE = SHM_R | SHM_W; /* open for read/write access */
 
 int createsem( int initval );
@@ -44,7 +44,6 @@ void create_shm_seg(){
       The 0 arguments let the OS decide where to map it.
   */
   shmptr = (int *) shmat( shmid, 0, 0 );
-  shmptr = malloc(sizeof(int)*2);
 
   if ( shmptr == (int *) -1 )
     fatalsys("shmat failed");
@@ -110,8 +109,28 @@ void increment_shm_counter(){
 
 }
 
+void increment_shm_counter2(){
+  p(mutex);
+  int val = *(shmptr+1);
+  *(shmptr+1) = ++val;
+  v(mutex);
+}
+
 /*  get the shared memory counter */
 int get_shm_counter(){
   int val = *shmptr;
   return val;
+}
+
+int get_shm_counter2(){
+  int val = *(shmptr+1);
+  return val;
+}
+
+void set_shm_counter(int val){
+  *shmptr = val;
+}
+
+void set_shm_counter2(int val){
+  *(shmptr+1) = val;
 }

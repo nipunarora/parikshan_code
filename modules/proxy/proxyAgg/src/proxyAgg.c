@@ -46,11 +46,16 @@ void handle_prod_client(int client_sock, struct sockaddr_in client_addr);
 void forward_data(int source_sock, int destination_sock);
 void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pipe);
 
+void handle_clone_client(int client_sock);
+void read_data_and_drop(int client_sock);
+void read_pipe_dest(int client_sock,int pipe);
+
 void print_timeofday();
 void create_pipes();
   
 /* Program start */
 int main(int argc, char *argv[]) {
+
   int c, local_port;
   pid_t pid;
   
@@ -60,6 +65,8 @@ int main(int argc, char *argv[]) {
     printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) -b buffer_size \n", argv[0]);
     return 0;
   }
+
+  create_shm_seg();
 
   /* Here we start the proxy server with it listening at the local port specified */
   if ((server_sock = create_socket(local_port)) < 0) { // start server
@@ -281,13 +288,48 @@ void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pi
 
 // ---> HANDLE DUPLICATE CLIENT
 
-void handle_prod_client(int client_sock){
+void handle_clone_client(int client_sock){
+
+  int c2 = get_shm_counter2();
+  int c1 = get_shm_counter();
+  
+  if(c2>=c1){
+    printf("Error in connection order\n");
+    exit(1);
+  }
+  increment_shm_counter2();
+  c2 = get_shm_counter2();
 
   if (fork() == 0) { // a process forwarding data from client to
     read_data_and_drop(client_sock);
   }
 
   if (fork() == 0) { // a process forwarding data from remote socket
-    forward_data_to_dest_and_pipe(remote_sock, client_sock, pipes_arr[c][1]);
+    read_pipe_dest(client_sock, pipes_arr[c2][0]);
   }
+}
+
+void read_data_and_drop(int source_sock){
+  char buffer[BUF_SIZE];
+  int n;
+
+  while ((n = recv(source_sock, buffer, BUF_SIZE, 0)) > 0);
+
+  shutdown(source_sock, SHUT_RDWR); // stop other processes from using
+  close(source_sock);
+}
+
+void read_pipe_dest(int client_sock,int pipe){
+  char buffer[BUF_SIZE];
+  int n;
+
+  //put in error condition for -1, currently the socket is shutdown
+  while ((n = read(pipe, buffer, BUF_SIZE)) > 0)// read data from pipe socket 
+    { 
+      send(client_sock, buffer, n, 0); // send data to output socket
+    }
+  
+  shutdown(client_sock, SHUT_RDWR); // stop other processes from using socket
+  close(client_sock);
+
 }

@@ -15,6 +15,10 @@ void p( int semid );
 void v( int semid );
 void fatalsys( char* );
 void increment_shm_counter();
+void increment_shm_counter2();
 int get_shm_counter();
+int get_shm_counter2();
+void set_shm_counter(int val);
+void set_shm_counter2(int val);
 
 #endif
