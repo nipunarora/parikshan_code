@@ -26,9 +26,9 @@ int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_so
 
 #ifdef INPUT
 
-char *remote_host="";
-char *duplicate_host="";
-char *destination_host="";
+char *remote_host="127.0.0.1";
+char *duplicate_host="127.0.0.1";
+char *destination_host="127.0.0.1";
 
 int local_port;
 int remote_port;

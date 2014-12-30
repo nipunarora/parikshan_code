@@ -603,9 +603,7 @@ void receive_data_asynch(int source_sock){
   close(source_sock);
 }
 
-/**
-   Make file descriptor non blocking
-*/
+/**   Make file descriptor non blocking */
 int setNonblocking(int fd)
 {
   int flags;

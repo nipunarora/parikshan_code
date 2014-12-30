@@ -1,6 +1,13 @@
 /* 
- * tcpclient.c - A simple TCP client
- * usage: tcpclient <host> <port>
+ * 
+ * Filename: tcpclient.c
+ * Author: Nipun Arora
+ * Created: Mon Dec 29 16:05:07 2014 (-0500)
+ * URL: http://www.nipunarora.net 
+ * 
+ * Description: 
+ * A simple TCP client
+ * usage: tcpclient <host> <port> <count of reps for messages>
  */
 #include <stdio.h>
 #include <stdlib.h>

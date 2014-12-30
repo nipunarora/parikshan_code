@@ -92,8 +92,10 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
+/* Create all Pipes */
 void create_pipes(){
   int i;
+
   for (i=0; i<NUM_CONNS;i++){
     
     if(pipe(pipes_arr[i])<0){
@@ -197,8 +199,6 @@ void sigterm_handler(int signal) {
   exit(0);
 }
 
-
-
 /* Main server loop */
 void server_loop() {
   struct sockaddr_in client_addr;
@@ -217,7 +217,7 @@ void server_loop() {
   }
 }
 
-
+/* Main Hanlde Client */
 void handle_client(int client_sock, struct sockaddr_in client_addr){
   
   char temp[INET6_ADDRSTRLEN];
@@ -225,13 +225,16 @@ void handle_client(int client_sock, struct sockaddr_in client_addr){
 
   getpeerinfo(client_sock, &temp[0], &temp_port);
 
-  if(strcmp(&temp[0], remote_host)==0){
+  if((strcmp(&temp[0], remote_host)==0) && (temp_port==remote_port) ){
     handle_prod_client(client_sock, client_addr);
+  }
+  else{
+    handle_clone_client(client_sock);
   }
 
 }
 
-// ---> 
+// ---> Communiation witht he production client
 void handle_prod_client(int client_sock, struct sockaddr_in client_addr){
 
   if ((remote_sock = create_connection()) < 0) {
@@ -324,8 +327,7 @@ void read_pipe_dest(int client_sock,int pipe){
   int n;
 
   //put in error condition for -1, currently the socket is shutdown
-  while ((n = read(pipe, buffer, BUF_SIZE)) > 0)// read data from pipe socket 
-    { 
+  while ((n = read(pipe, buffer, BUF_SIZE)) > 0){ 
       send(client_sock, buffer, n, 0); // send data to output socket
     }
   

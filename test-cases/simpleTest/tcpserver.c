@@ -1,5 +1,12 @@
 /* 
- * tcpserver.c - A simple TCP echo server 
+ * 
+ * Filename: tcpserver.c
+ * Author: Nipun Arora
+ * Created: Mon Dec 29 16:04:46 2014 (-0500)
+ * URL: http://www.nipunarora.net 
+ * 
+ * Description: 
+ * simple TCP echo server 
  * usage: tcpserver <port>
  */
 
