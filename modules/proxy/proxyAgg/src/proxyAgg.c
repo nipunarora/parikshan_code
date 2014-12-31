@@ -284,15 +284,15 @@ void handle_client(int client_sock, struct sockaddr_in client_addr){
 
   getpeerinfo(client_sock, &temp[0], &temp_port);
 
-  printf("Comparing %s and Port %d \n", &temp[0],temp_port);
+  //printf("Comparing %s and Port %d \n", &temp[0],temp_port);
   
   if(strcmp(&temp[0], remote_host)==0){
-    printf("Matched %s and Port %d \n", &temp[0],temp_port);
-    //handle_prod_client(client_sock, client_addr);
+    //printf("Matched %s and Port %d \n", &temp[0],temp_port);
+    handle_prod_client(client_sock, client_addr);
   }
   else if(strcmp(&temp[0], duplicate_host)==0){
-    printf("Matched %s and Port %d \n", &temp[0],temp_port);
-    //handle_clone_client(client_sock);
+    //printf("Matched %s and Port %d \n", &temp[0],temp_port);
+    handle_clone_client(client_sock);
   }
   else{
     printf("No Comparison for %s and port %d \n", &temp[0],temp_port);
@@ -316,6 +316,7 @@ void handle_prod_client(int client_sock, struct sockaddr_in client_addr){
   }
 
   if (fork() == 0) { // a process forwarding data from remote socket
+    DEBUG_PRINT(" shared memory counter %d \n",c);
     forward_data_to_dest_and_pipe(remote_sock, client_sock, pipes_arr[c][1]);
   }
 }
@@ -373,13 +374,13 @@ void handle_clone_client(int client_sock){
     exit(1);
   }
   increment_shm_counter2();
-  c2 = get_shm_counter2();
-
+  
   if (fork() == 0) { // a process forwarding data from client to
     read_data_and_drop(client_sock);
   }
 
   if (fork() == 0) { // a process forwarding data from remote socket
+    DEBUG_PRINT(" shared memory counter %d \n",c2);
     read_pipe_dest(client_sock, pipes_arr[c2][0]);
   }
 }
