@@ -70,7 +70,7 @@ int create_socket(int port) {
 }
 
 
-int create_connection() {
+int create_connection(char *destination_host, int destination_port) {
   struct sockaddr_in server_addr;
   struct hostent *server;
   int sock;

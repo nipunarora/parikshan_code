@@ -29,7 +29,7 @@ int server_sock, client_sock, remote_sock,duplicate_destination_sock;
 
 
 int create_socket(int port);
-int create_connection();
+int create_connection(char* destination_host, int destination_port);
 void getpeerinfo(int s, char ipstr[], int* port);
 
 #endif

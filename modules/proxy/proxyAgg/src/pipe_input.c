@@ -28,7 +28,6 @@
 #include <unistd.h>
 #include <wait.h>
 #include <fcntl.h>
-
 #include "input.h"
 #include "pipe_input.h"
 

@@ -1,11 +1,13 @@
 # 
+# 
 # Filename: run.sh
 # Author: Nipun Arora
-# Created: Fri Dec 26 15:13:08 2014 (-0500)
+# Created: Wed Dec 31 04:50:09 2014 (-0500)
 # URL: http://www.nipunarora.net 
 # 
 # Description: 
 # 
 #!/bin/bash
 
-./proxyAgg -l 9595 -h localhost -p 9596 -h localhost -d 9597 -x localhost -a
+./proxyAgg -l 9133 -h 127.0.0.1 -p 9132 -x 127.0.0.1 -d 9131 -m 127.0.0.1 -n 9130 -a
+

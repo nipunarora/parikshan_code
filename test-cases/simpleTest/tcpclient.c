@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   }
   hostname = argv[1];
   portno = atoi(argv[2]);
-  count = atoi(argv[3]);
+  //  count = atoi(argv[3]);
   /* socket: create the socket */
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) 
@@ -73,12 +73,12 @@ int main(int argc, char **argv) {
   fgets(buf, BUFSIZE, stdin);
 
   int i = 0;
-  for (i=0;i<count;i++){
+  //  for (i=0;i<count;i++){
   /* send the message line to the server */
   n = write(sockfd, buf, strlen(buf));
   if (n < 0) 
     error("ERROR writing to socket");
-  }
+  //}
 
   /* print the server's reply */
   bzero(buf, BUFSIZE);

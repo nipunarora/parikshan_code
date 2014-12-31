@@ -49,22 +49,54 @@ void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pi
 void handle_clone_client(int client_sock);
 void read_data_and_drop(int client_sock);
 void read_pipe_dest(int client_sock,int pipe);
-
+void print_inputs();
 void print_timeofday();
 void create_pipes();
+
+
+//-->>User Variables Block Start
+
+//#define USER
+
+#ifdef USER
+
+int local_port=9133;
+
+char *remote_host="127.0.0.1";
+char *duplicate_host="127.0.0.1";
+char *destination_host="127.0.0.1";
+
+int remote_port=9130;
+int duplicate_port=9131;
+int destination_port=9132;
+
+#else
+
+char *remote_host, *duplicate_host, *destination_host;
+int  local_port, remote_port, duplicate_port, destination_port;
+
+#endif
+
+// --<< User Variables block end
+
+
   
 /* Program start */
 int main(int argc, char *argv[]) {
 
   int c, local_port;
   pid_t pid;
-  
+
+#ifndef USER  
   local_port = parse_options(argc, argv);
 
   if (local_port < 0){
     printf("Syntax: %s -l local_port -h remote_host -p remote_port -x duplicate_host -d duplicate_port -a|s (a= asynchrounous mode, s = synchrounous mode) -b buffer_size \n", argv[0]);
     return 0;
   }
+#else
+  print_inputs();
+#endif
 
   create_shm_seg();
 
@@ -109,13 +141,24 @@ void create_pipes(){
   }
 }
 
+void print_inputs(){
+  DEBUG_PRINT("local_port =  %d ", local_port);
+  DEBUG_PRINT("remote_host =  %s ", remote_host);
+  DEBUG_PRINT("production_port =  %d ", remote_port);
+  DEBUG_PRINT("duplicate_host =  %s ", duplicate_host);
+  DEBUG_PRINT("duplicate_port =  %d ", duplicate_port);
+  DEBUG_PRINT("destination_host =  %s ", destination_host);
+  DEBUG_PRINT("destination_port =  %d ", destination_port);
+
+}
+
 /* Parse command line options */
 int parse_options(int argc, char *argv[]) {
 	
   int c, local_port;
   l = h = p_flag = x = d = FALSE;
 
-  while ((c = getopt(argc, argv, "l:h:p:x:d:b:as")) != -1) 
+  while ((c = getopt(argc, argv, "l:h:p:x:d:b:m:n:as")) != -1) 
     {
       switch(c) 
         {
@@ -148,6 +191,19 @@ int parse_options(int argc, char *argv[]) {
           d = TRUE;
           DEBUG_PRINT("duplicate_port =  %d ", duplicate_port);
           break;
+
+        case 'm':
+          destination_host = optarg;
+          x = TRUE;
+          DEBUG_PRINT("destination_host =  %s ", destination_host);
+          break;
+	
+        case 'n':
+          destination_port = atoi(optarg);
+          d = TRUE;
+          DEBUG_PRINT("destination_port =  %d ", destination_port);
+          break;
+
 
         case 'a':
           a = TRUE;
@@ -205,6 +261,7 @@ void server_loop() {
   int addrlen = sizeof(client_addr);
 
   create_pipes();
+  printf("reached\n");
 
   while (TRUE){
     client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &addrlen);    	
@@ -219,25 +276,34 @@ void server_loop() {
 
 /* Main Hanlde Client */
 void handle_client(int client_sock, struct sockaddr_in client_addr){
+
+  printf("Client Trying to connect\n");
   
   char temp[INET6_ADDRSTRLEN];
   int temp_port;
 
   getpeerinfo(client_sock, &temp[0], &temp_port);
 
-  if((strcmp(&temp[0], remote_host)==0) && (temp_port==remote_port) ){
-    handle_prod_client(client_sock, client_addr);
+  printf("Comparing %s and Port %d \n", &temp[0],temp_port);
+  
+  if(strcmp(&temp[0], remote_host)==0){
+    printf("Matched %s and Port %d \n", &temp[0],temp_port);
+    //handle_prod_client(client_sock, client_addr);
+  }
+  else if(strcmp(&temp[0], duplicate_host)==0){
+    printf("Matched %s and Port %d \n", &temp[0],temp_port);
+    //handle_clone_client(client_sock);
   }
   else{
-    handle_clone_client(client_sock);
+    printf("No Comparison for %s and port %d \n", &temp[0],temp_port);
   }
-
+  
 }
 
 // ---> Communiation witht he production client
 void handle_prod_client(int client_sock, struct sockaddr_in client_addr){
 
-  if ((remote_sock = create_connection()) < 0) {
+  if ((remote_sock = create_connection(&destination_host[0],destination_port)) < 0) {
     perror("Cannot connect to host");
     return;
   }
@@ -256,6 +322,9 @@ void handle_prod_client(int client_sock, struct sockaddr_in client_addr){
 
 /* Forward data between sockets */
 void forward_data(int source_sock, int destination_sock) {
+
+  DEBUG_PRINT("FORWARD DATA \n");
+  
   char buffer[BUF_SIZE];
   int n;
 
@@ -271,6 +340,9 @@ void forward_data(int source_sock, int destination_sock) {
 }
 
 void forward_data_to_dest_and_pipe(int source_sock, int destination_sock, int pipe){
+
+  DEBUG_PRINT("FORWARD DATA TO DEST AND PIPE \n");
+
   char buffer[BUF_SIZE];
   int n;
 
@@ -313,6 +385,9 @@ void handle_clone_client(int client_sock){
 }
 
 void read_data_and_drop(int source_sock){
+
+  DEBUG_PRINT("READ DATA AND DROP \n");
+
   char buffer[BUF_SIZE];
   int n;
 
@@ -323,6 +398,9 @@ void read_data_and_drop(int source_sock){
 }
 
 void read_pipe_dest(int client_sock,int pipe){
+
+  DEBUG_PRINT("READ PIPE DEST \n");
+
   char buffer[BUF_SIZE];
   int n;
 

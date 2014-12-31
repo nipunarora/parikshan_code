@@ -23,27 +23,8 @@ typedef enum {TRUE = 1, FALSE = 0} bool;
 int buffer_size;
 int server_sock, client_sock, remote_sock, remote_port, duplicate_destination_sock, duplicate_port;
 
-
-#ifdef INPUT
-
-char *remote_host="127.0.0.1";
-char *duplicate_host="127.0.0.1";
-char *destination_host="127.0.0.1";
-
-int local_port;
-int remote_port;
-int destination_port;
-
 void sigchld_handler(int signal);
 void sigterm_handler(int signal);
 
-#else
-char *remote_host, *duplicate_host, *destination_host;
-int  remote_port, duplicate_port, destination_port;
-
-void sigchld_handler(int signal);
-void sigterm_handler(int signal);
-
-#endif
 
 #endif /** END of HEADER FILE */
