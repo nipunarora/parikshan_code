@@ -46,8 +46,8 @@ An alternate mechanism proposed by \parikshan is to use the test-container to in
 As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.
 
   \item \textbf{Testing Software Updates}
-Software patches for performance or functional updates are frequently done on backend servers. 
-These may not necessarily change the user-facing input and can be optimizations internal in the back-end server.
+Software patches for performance or functional updates are frequently done on back-end servers. 
+These may not necessarily change the user-facing input and can be optimization internal in the back-end server.
 Such patches can be first tested in the test-container to verify that they are correctly behaving before doing the release.
 This gives the developer a controlled experiment scenario where he can see if the updates working properly.
 %\parikshan can potentially extend this by testing all user input since it does not effect the user experience at all.

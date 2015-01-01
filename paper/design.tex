@@ -1,3 +1,12 @@
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{figs/arch.png}
+    \caption{Architectural View of \texttt{Parikshan} applied to a mid-tier application service. \parikshan modules are: (1).Clone Manager for Live Cloning, (2). Proxy Duplicator to duplicate network traffic, and (3). Proxy Aggregator to aggregate and replay network traffic from mid-tier clones}
+    \label{fig:workflow}
+  \end{center}
+\end{figure}
+
 \section{Design}
 \label{sec:design}
 
@@ -5,15 +14,6 @@
 %We then give a system overview of \texttt{Parikshan}, explaining each of its components. 
 %Next, we explain how it inserts test cases, into the test harness, and finally we explain 
 %how a user can use the \texttt{Parikshan} api to insert test cases in the test harness.
-
-\begin{figure}[t]
-  \begin{center}
-    \includegraphics[width=0.5\textwidth]{figs/workflow2.eps}
-    \caption{Backend wrapped around with Parakishan Run-time}
-    \label{fig:workflow}
-  \end{center}
-\end{figure}
-
 %\subsection{Workflow and Architecture}
 %\label{sec:workflowArch}
 
@@ -29,14 +29,19 @@
 
 Each instance of \parikshan can target only one tier at a time.
 However, multiple instances can be orchestrated together especially when it's required for integration testing or cross tier results need to be correlated.
-To begin with let us look at a simple example of client web-server with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
-As explained earlier basic workflow of our system is to duplicate all network requests to the production backend server and a ``live cloned'' test container.
-Traffic duplication is managed by our proxy network duplicator (see section \ref{sec:proxyDuplicator}), which uses several different strategies to clone user input to our test-container, with minimal impact on the production container.
-Another core aspect of our design is ``live cloning''; this is the process by which a production container (in this case our backend service), can be cloned to create a test-container which has the same file system and process state. 
-Cloning and syncing between the production container and the test-container is managed by our clone manager, which uses user-space containers OpenVZ\cite{openvz} and a variant of live migration to implement the cloning.
-Next, we explain each of the modules in detail.
-%The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
+Figure \ref{fig:workflow} shows the architecture of \parikshan when applied to a mid-tier application server.
+It consists of 3 modules: 
+\textbf{Clone Manager}: manages cloning and syncing between the production container and the test-container, 
+\textbf{Network Duplicator}: manages network traffic duplication  to both the production and debug container, 
+and \textbf{Network Aggregator}: manages responses from the debug container by replaying and sandboxing all network communication in case of mid-tier(non-backend) systems.
 
+%which uses user-space containers OpenVZ\cite{openvz} and a variant of live migration to implement the cloning.
+%To begin with let us look at a simple example of client web-server with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
+%As explained earlier basic workflow of our system is to duplicate all network requests to the production backend server and a ``live cloned'' test container.
+%Traffic duplication is managed by our proxy network duplicator (see section \ref{sec:proxyDuplicator}), which uses several different strategies to clone user input to our test-container, with minimal impact on the production container.
+%Another core aspect of our design is ``live cloning''; this is the process by which a production container (in this case our backend service), can be cloned to create a test-container which has the same file system and process state. 
+%Next, we explain each of the modules in detail.
+%The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
 %\begin{itemize} 
 
 \subsection{Clone Manager} 
@@ -45,10 +50,10 @@ Next, we explain each of the modules in detail.
 \subsubsection{How does cloning work?}
 \label{sec:cloning}
 
-While the focus of our work is not to support container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
-Before moving further we wish to clarify that instead of the standard live migration supported by hypervisors, \parikshan requires a cloning functionality. 
-In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
-This cloning requires some tweaking, and modification in both how compute migration is handled, and especially how the network migration is handled. 
+%While the focus of our work is not to support container migration, or to make changes to the hypervisor, we need to tweak the way typical hypervisors offer live migration for our purposes.
+%Before moving further we wish to clarify that instead of the standard live migration supported by hypervisors, \parikshan requires a cloning functionality. 
+%In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
+%This cloning requires modification in both how compute migration is handled, and especially how the network migration is handled. 
 
 To understand cloning in our context, let us understand how live migration works. 
 Live migration refers to the process of moving a running virtual machine, guest os or container from one host node(physical machine) to another, without disconnecting any client or process running within the machine. 
@@ -58,23 +63,24 @@ In general the process involves the following steps:
 (1) Firstly, the copy (\textit{rsync}) is initiated by a pre-copy memory migration, where the underlying hypervisor copies all the memory pages from the source to the destination. 
 (2) Once pre-copy phase is finished, the VM is temporarily suspended, and all memory pages including live memory pages are transferred to the target node. 
 Once all memory pages have been transferred the target container is restarted. 
-Obviously, two rsync runs are needed, so the first one moves most of the data, while the container is still up and running, and the second one moves the changes made during the time period between the first rsync run and the container pause.
-\footnote{Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
-Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network}.
+Two rsync runs are needed, so the first one moves most of the data, while the container is still up and running, and the second one moves the changes made during the time period between the first rsync run and the container pause.
+%\footnote{Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
+%Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network}.
 %To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
 
-Instead of Live Migration, in Live Cloning, we do not delete the source container, rather we allow the container to keep executing in both production and test locations.
-The more tricky aspect is that there are two containers with the same identities in the network and application domain. 
-This is important, as the operating system and the application processes running in it may be configured with the IP Address, or other networking operation, which cannot be changed without leading to a crash of the system.
+In contrast with live migration, where the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
+%Instead of Live Migration, in Live Cloning, we do not delete the source container, rather we allow the container to keep executing in both production and test locations.
+The challenge here is to manage two containers with the same identities in the network and application domain. 
+This is important, as the operating system and the application processes running in it may be configured with the IP Address, or other networking operation, which cannot be changed on the fly leading to a crash of the system.
 Hence the same network identifier should map to two separate addresses.
 Clearly the same ipAddress, mac addresses cannot be kept for both the production and test-container as that would lead to conflict in the network. 
 There are two ways to resolve this : 
 (1) Host each container behind their own network namespaces, on the same host machine, and configure packet forwarding to both containers such that the duplicator can communicate to them. 
 Network namespaces(see internal mode, figure.\ref{fig:modesCloning}) is a definite possibility, and have been used by several hosting providers, to launch VM's with same private ipAddress, in a shared network domain \cite{OpenStack}. 
 (2) Another approach is to host both containers in different machines with port forwarding setup to forward incoming TCP requests to containers behind a NAT (see external mode, figure.\ref{fig:modesCloning}). 
-This is slightly more scalable and has clear separation of network and compute resources. 
-However, an obvious downside to this approach is that it needs a new VM to be allocated.
-This leads us to two different modes of implementation, which we discuss in the next section.
+This is more scalable and has clear separation of network and compute resources. 
+%However, an obvious downside to this approach is that it needs a new VM to be allocated.
+%This leads us to two different modes of implementation, which we discuss in the next section.
 
 %As of now, we have implemented the second approach for our proof of concept mostly because of the ease of implementation.
 %Further a packet level sniffer or mirror port would keep the same buffer and potentially timeout.
@@ -90,7 +96,7 @@ The agent itself is the driver for live cloning, and performs rsync operations, 
 
 \begin{figure}[t]
   \begin{center}
-    \includegraphics[width=0.5\textwidth]{figs/modesCloning.eps}
+    \includegraphics[width=0.5\textwidth]{figs/ModesCloning.png}
     \caption{External and Internal Mode for Live Cloning: P1 is the production container, and T1 is the test container, the Clone Manager interacts with an Agent which has drivers to implement live Cloning}
     \label{fig:modesCloning}
   \end{center}
@@ -99,7 +105,7 @@ The agent itself is the driver for live cloning, and performs rsync operations, 
 
 Test and production containers can be allocated in various schemes: we call these schemes \textit{modes}. 
 Broadly speaking the clone manager works in 2 modes (see figure.\ref{fig:modesCloning}) : 
-\begin{itemize}
+\begin{itemize}[leftmargin=*]
 
 \item \textit{Internal Mode}: In this mode we allocate the test-container and  production containers to the same host node. 
 This would mean less suspend time, as the production container can be locally cloned ( instead of streaming over the network). 
@@ -135,20 +141,21 @@ This makes features such as syncing, moving, snapshots, backups and easy separat
 
 The algorithm for live cloning is explained below: 
 
-\begin{algorithm}[ht]
-\begin{algorithmic}
-   \caption{Algorithm for Live Cloning using OpenVZ 
-   \label{algCloning}}
- \begin{enumerate}
-   \item Safety Checks(Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
-   \item Runs rsync of container file system (\textit{ploop} device) to the destination server  
-   \item Checkpoints and suspend the container 
-   \item Runs a second rsync of the \textit{ploop} device to the destination  
-   \item Start container locally 
-   \item Set up port forwarding and packet duplication
+\begin{algorithm}[h]
+  \caption{Algorithm for Live Cloning using OpenVZ} 
+  \label{algCloning}
+%  \begin{algorithmic}
+    \begin{enumerate}
+    \item Safety Checks (Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
+    \item Runs rsync of container file system (\textit{ploop} device) to the destination server  
+    \item Checkpoints and suspend the container 
+    \item Runs a second rsync of the \textit{ploop} device to the destination  
+    \item Start container locally 
+    \item Set up port forwarding and packet duplication
    \item Starts the container on the destination 
-  \end{enumerate}
-\end{algorithmic}
+   \end{enumerate}
+%\end{algorithmic}
+
 \end{algorithm}
 
 Let us imaging we are cloning production container C1 on Host H1 as test container C2 on Host H2. 
@@ -324,11 +331,11 @@ We discuss consistency requirements further in section \ref{sec:consistency}
 \fi
 
 \begin{figure}[t]
-	\begin{center}
-		\includegraphics[width=0.45\textwidth]{figs/aggregator.eps}
-		\caption{Description of the Network Duplicator. In \textit{synchronized} mode: there are 2 threads for each connection, Thread 1 executes steps [1,3,5], and Thread 2 executes [2,4,6] sequentially, hence the speed of packets sent to the production and the test container are synchronized. In \textit{asynchronous} mode, there are 4 threads for each connection, Thread 1 executes steps [1,3], Thread 2 executes [2,4], Thread 3 executes [5], and Thread 4 executes [6]. Hence communication to the test container and production container are asynchronous}
-		\label{fig:duplicator}
-	\end{center}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{figs/aggregator.eps}
+    \caption{Description of the Network Duplicator. In \textit{synchronized} mode: there are 2 threads for each connection, Thread 1 executes steps [1,3,5], and Thread 2 executes [2,4,6] sequentially, hence the speed of packets sent to the production and the test container are synchronized. In \textit{asynchronous} mode, there are 4 threads for each connection, Thread 1 executes steps [1,3], Thread 2 executes [2,4], Thread 3 executes [5], and Thread 4 executes [6]. Hence communication to the test container and production container are asynchronous}
+    \label{fig:duplicator}
+  \end{center}
 \end{figure}
 
 \subsection{Proxy Network Aggregator and Replay Module}
@@ -376,6 +383,12 @@ In our simple asynchronous forwarding strategy, we have $c=1$ as we have only a 
 
 Now based on this notation the expected size of the time window is :
 \texttt{Nipun's note - This equation and is tied to the evaluation in section 7.2, which is being worked on}
+
+The testing window size depends greatly on the \textbf{application behavior}, in particular how it launches TCP connections. 
+In our current design we generate a pipe for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in application.
+For webservers, and application servers, the testing window size is generally not a problem, as each request is a new ``connection'', and the size of each connection is quite small, hence the proxy is able to tolerate significant slowdowns without pipe overflows.
+Database servers, and other session based services usually have small request sizes, but multiple requests can be sent in one session which is initiated by a user. In such cases the amount of calls in a single session can eventually have a cumulative effect to cause overflows.
+Photosharing, file sharing and other datasharing services transfer a lot of data in a single burst over each tcp connection. Such protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
 
 %In queueing theory terms, the size of the testing window can be modelled as a special case of continuous-time Markov process also called the \emph{birth-death} process. 
 %For the sake of brevity we will only briefly explain the basics of queueing theory

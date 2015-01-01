@@ -27,6 +27,7 @@ Another kind of non-determinism is caused by parallel applications which may beh
 Capturing this kind of non-determinism is important to debug bugs such as race-conditions, locks etc.
 Unfortunately, the current system design of \parikshan cannot capture concurrency based non-determinism, we hope to revise and include this in future versions.
 
+\iffalse
 \subsection{Mid-Tier Servers}
 \label{sec:midTier}
 
@@ -36,6 +37,8 @@ While scaling it out on multi-tier applications, we observed that at times when 
 A naive and useful strategy is to clone the downstream connections, hence if we are targeting a application server, we need to clone the application server as well as the database server.
 Another approach is to use a proxy between the application server(both production and test), and the database server, where the responses of the database to the original production container are cached, and are used to respond to the test-container.
 The design of this proxy is similar to our client facing proxy, where requests and responses are being buffered and forwarded. The only difference here is that requests and responses need to be buffered, and checked against incoming requests and then a response needs to be generated. 
+
+\fi
 
 \subsection{Rate Limiting}
 \label{sec:ratelimiting}
