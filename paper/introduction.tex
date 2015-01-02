@@ -8,16 +8,16 @@ DevOps stresses on close coupling between software developers and operators, and
 Most of these companies have very frequent releases and hence require a very short time to a bug fix, test, patch and release in order to realize continuous delivery(Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day).
 Hence debugging is not only difficult because of difficulty to recreate production scenarios, it is also increasingly important to localize and fix bugs in a very short period of time.
 
-However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
+%However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
 Existing debugging techniques\cite{clue,magpie,vPath} rely on light weight system level instrumentation or application transaction and error logs as a mechanism to localize and identify the bug in the development environment.
 There are several problems with these techniques:
-\begin{itemize}[leftmargin=*]
+\begin{itemize}
 %\textbf{Unrealistic} because 
-\item It may not be possible to faithfully reconstruct the production environment from such logs. 
-Most existing applications have a large number of interacting components. 
-An independent development test-cluster will be unable to recreate the interactions in the real environment 
-\item Even if input's are captured, it's not possible to generate all possible configurations and system states. 
-Applications run with a variety of 3rd party plugins, and on multiple operating systems, which means that traditional whitebox testing in the development environment is unable to capture these bugs.
+\item Debugging often requires execution tracing. However instrumentation has a trade-off between granularity of tracing and the performance overhead. Most instrumentation tools capture minimal information to reduce the impact on application performance.
+%However, faithfully reconstructing execution paths is difficult as most applications have several interacting components.
+%An independent development test-cluster will be unable to recreate the interactions in the real environment 
+\item Applications use a variety of 3rd party plugins, \& on multiple kernels, which makes generating configurations and state of production systems difficult. 
+ %which means that traditional whitebox testing in the development environment is unable to capture these bugs.
 \item Debugging is a lengthy process: Developers try to piece together what could be the possible problem using log information.
 Often more information is required to understand the context better which leads to several iterations before the problem is debugged.
 \end{itemize}
