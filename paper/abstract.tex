@@ -1,14 +1,18 @@
+
 %SIGMETRICS
 \begin{abstract}
-One of the biggest problems faced by developers debugging large scale systems is replicating the deployed environment to figure out errors.
-Additionally, most modern companies are combining their development and operation management activities (DevOps), which has led to an increased emphasis on fast bug resolution.
-In this work we present a framework which allows users to debug the target production system (run test-cases, debug, or profile etc.) in a sandbox environment cloned from the live running system at any point in it's execution.
-The paper leverages user-space containers (OpenVZ/ LXC) to launch a container cloned and migrated from running instances of an application, thereby launching two containers: production (which provides the real output), and test-container (for debugging). 
-This \emph{test-container} provides a sandbox environment, for safe execution of test-cases/debugging done by the users without any perturbation to the execution environment. 
-Our sandboxes provide name-space, and resource management for the processes executing the test/debug cases.
-A customized-network proxy agent replicates inputs from clients to both the production and test-container, as well as safely discard all outputs from the debug-container.
-These sandbox debug-containers can be run either on the same physical host as the production container, or scaled out on dedicated physical test servers.
-We believe our tool provides a mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
+
+One of the biggest problems faced by developers debugging large scale systems is replicating the deployed environment to figure out errors. 
+Additionally, most modern companies are combining their development and operation management activities (DevOps), which has led to an increased emphasis on fast bug resolution. 
+In this work we present \textit{``live-debugging''} a mechanism which allows debugging production system (run test-cases, debug, or profile etc.) on-the-fly. 
+%in a sandbox environment cloned from the live running system. 
+The paper leverages user-space containers (OpenVZ/ LXC) to launch containers cloned and migrated from running instances of an application, thereby launching two containers: \textit{production} (which provides the real output), and \textit{test-container} (for debugging). 
+This \emph{test-container} provides a sandbox environment for debugging without any perturbation to the execution environment. 
+%Our sandboxes provide name-space, and resource management for the processes executing the test/debug cases. 
+Customized-network proxy agents replicate/or replay inputs from clients to both the production and test-container, as well as safely discard all outputs from the debug-containers. 
+These sandbox debug-containers can be run either on the same physical host as the production container, or scaled out on dedicated physical test servers. 
+We used our system called \texttt{Parikshan}, to do \textit{``live-debugging''} on several real-production bugs, and effectively reduced debugging complexity and time.
+%We believe our tool provides a mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
 
 \textbf{Tags:} software debugging, live cloning, network proxy, live debugging
 \end{abstract}
