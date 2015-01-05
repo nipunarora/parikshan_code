@@ -1,8 +1,42 @@
 \section{Discussion}
 \label{sec:discussion}
 
-In this section we describe some of the open-discussion topics in \parikshan 
+Some open-discussion topics in \parikshan 
 
+\textbf{Concurrency non-determinism}: \parikshan can capture the system state and the user input.
+However, it is still possible that we will miss errors which happen because of specific schedules or caching in the production system.
+\parikshan can still be applied 
+
+%\subsection{Rate Limiting}
+%\label{sec:ratelimiting}
+
+\textbf{Rate Limiting}: As we show in section \ref{sec:evaluation}, at extremely high write I/O's it is possible that the suspend time for cloning is sometimes prohibitively high, and can cause TCP timeouts. 
+The operator can thereby chose to use cloning and sandboxing, at low workload conditions. 
+Alternatively, a simple solution to this problem is to use rate-limiting at the proxy which would allow the I/O consumption in the target container to become lower, thereby reducing the suspend time.
+Rate limiting is a commonly used mechanism in proxies, while it reduces the QoS of the application momentarily, it may be better for fast bug resolution.
+
+%\subsection{Dynamic Proxy Insertion}
+%\label{sec:dynamicProxyInsertion}
+
+\textbf{Dynamic Proxy Insertion}: While cloning does happen live, we do not really need to have the proxy to be inserted dynamically as well. 
+Proxies are commonly used in several applications so they can be essentially all the time. 
+However, based on design choice, the proxy can be inserted by starting it up on any server, and then putting a flow redirection rule in the router using dynamic network programming mechanism such as OpenFlow\cite{openflow}.
+Router flows are updated dynamically, and are \texttt{flow-based}, hence can be redirected on the fly using an openflow\cite{openflow} controller.
+
+%\subsection{Slowdown}
+%\label{sec:slowdown}
+
+
+%\subsection{Consistency Requirements}
+%\label{sec:consistency}
+
+\textbf{Consistency Requirements}: Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
+In such cases the time-window can be arbitrarily long. 
+For example in mysql read transactions, even if there is a transaction failiure or an overflow, it will not effect MySQL itself.
+Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
+
+
+\iffalse
 \subsection{Non-Determinism}
 \label{sec:nonDeterminism}
 
@@ -27,7 +61,6 @@ Another kind of non-determinism is caused by parallel applications which may beh
 Capturing this kind of non-determinism is important to debug bugs such as race-conditions, locks etc.
 Unfortunately, the current system design of \parikshan cannot capture concurrency based non-determinism, we hope to revise and include this in future versions.
 
-\iffalse
 \subsection{Mid-Tier Servers}
 \label{sec:midTier}
 
@@ -39,31 +72,3 @@ Another approach is to use a proxy between the application server(both productio
 The design of this proxy is similar to our client facing proxy, where requests and responses are being buffered and forwarded. The only difference here is that requests and responses need to be buffered, and checked against incoming requests and then a response needs to be generated. 
 
 \fi
-
-\subsection{Rate Limiting}
-\label{sec:ratelimiting}
-
-As we show in section \ref{sec:evaluation}, at extremely high write I/O's it is possible that the suspend time for cloning is sometimes prohibitively high, and can cause TCP timeouts. 
-The operator can thereby chose to use cloning and sandboxing, at low workload conditions. 
-Alternatively, a simple solution to this problem is to use rate-limiting at the proxy which would allow the I/O consumption in the target container to become lower, thereby reducing the suspend time.
-Rate limiting is a commonly used mechanism in proxies, while it reduces the QoS of the application momentarily, it may be better for fast bug resolution.
-
-\subsection{Dynamic Proxy Insertion}
-\label{sec:dynamicProxyInsertion}
-
-While cloning does happen live, we do not really need to have the proxy to be inserted dynamically as well. 
-Proxies are commonly used in several applications so they can be essentially all the time. 
-However, based on design choice, the proxy can be inserted by starting it up on any server, and then putting a flow redirection rule in the router using dynamic network programming mechanism such as OpenFlow\cite{openflow}.
-Router flows are updated dynamically, and are \texttt{flow-based}, hence can be redirected on the fly using an openflow\cite{openflow} controller.
-
-%\subsection{Slowdown}
-%\label{sec:slowdown}
-
-
-\subsection{Consistency Requirements}
-\label{sec:consistency}
-
-Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
-In such cases the time-window can be arbitrarily long. 
-For example in mysql read transactions, even if there is a transaction failiure or an overflow, it will not effect MySQL itself.
-Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.

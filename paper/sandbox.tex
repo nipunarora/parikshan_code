@@ -17,7 +17,7 @@
 \usepackage{epstopdf}
 \usepackage{tikz}
 \usepackage{tkz-tab}
-
+\usepackage{titlesec}
 %\usepackage{epsfig}
 %\epstopdfsetup{outdir=./}
 %\usepackage[showframe=true]{geometry}
@@ -31,7 +31,20 @@
 % \makeatother
 % ---- TR: remove copyright box -------------
 
-\setlength{\parindent}{0pt}
+%\setlength{\parindent}{0pt}
+\addtolength{\columnsep}{-1.5mm}
+\addtolength{\belowcaptionskip}{-2pt}
+\setlength{\parskip}{2pt}
+\topmargin=2pt
+\topskip=2pt
+
+\titlespacing*{\section}
+{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}
+{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}
+{0pt}{0pt}{0pt}
+
 %\setlength{\itemindent}{-1in}
 \begin{document}
 
@@ -81,8 +94,10 @@
 % latex bibtex latex latex
 % to resolve all references
 
-{\footnotesize\bibliographystyle{acm}
-\bibliography{sandbox}}
+\small{
+\bibliographystyle{acm}
+\bibliography{sandbox}
+}
 
 %\theendnotes
 

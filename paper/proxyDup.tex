@@ -1,9 +1,9 @@
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[width=0.45\textwidth]{figs/network_dup.eps}
-    \caption{Description of the Network Duplicator. In \textit{synchronized} mode: there are 2 threads for each connection, Thread 1 executes steps [1,3,5], and Thread 2 executes [2,4,6] sequentially, hence the speed of packets sent to the production and the test container are synchronized. In \textit{asynchronous} mode, there are 4 threads for each connection, Thread 1 executes steps [1,3], Thread 2 executes [2,4], Thread 3 executes [5], and Thread 4 executes [6]. Hence communication to the test container and production container are asynchronous}
+\begin{figure}[ht!]
+  \begin{centering}
+    \includegraphics[width=0.5\textwidth]{figs/network_dup.eps}
+    \caption{Description of the Network Duplicator. In \textit{synchronized} mode: there are 2 threads for each connection, Thread 1 executes steps [1,3,5], and Thread 2 executes [2,4,6] sequentially. In \textit{asynchronous} mode, there are 4 threads for each connection, Thread 1 executes steps [1,3], Thread 2 executes [2,4], Thread 3 executes [5], and Thread 4 executes [6]}
     \label{fig:duplicator}
-  \end{center}
+  \end{centering}
 \end{figure}
 
 
@@ -11,14 +11,16 @@
 \label{sec:dupMode}
 
 %\begin{enumerate}[leftmargin=*]
-\begin{enumerate}[leftmargin=*]
+%\begin{enumerate}[leftmargin=*]
 
-\item \textbf{Synchronized Packet Forwarding Mode}: 
+%\item 
+\noindent
+\textbf{Synchronized Packet Forwarding Mode}: 
 A naive strategy is to have a single worker thread to send and receive tcp stream to the production container as well as the debug container.
 %This is the simplest strategy and is quite robust as far as sending proxy data is concerned. 
 To understand this better let us look at figure \ref{fig:duplicator}: Here each incoming connection would be handled by 2 parallel threads in the proxy T1, and T2. 
 Where T1 sends data from the client to the proxy (communication link 1), then sends data from proxy to production (link 3), and finally from proxy to debug container (link 5). 
-Whereas, thread 2 sends replies from production to proxy(link 4), then receives replies from test to proxy (link 6), which are then dropped. 
+Whereas, thread 2 sends replies from production to proxy(link 4), then receives replies from debug container to proxy (link 6), which are then dropped. 
 Thread T2 then forwards Packets received on link 4 are forwarded on link 2 to the client.
 
 By design TCP is a connection oriented protocol and is designed for stateful delivery and acknowledgment that each packet has been delivered.
@@ -46,7 +48,9 @@ Next we discuss an asynchronous packet forwarding scheme, which avoids any slowd
 %We assume a worker thread model for our proxy, where each connection is managed separately by one worker thread, 
 %since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
 
-\item \textbf{Asynchronous Packet Forwarding Model}: 
+%\item 
+\noindent
+\textbf{Asynchronous Packet Forwarding Model}: 
 As shown in the previous section, in the synchronized mode the debug container, can effect the speed of the production container as well. 
 The main reason for this is because of blocking sends being used to forward packets from the client to the debug-container and production container by the same sequential process.
 In the asynchronous packet forwarding mode (see figure \ref{fig:duplicator}): we use 4 threads T1, T2, T3, T4 to manage each incoming connection to the proxy.
@@ -72,7 +76,7 @@ To further increase this \emph{debug window}, we propose load balancing debuggin
 This would mean that there are multiple threads handling the incoming connection, one for the production container, and one for each of the debug containers.
 We believe that such a strategy would significantly reduce the chance of a buffer overflow in cases where the debug-container is significantly slower.
 
-\end{enumerate}
+%\end{enumerate}
 
 %The algorithm for each of the packet forwarding modes has been described in Algorithm.\ref{algoDuplication}. 
 %As an added explanation, the only difference between communication with the production container v/s the test container is that the when the proxy receives the message back from the production container, it sends the stream back to the client, on the other hand for the test container the packets are simply received and then dropped.

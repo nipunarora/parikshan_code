@@ -59,7 +59,7 @@ Broadly speaking the clone manager works in 2 modes (see figure.\ref{fig:modesCl
   \end{center}
 \end{figure}
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 
 \item \textit{Internal Mode}: In this mode we allocate the test-container and  production containers to the same host node. 
 This would mean less suspend time, as the production container can be locally cloned ( instead of streaming over the network). 
@@ -99,15 +99,15 @@ The algorithm for live cloning is explained below:
   \caption{Algorithm for Live Cloning using OpenVZ} 
   \label{algCloning}
 %  \begin{algorithmic}
-    \begin{enumerate}
-    \item Safety Checks (Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
-    \item Runs rsync of container file system (\textit{ploop} device) to the destination server  
-    \item Checkpoints and suspend the container 
-    \item Runs a second rsync of the \textit{ploop} device to the destination  
-    \item Start container locally 
-    \item Set up port forwarding and packet duplication
-   \item Starts the container on the destination 
-   \end{enumerate}
+  \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+  \item Safety Checks (Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
+  \item Runs rsync of container file system (\textit{ploop} device) to the destination server  
+  \item Checkpoints and suspend the container 
+  \item Runs a second rsync of the \textit{ploop} device to the destination  
+  \item Start container locally 
+  \item Set up port forwarding and packet duplication
+  \item Starts the container on the destination 
+  \end{enumerate}
 %\end{algorithmic}
 
 \end{algorithm}

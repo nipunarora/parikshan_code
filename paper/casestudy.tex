@@ -1,8 +1,8 @@
 \section{CaseStudies}
 \label{sec:casestudy}
 
-Here we show how \parikshan can be applied to some real-life bugs.
-Table \ref{table:casestudy} shows several bugs which we debugged using \parikshan, and the various techniques we used to localize the bug.
+%Here we show how \parikshan can be applied to some real-life bugs.
+%Table \ref{table:casestudy} shows several bugs which we debugged using \parikshan, and the various techniques we used to localize the bug.
 %Parikshan enables the users to freely run any test-case in the test-container while not effecting the production container. 
 %At the same time the output of these tests should not effect the functionality or the performance of the production system.
 %The main advantage of such a system can be seen in service oriented applications which are user facing and can hence ill-afford to be shutdown for inspecting bugs.
@@ -29,12 +29,12 @@ Table \ref{table:casestudy} shows several bugs which we debugged using \pariksha
 \label{table:casestudy}
 \end{table*}
 
-\subsection{Debug Tools and Mechanisms}
-\label{sec:debugMechanisms}
+%\subsection{Debug Tools and Mechanisms}
+%\label{sec:debugMechanisms}
 
 %In this section we briefly mention various debug mechanisms, and what they generally involve. 
 %We discuss how they can be successfully applied to bug cases we found in production systems in the next subsection.
-The idea behind \parikshan is to allow users to use various debugging tools and mechanisms that one would normally use in the development environment, to aslo be applicable in the production environment.
+The idea behind \parikshan is to allow users to use various debugging tools and mechanisms in the production environment, that one would normally use in the development environment.
 Debugging tools and mechanisms allow developers to better understand program flow, and data flow in the program, which is key to localizing the root cause of any bug.
 Program flow can mostly be understood by dynamic instrumentation which can generate \textbf{execution traces}. 
 This can tell the developer which functions were executed, and which conditional statements were met during the execution.
@@ -47,10 +47,10 @@ In the next subsection we discuss how these techniques can be applied to real-li
 \subsection{Bug Categories}
 \label{sec:bugCategories}
 
-\subsubsection{Performance Bugs}
-\label{sec:performanceBugs}
+%\subsubsection{Performance Bugs}
+%\label{sec:performanceBugs}
 
-One of the most common problems that manifest in production systems is performance bugs especially in usecases which were earlier not thought of during stress testing, and hence the application was not optimized for such transactions.
+\textbf{Performance Bugs}: One of the most common problems that manifest in production systems is performance bugs especially in usecases which were earlier not thought of during stress testing, and hence the application was not optimized for such transactions.
 Such bugs don't usually lead to crashes, but cause significant impact on user satisfaction.
 %The problem can manifest itself because of some configuration parameter, or redundant function calls, non-optimal path, and can require either a bug-fix, or a new feature addition.
 In a previous case-study\cite{shanluPerf}, the authors found that a significant percentage of real-world performance bugs can be attributed to uncoordinated functions, skippable functions and inefficient synchronization among threads (long locks etc.).
@@ -69,10 +69,10 @@ This allowed us to successfully isolate the function with the performance proble
 The MySQL queries, were only a few KB's so we were able to queue up several requests in the pipe and there was no divergence in the output produced by both the debug container and the production container. 
 
 
-\subsubsection{Memory Leaks}
-\label{sec:memoryLeaks}
+%\subsubsection{Memory Leaks}
+%\label{sec:memoryLeaks}
 
-Localizing a memory leak takes us further than simply execution tracing. 
+\textbf{Memory Leaks}: Localizing a memory leak takes us further than simply execution tracing. 
 Performance debugging usually requires simply execution traces, whereas memory leak analysis needs tools such as Valgrind\cite{valgrind}, which use shadow memory techniques to trace all actively allocated objects.
 While shadow-memory tools are good for development debugging, it cannot be applied to real-production environments as they require the service to be closed to compute which objects remained allocated or to show dangling reference(actively allocated memory may or may not be used in the future) etc.. Additionally these tools are resource hungry and have a high overhead (~4-6X).
 In our memory leak case study, we first profiled the application to find transactions that could potentially be the cause of the memory leak. 
@@ -85,23 +85,30 @@ This has comparatively lesser overhead, and can point to stale objects, or can p
 %In cases where memory leak exhibits because of the application state after a long running execution, memory profiling may be a better choice than shadow memory tools, as they require a service restart.
 Using memory profiling in \parikshan will allow users to capture the ``long-running'' context of the application which may be important to capture the bug.
 
-\subsubsection{Configuration Bugs}
-\label{sec:configurationBugs}
+%\subsubsection{Configuration Bugs}
+%\label{sec:configurationBugs}
 
+%\subsubsection{Concurrency Bugs}
+%\label{sec:concurrencyBugs}
 
+%\textbf{Concurrency Bugs}: Concurrency bugs are caused because of non-deterministic execution in multi-threaded applications.
+%These bugs are particularly difficult to catch in white-box debugging as 
 
-\subsubsection{Concurrency Bugs}
-\label{sec:concurrencyBugs}
-
-Concurrency bugs are caused because of non-deterministic execution in multi-threaded applications.
-These bugs are particularly difficult to catch in white-box debugging as 
-
-\subsubsection{Integration Bugs}
-\label{sec:integrationBugs}
-
+%\subsubsection{Integration Bugs}
+%\label{sec:integrationBugs}
 %\subsection{Debugging Techniques}
 %\label{sec:debugTechniques}
-
+%\par \noindent
+%\subsection {CaseStudy 2: Performance Profiling, using dyninst}
+%Demand Driven Testing - https://www.cs.virginia.edu/~soffa/Soffa_Pubs_all/Conferences/Demand-driven.Misurda.2005.pdf
+%@Nipun- I don't think either of the next two make a lot of sense
+%\par \noindent \textbf{CaseStudy 3: A/B Testing}
+%A/B Testing 
+%http://www.polteq.com/wp-content/uploads/2013/02/testingexperience20_12_12_Marc_van_t_Veer.pdf
+%\par \noindent \textbf{CaseStudy 4: Fault Tolerance Testing}
+%Fault Injection to look at fault tolerance
+%Fault Injection in netflix http://techblog.netflix.com/2012/07/chaos-monkey-released-into-wild.html
+%Security Honeypots? 
 \iffalse
 %\par \noindent
 \subsection{CaseStudy 1: Debugging using Execution Tracing of MySQL bug 18511}  
@@ -126,17 +133,3 @@ In our experience we found several such performance bugs which occur in only a s
 These bugs are often difficult to catch as they happen only in corner case inputs, and generally do not lead to application crashes.
 \parikshan would be useful to debug such performance errors, by giving deep insight in a live running system.
 \fi
-
-%\par \noindent
-%\subsection {CaseStudy 2: Performance Profiling, using dyninst}
-%Demand Driven Testing - https://www.cs.virginia.edu/~soffa/Soffa_Pubs_all/Conferences/Demand-driven.Misurda.2005.pdf 
-
-%@Nipun- I don't think either of the next two make a lot of sense
-%\par \noindent \textbf{CaseStudy 3: A/B Testing}
-%A/B Testing 
-%http://www.polteq.com/wp-content/uploads/2013/02/testingexperience20_12_12_Marc_van_t_Veer.pdf
-
-%\par \noindent \textbf{CaseStudy 4: Fault Tolerance Testing}
-%Fault Injection to look at fault tolerance
-%Fault Injection in netflix http://techblog.netflix.com/2012/07/chaos-monkey-released-into-wild.html
-%Security Honeypots? 

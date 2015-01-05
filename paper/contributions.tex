@@ -4,18 +4,16 @@
 %The main advantage of \parikshan is that it provides an open platform which allows the user to do any kind of debugging/testing on a live clone of the production system which is also receiving the user input.
 %\parikshan can be applied to several different debugging scenarios:
 
-%\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 
- %\item 
-\textbf{Non-Crashing Bug Debugging}: 
+\item \textbf{Non-Crashing Bug Debugging}: 
  Some application bugs often lead to a core dump, and a crash report is generated. 
  In such cases, it is necessary to restart the application and all the data will be lost.
  However,  not all bugs cause a crash: studies have shown \cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor} that several bugs in large-scale systems lead to either a changed/ inconsistent output, or effect the performance of the application.
  Examples of this are configuration bugs, performance bugs, or slow memory leaks, which do not necessarily stop all services, but need to be fixed quickly so as to avoid degradation in the quality of service.
- \parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, thereby capturing the state, configuration and user-input to assist the debugger.\\
+ \parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, thereby capturing the state, configuration and user-input to assist the debugger.
 
-%\item 
-\textbf{Monitoring application health/Usage statistics}: 
+\item \textbf{Monitoring application health/Usage statistics}: 
     %The main motivations leading to \emph{Parikshan} is to provide a harness to allow the user to test live applications. 
 As explained in section \ref{sec:motivation}, most user-end applications have monitoring mechanisms to capture the health of the application built within the system.
 Such monitoring mechanisms can often indicate problems in the systems showing spikes or slowdown in CPU usage, memory footprint, cache misses etc.
@@ -23,7 +21,7 @@ Additionally, business intelligence and future product enhancements often rely o
 %Very often problems in stable production systems are either (1) restricted to only a small percentage of transactions, (2) are system wide, but have minimal effect on the user (cumulative effect of slow memory leak etc.).
 %Such problems often do not necessitate taking down the system or lead to a crash. 
 While several tools allow for dynamic instrumentation, in practice the amount of instrumentation cannot be increased because it adds too much overhead.
-\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, without worrying about the slowdown to the production system. \\
+\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, without worrying about the slowdown to the production system.
 %With \parikshan users can avoid this problem, and have a deeper insight into the system.\\
 %Hence giving an insight into what could have caused the problem, without needing to bring the entire application server down.
 %We have tried and tested this in particular for unit-testing cases. 
@@ -47,8 +45,7 @@ An alternate mechanism proposed by \parikshan is to use the test-container to in
 As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.\\
 \fi
 
-%\item 
-\textbf{Testing Software Updates}: 
+\item \textbf{Testing Software Updates}: 
  Software patches for performance or functional updates are frequently applied to all services. 
 These may not necessarily change the user-facing input and can be optimization internal in the service.
 Such patches can be first tested in the test-container to verify that they are correctly behaving before doing the release.
@@ -57,4 +54,4 @@ This gives the developer a controlled experiment scenario where he can see if th
 
 %\item \textbf{Verification}
 
-%\end{itemize}
+\end{itemize}

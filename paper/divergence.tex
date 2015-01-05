@@ -1,14 +1,15 @@
 
-\subsection{Divergence Checking}
-\label{sec:divergenceChecking}
+%\subsection{Divergence Checking}
+%\label{sec:divergenceChecking}
 
-As mentioned earlier, we clone the entire state of the production container, and replicate the incoming requests. 
-We believe that this should capture most non-determinism in the application, and the debug container should be a close representative of the production container. 
-However, it is possible that the behavior of the production and debug container may diverge with time.
+\textbf{Divergence checking}: 
+%As mentioned earlier, we clone the entire state of the production container, and replicate the incoming requests. 
+%We believe that this should capture most non-determinism in the application, and the debug container should be a close representative of the production container. 
+%However, 
+It is possible that the behavior of the production and debug container may diverge with time.
 To understand and capture this divergence, we compare the corresponding values of tcp send and receive within the proxy.
 This gives us a black-box mechanism to check the fidelity of the debug-container.
-
 Comparisons are based on hash of the data packets, which are collected and stored in memory for the duration that the connections are active.
-The degree of ``acceptable divergence''(the point till which the production and debug containers can be assumed to be in sync) is dependent on the application behavior. 
+The degree of acceptable divergence (the point till which the production and debug containers can be assumed to be in sync) is dependent on the application behavior. 
 For eg. an application which is sending timestamps in each of it's send messages can be expected to have a much higher degree of divergence, in comparison to an application which is querying a database.
 

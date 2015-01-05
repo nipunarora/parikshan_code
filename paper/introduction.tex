@@ -1,3 +1,4 @@
+
 \section{Introduction}
 \label{sec:intro}
 
@@ -11,7 +12,7 @@ Hence debugging is not only difficult because of difficulty to recreate producti
 %However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
 Existing debugging techniques\cite{clue,magpie,vPath} rely on light weight system level instrumentation or application transaction and error logs as a mechanism to localize and identify the bug in the development environment.
 There are several problems with these techniques:
-\begin{itemize}
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 %\textbf{Unrealistic} because 
 \item Debugging often requires execution tracing. However instrumentation has a trade-off between granularity of tracing and the performance overhead. Most instrumentation tools capture minimal information to reduce the impact on application performance.
 %However, faithfully reconstructing execution paths is difficult as most applications have several interacting components.
@@ -70,7 +71,7 @@ The cloning operation is ``live'', hence there is no suspension of the services 
 %While we discuss several case-studies to debug/ test production applications that show how our framework can be used, we wish to stress that \textbf{the main advantage of \parikshan is a harness/ framework for testing/ debugging in a live environment rather than a new testing methodology}. 
 The key contributions of this paper are:
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 \item A novel mechanism which significantly \textbf{reduces the time to debug} production errors and allows to \textbf{capture the context} of large scale production systems.
 \item A tool which provides a sandbox environment to debug the production environment. 
 This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
