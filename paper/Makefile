@@ -3,12 +3,12 @@ FILES=sandbox.tex
 all: 	sandbox.pdf
 
 sandbox.pdf: ${FILES}
-	latex sandbox.tex
+	pdflatex sandbox.tex
 	bibtex sandbox
-	latex sandbox.tex
-	latex sandbox.tex
-	dvips -o sandbox.ps -t Letter -Ppdf -G0 sandbox.dvi
-	ps2pdf sandbox.ps sandbox.pdf
+	pdflatex sandbox.tex
+	pdflatex sandbox.tex
+	#dvips -o sandbox.ps -t Letter -Ppdf -G0 sandbox.dvi
+	#ps2pdf sandbox.ps sandbox.pdf
 
 ps: sandbox.ps.gz
 	@ggv sandbox.pdf &

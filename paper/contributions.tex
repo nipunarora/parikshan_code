@@ -1,53 +1,53 @@
-\subsection{Impact}
+\subsection{Applications}
 \label{sec:impact}
 
-The main advantage of \parikshan is that it provides an open platform which allows the user to do any kind of debugging/testing on a live clone of the production system which is also receiving the user input.
-The impact of sandbox testing can be seen in several different ways
+%The main advantage of \parikshan is that it provides an open platform which allows the user to do any kind of debugging/testing on a live clone of the production system which is also receiving the user input.
+%\parikshan can be applied to several different debugging scenarios:
 
-\begin{itemize}
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 
- \item \textbf{Non-Crashing Bug Debugging}
- 
+\item \textbf{Non-Crashing Bug Debugging}: 
  Some application bugs often lead to a core dump, and a crash report is generated. 
  In such cases, it is necessary to restart the application and all the data will be lost.
  However,  not all bugs cause a crash: studies have shown \cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor} that several bugs in large-scale systems lead to either a changed/ inconsistent output, or effect the performance of the application.
  Examples of this are configuration bugs, performance bugs, or slow memory leaks, which do not necessarily stop all services, but need to be fixed quickly so as to avoid degradation in the quality of service.
  \parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, thereby capturing the state, configuration and user-input to assist the debugger.
 
-\item \textbf{Monitoring Application Health/User usage statistics}
+\item \textbf{Monitoring application health/Usage statistics}: 
     %The main motivations leading to \emph{Parikshan} is to provide a harness to allow the user to test live applications. 
 As explained in section \ref{sec:motivation}, most user-end applications have monitoring mechanisms to capture the health of the application built within the system.
 Such monitoring mechanisms can often indicate problems in the systems showing spikes or slowdown in CPU usage, memory footprint, cache misses etc.
 Additionally, business intelligence and future product enhancements often rely on understanding how the user is using the application.
 %Very often problems in stable production systems are either (1) restricted to only a small percentage of transactions, (2) are system wide, but have minimal effect on the user (cumulative effect of slow memory leak etc.).
 %Such problems often do not necessitate taking down the system or lead to a crash. 
-\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, and light weight testing to localize the errors without worrying about the slowdown to the production system.
-While most tools allow for dynamic instrumentation, in practice the amount of instrumentation cannot be increased because it adds too much overhead.
-With \parikshan users can avoid this problem, and have a deeper insight into the system.
+While several tools allow for dynamic instrumentation, in practice the amount of instrumentation cannot be increased because it adds too much overhead.
+\parikshan can be used to do a live analysis from the point of time when the clone is done, with much deeper monitoring, without worrying about the slowdown to the production system.
+%With \parikshan users can avoid this problem, and have a deeper insight into the system.\\
 %Hence giving an insight into what could have caused the problem, without needing to bring the entire application server down.
 %We have tried and tested this in particular for unit-testing cases. 
 %While unit-testing cases are undoubtedly self contained, and can be designed like assertions such that they have no after effect on the any subsequent executions, any failure in these test-cases can definetely result in an unclean state.
 %Apart from touching the state of the system testing in the production will also lead to a slow-down, which will affect the real system.
 %We believe \emph{Parikshan} can be an effective tool to test and analyze unit tests.
-
-\item \textbf{Fault Tolerance Testing}
-    A possible implementation of the \parikshan test harness is to do Fault Tolerance Testing.
-As mentioned earlier testing and recreating large-scale configurations is extremely difficult.
-Additionally testing scalable aspects is costly as a significantly large test-bed is required to replicate loads. 
+\iffalse
+%\item 
+\textbf{Fault Tolerance Testing}: 
+%A possible implementation of the \parikshan test harness is to do Fault Tolerance Testing.
+%As mentioned earlier testing and recreating large-scale configurations is extremely difficult.
+%Additionally testing scalable aspects is costly as a significantly large test-bed is required to replicate loads. 
 Recent large scale fault tolerance testing approaches has been to use fault injection at random places.
 One such example is Chaos Monkey\cite{chaosmonkey} which has been employed by Netflix \cite{netflix} video streaming service. 
 Netflix has a highly distributed architecture with a large client base, and has several robustness mechanisms inbuilt to manage for failure. 
 The chaos monkey infrastructure forces random failure in live Netflix production servers, to test it's fault tolerance.
 The key intuition behind this approach is, that faults in an ever evolving large-scale environment are inevitable, and in most cases the infrastructure will be able to auto-respond and get its instances back to a live state. 
 However, in the cases when it is unable to do so, Netflix wants to learn from failures, by forcing them in scheduled low-traffic hours.
-
 Naturally such in production fault-injection mechanisms will always effect the user. 
 An alternate mechanism proposed by \parikshan is to use the test-container to inject faults. 
-As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.
+As a clone of the production-container any fault-injected should produce a similar effect as the original container, without effecting the user.\\
+\fi
 
-  \item \textbf{Testing Software Updates}
-Software patches for performance or functional updates are frequently done on backend servers. 
-These may not necessarily change the user-facing input and can be optimizations internal in the back-end server.
+\item \textbf{Testing Software Updates}: 
+ Software patches for performance or functional updates are frequently applied to all services. 
+These may not necessarily change the user-facing input and can be optimization internal in the service.
 Such patches can be first tested in the test-container to verify that they are correctly behaving before doing the release.
 This gives the developer a controlled experiment scenario where he can see if the updates working properly.
 %\parikshan can potentially extend this by testing all user input since it does not effect the user experience at all.
