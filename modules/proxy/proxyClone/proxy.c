@@ -93,8 +93,7 @@ int create_file(){
 }
 
 /* Program start */
-int main(int argc, char *argv[]) 
-{
+int main(int argc, char *argv[]){
   int c, local_port;
   pid_t pid;
 
@@ -142,8 +141,7 @@ int main(int argc, char *argv[])
 }
 
 /* Parse command line options */
-int parse_options(int argc, char *argv[]) 
-{
+int parse_options(int argc, char *argv[]){
 	
   int c, local_port;
   l = h = p = x = d = FALSE;
@@ -259,8 +257,7 @@ void sigchld_handler(int signal) {
 }
 
 /* Handle term signal */
-void sigterm_handler(int signal) 
-{
+void sigterm_handler(int signal){
   close(client_sock);
   close(server_sock);
   close(duplicate_destination_sock);
@@ -268,8 +265,7 @@ void sigterm_handler(int signal)
 }
 
 /* Main server loop */
-void server_loop() 
-{
+void server_loop(){
   struct sockaddr_in client_addr;
   int addrlen = sizeof(client_addr);
 
@@ -287,8 +283,7 @@ void server_loop()
 }
 
 /* Handle client connection */
-void handle_client(int client_sock, struct sockaddr_in client_addr)
-{
+void handle_client(int client_sock, struct sockaddr_in client_addr){
   //create connection to main production server
   //fprintf(stats_file, " Created connection\n");
   DEBUG_PRINT(" Created connection\n");
@@ -401,7 +396,7 @@ void handle_client(int client_sock, struct sockaddr_in client_addr)
 }
 
 /* Create connection to duplicate host*/
-int create_dup_connection_synch() {
+int create_dup_connection_synch(){
 	
   struct sockaddr_in server_addr;
   struct hostent *server;
@@ -438,7 +433,7 @@ int create_dup_connection_synch() {
 }
 
 /* Create client connection */
-int create_connection() {
+int create_connection(){
 
   DEBUG_PRINT("creating connection... \n");
 
