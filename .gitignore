@@ -19,3 +19,12 @@ modules/ntools-1.5/src/nrecv
 modules/ntools-1.5/src/nserver
 modules/proxy/cProxy/temp
 modules/proxy/cProxy/temp.c
+modules/proxy/proxyClone/proxyClone
+modules/proxy/proxy/proxy
+modules/proxy/proxyClone/proxy
+modules/proxy/proxyClone/proxy2
+test-cases/simpleTest/tcpclient100
+test-cases/simpleTest/tcpserverSize
+test-cases/simpleTest/tcpclient
+test-cases/simpleTest/tcpserver
+modules/proxy/kklis/proxy
