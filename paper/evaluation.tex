@@ -93,16 +93,17 @@ In the interest of time, we have not explored faster means of live cloning, but 
 
 As explained in section \ref{sec:timewindowPerformance} if the overhead of the test-container is too high, the buffer may overflow.
 This indirectly means that the test-container and the production-container are potentially out of sync.
-In our current design we re-initiate the test-container by cloning again, and we call the time taken to reach a buffer overflow the "time-window" for the test-container.
-As explained earlier, the size of this test-container, depends both on the overhead of the "test"/"instrumentation", as well as the incoming workload.
+In our current design we re-initiate the test-container by cloning again, and we call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
+As explained earlier, the size of this debug-container, depends both on the overhead of the ``instrumentation'', as well as the incoming workload.
 
 In this section we evaluate the testing window size using varying amounts of instrumentation, and the workload.
 For the purpose of this evaluation, we keep a fixed buffer size. 
 First we use a controlled workload rate, and gradually increase the overhead, then we use another scenario, where we keep the try to keep the same overhead, and try to increase the workload.
 We also use real-world network packet capture data, to simulate a realistic workload and gradually increase the overhead there
 
-\texttt{Nipun's note: This section still needs to be completed, I'm finishing up some of the results, before I can generate the charts}
+%\texttt{Nipun's note: This section still needs to be completed, I'm finishing up some of the results, before I can generate the charts}
 
+\iffalse
 \subsection{Overhead while Running tests}
 \label{sec:overhead}
 
@@ -112,7 +113,7 @@ To understand the effect we ran some tests on our cloned container, with an inde
 We gradually increased the amount of cpu being used by the cpu hog and found that while in the external mode there is no effect on the performance of the production container, in the internal mode at higher cpu hog percentages, the throughput of the production container is reduced.
 This was an expected result, as the production container and test-container time share resources on the same machine, whereas in the external mode, they are completely isolated.
 However, it is to be noted, that most debugging scenarios are unlikely to be cpu hogs, and if resource management in the container level is done properly, the containers in the internal-mode can be largely isolated from each other.
-
+\fi
 	
 %\begin{figure*}
 %	\begin{subfigure}[b]{0.45\textwidth}
