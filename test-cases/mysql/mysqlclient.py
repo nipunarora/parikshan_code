@@ -9,26 +9,20 @@
 # 
 
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
-import _mysql
-import sys
+import MySQLdb as mdb
 
-try:
-    con = _mysql.connect('localhost', 'nipun', 'pipoduya', 'test')
-        
-    con.query("SELECT VERSION()")
-    result = con.use_result()
-    
-    print "MySQL version: %s" % \
-        result.fetch_row()[0]
-    
-except _mysql.Error, e:
-  
-    print "Error %d: %s" % (e.args[0], e.args[1])
-    sys.exit(1)
+con = mdb.connect('192.168.1.106', 'nipun', 'pipoduya', 'test')
 
-finally:
+with con:
     
-    if con:
-        con.close()
+    cur = con.cursor()
+    cur.execute("SHOW TABLES")
+
+    cur = con.cursor()
+    cur.execute("select * from t1")
+
+    rows = cur.fetchall()
+
+    for row in rows:
+        print row
