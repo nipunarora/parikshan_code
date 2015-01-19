@@ -96,8 +96,8 @@ In the interest of time, we have not explored faster means of live cloning, but 
 530 bps, 27 rq/s                                               & N.A                                                    & 4096                                                & 2x    \\ \hline
 530 bps, 27 rq/s                                               & 8sec                                                   & 4096                                                & 3x    \\ \hline
 530 bps, 27 rq/s                                               & 72 sec                                                 & 16384                                               & 3x    \\ \hline
-\begin{tabular}[c]{@{}c@{}}Normal \\ Distribution\end{tabular} & 5 mins                                                 & 8192                                                & 2.5x  \\ \hline
-u Dist                                                         & N.A                                                    & 1M                                                  & 3.5x  \\ \hline
+%\begin{tabular}[c]{@{}c@{}}Normal \\ Distribution\end{tabular} & 5 mins                                                 & 8192                                                & 2.5x  \\ \hline
+%u Dist                                                         & N.A                                                    & 1M                                                  & 3.5x  \\ \hline
 \end{tabular}
 \caption{Approximate debug window sizes }
 \label{table:timewindow}
@@ -201,7 +201,7 @@ However, it is to be noted, that most debugging scenarios are unlikely to be cpu
   }
   \captionsetup{justification=centering}
   \caption{Live Cloning suspend time whith increasing amounts of I/O operations }
-  \label{fig:subfig8}
+  \label{fig:fioResults}
 \end{figure}
 
 
