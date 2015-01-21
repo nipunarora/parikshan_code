@@ -173,3 +173,14 @@ Httperf - https://cs.uwaterloo.ca/~brecht/servers/openfiles.html - fixing file d
 ------------
 
  vzmigrate --times --online <host> VEID 
+
+
+16. Small Networking Issues
+------------
+
+Change ssh access to not use DNS and GGSAPI::
+
+       useDNS no
+       GGSAPIAuthentication no
+
+Start mysqld server using ./bin/mysqld_safe --skip-name-resolve --user=mysql
