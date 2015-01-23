@@ -18,10 +18,10 @@ The key to having "live" operation is to have a short enough suspend time so tha
 Firstly, we ran a macro level experiment where we tested our cloning operation on real-world applications, running a realistic workload.
 In figure \ref{fig:stats}, we show the suspend times for 4 well known applications - Apache, Thttpd, TradeBeans, TradeSoap, PetStore, MySQL. 
 %both internal and external mode while comparing it with a production container, that is idle vs. a container which is running an apache hog benchmark \cite{httperf} on it. 
-For apache, and thttpd which are webservers, we ran a httperf hog workload. A hog workload essentially, tries to stress out the workload by testing the max throughput that the webserver can achieve.
+For Apache, and thttpd which are webservers, we ran a httperf hog workload. A hog workload essentially, tries to stress out the workload by testing the max throughput that the webserver can achieve.
 Tradebeans and Tradesoap are both part of the dacapo\cite{dacapo} benchmark ``DayTrader'' application.
 These are realistic workloads which run on a multi-tier trading application provided by IBM. 
-PetStore is a J2EEE 3-tier application, with JBoss, MySQL and apache server as it's 3 tiers.
+PetStore is a J2EEE 3-tier application, with JBoss, MySQL and Apache server as it's 3 tiers.
 Here we cloned the app-server, and the input workload was a random set of transactions which were repeated for the duration of the cloning process.
 For MySQL we ran a similar workload with some read and write queries to test how well our cloning operation performs.
 For all the applications, we found that for cpu intensive hog benchmarks the container suspend time was 2-3 seconds for a considerable workload.

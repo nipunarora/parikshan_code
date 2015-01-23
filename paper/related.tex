@@ -8,26 +8,31 @@
   
 %\item 
 \textbf{Software Debugging}  
-  In the development phase, it is common to employ debugging tools such as gnu debugger \cite{gdb}, valgrind \cite{valgrind} or just using printf statements etc.
+  In the development phase, it is common to employ debugging tools such as gnu debugger \cite{gdb}, valgrind \cite{valgrind} or just using print statements etc.
   Several development suites\cite{eclipse, visual_studio, intel_suite} often come with inbuilt debugging capabilities, to assist developers to understand their code, and debug it as they develop new applications.
   In most cases these tools allow developers to look at the execution traces, and to insert watchpoints or breakpoints.
-  In addition they allow developers to understand th      e context of the application by looking at variable values at different points.
+  In addition they allow developers to understand the context of the application by looking at variable values at different points.
   Unfortunately, this practice cannot be followed in production environments, as these tools have a high overhead.
   
   \parikshan focuses on this problem by allowing users to do live debugging of the application by cloning the production state, to produce a test-container.
-  This test-container can be debugged using probes as described in \ref{sec:trigger} to give valuable insight to the developer.
+  This test-container can be debugged using probes as described in~\ref{sec:trigger} to give valuable insight to the developer.
   
     
 %\item 
-\textbf{Perpetual Testing}
-     We are inspired by the notion of perpetual testing\cite{perpetual} which advocates that software testing should be key part of the deployment phase and not just restricted to the development phase.
+\textbf{On-the-fly debugging}
+In recent years there have been approaches which are similar to \parikshan in applying on-the-fly debugging solutions.
+One of these approaches is Chaos Monkey-\cite{chaosmonkey} from netflix which uses fault injection in real production systems to test their fault tolerance.
+Another approach called 
+We are inspired by the notion of perpetual testing\cite{perpetual} which advocates that software testing should be key part of the deployment phase and not just restricted to the development phase.
   
 %\item 
 \textbf{Record and Replay}  
   Record and Replay systems have been an area of research in the academic community for several years.
-  However, almost none  
   
   \cite{altekar2009odr,dunlap2002revirt,guo2008r2, geels2007friday, laadan2010transparent}
+
+\textbf{Live Migration}
+
   
  % \item \textbf{A-B Testing}
  % \item \textbf{Symbian Monkey}

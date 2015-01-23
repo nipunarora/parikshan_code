@@ -7,7 +7,7 @@ Figure \ref{fig:workflow} shows the architecture of \parikshan when applied to a
 It consists of 3 modules: 
 \textbf{Clone Manager}: manages cloning and syncing between the production container and the test-container, 
 \textbf{Network Duplicator}: manages network traffic duplication  to both the production and debug container, 
-and \textbf{Network Aggregator}: manages responses from the debug container by replaying and sandboxing all network communication in case of mid-tier(non-backend) systems.
+and \textbf{Network Aggregator}: manages responses from the debug container by replaying and sandboxing all network communication in case of mid-tier (non-backend) systems.
 
 %which uses user-space containers OpenVZ\cite{openvz} and a variant of live migration to implement the cloning.
 %To begin with let us look at a simple example of client web-server with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
@@ -21,7 +21,7 @@ and \textbf{Network Aggregator}: manages responses from the debug container by r
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=0.5\textwidth]{figs/arch.png}
-    \caption{\texttt{Parikshan} applied to a mid-tier service. \parikshan is comprised of: (1).Clone Manager for Live Cloning, (2). Proxy Duplicator to duplicate network traffic, and (3). Proxy Aggregator to replay network traffic to the cloned debug container}
+    \caption{\parikshan applied to a mid-tier service: It is comprised of: (1) Clone Manager for Live Cloning, (2) Proxy Duplicator to duplicate network traffic, and (3) Proxy Aggregator to replay network traffic to the cloned debug container.}
     \label{fig:workflow}
   \end{center}
 \end{figure}
@@ -47,7 +47,7 @@ Our solution is a customized TCP level proxy which also duplicates network traff
 Since it works at the TCP/IP layer, the applications are completely oblivious of it.
 % and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
 In this section we first discuss several strategies(we call \textit{duplication modes}) to design the duplication of traffic to the test container, and next we discuss briefly the ``testing window'' during which we believe that the debug-container faithfully represents the execution of the production container. 
-
+Network duplication can be used in one or more protocols to partially or completely isolate the debug container, depending on the interacting services and the debugging requirements.
 %\input{algorithm}
 
 \input{proxyDup}

@@ -1,27 +1,32 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Some open-discussion topics in \parikshan 
+Designing large scale distributed systems is complex. They are often comprised of several interacting services such as storage, ntp, backup service, controllers and resource managers.
+Based on the design and architecture of the system, services for the cloned ``debug container'' may need to be (a). Cloned, (b). Turned off or (c). allowed without any modification.
+For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propogate changes from the cloned container to the production containers.
+Similarly, services such as ntp service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
+\parikshan can be used on one or more containers, and can be used to stub out more than one communicating service depending on the system requirement.
+%In this paper we have shown a proof-of-concept design and implementation with several case studies on  how \Parikshan can be applied for real-world debugging.
 
-\textbf{Concurrency non-determinism}: \parikshan can capture the system state and the user input.
-However, it is still possible that we will miss errors which happen because of specific schedules or caching in the production system.
-\parikshan can still be applied 
+%\textbf{Concurrency non-determinism}: \parikshan can capture the system state and the user input.
+%However, it is still possible that we will miss errors which happen because of specific schedules or caching in the production system.
+%\parikshan can still be applied 
 
 %\subsection{Rate Limiting}
 %\label{sec:ratelimiting}
 
-\textbf{Rate Limiting}: As we show in section \ref{sec:evaluation}, at extremely high write I/O's it is possible that the suspend time for cloning is sometimes prohibitively high, and can cause TCP timeouts. 
-The operator can thereby chose to use cloning and sandboxing, at low workload conditions. 
-Alternatively, a simple solution to this problem is to use rate-limiting at the proxy which would allow the I/O consumption in the target container to become lower, thereby reducing the suspend time.
-Rate limiting is a commonly used mechanism in proxies, while it reduces the QoS of the application momentarily, it may be better for fast bug resolution.
+%\textbf{Rate Limiting}: As we show in section \ref{sec:evaluation}, at extremely high write I/O's it is possible that the suspend time for cloning is sometimes prohibitively high, and can cause TCP timeouts. 
+%The operator can thereby chose to use cloning and sandboxing, at low workload conditions. 
+%Alternatively, a simple solution to this problem is to use rate-limiting at the proxy which would allow the I/O consumption in the target container to become lower, thereby reducing the suspend time.
+%Rate limiting is a commonly used mechanism in proxies, while it reduces the QoS of the application momentarily, it may be better for fast bug resolution.
 
 %\subsection{Dynamic Proxy Insertion}
 %\label{sec:dynamicProxyInsertion}
 
-\textbf{Dynamic Proxy Insertion}: While cloning does happen live, we do not really need to have the proxy to be inserted dynamically as well. 
-Proxies are commonly used in several applications so they can be essentially all the time. 
-However, based on design choice, the proxy can be inserted by starting it up on any server, and then putting a flow redirection rule in the router using dynamic network programming mechanism such as OpenFlow\cite{openflow}.
-Router flows are updated dynamically, and are \texttt{flow-based}, hence can be redirected on the fly using an openflow\cite{openflow} controller.
+%\textbf{Dynamic Proxy Insertion}: While cloning does happen live, we do not really need to have the proxy to be inserted dynamically as well. 
+%Proxies are commonly used in several applications so they can be essentially all the time. 
+%However, based on design choice, the proxy can be inserted by starting it up on any server, and then putting a flow redirection rule in the router using dynamic network programming mechanism such as OpenFlow\cite{openflow}.
+%Router flows are updated dynamically, and are \texttt{flow-based}, hence can be redirected on the fly using an openflow\cite{openflow} controller.
 
 %\subsection{Slowdown}
 %\label{sec:slowdown}
@@ -29,6 +34,7 @@ Router flows are updated dynamically, and are \texttt{flow-based}, hence can be 
 
 %\subsection{Consistency Requirements}
 %\label{sec:consistency}
+\iffalse
 
 \textbf{Consistency Requirements}: Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
 In such cases the time-window can be arbitrarily long. 
@@ -36,7 +42,6 @@ For example in mysql read transactions, even if there is a transaction failiure 
 Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
 
 
-\iffalse
 \subsection{Non-Determinism}
 \label{sec:nonDeterminism}
 

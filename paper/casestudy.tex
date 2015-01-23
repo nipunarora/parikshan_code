@@ -42,13 +42,13 @@ Since only minimal dynamic instrumentation is allowed, developers go through a t
 
 %In this section we briefly mention various debug mechanisms, and what they generally involve. 
 %We discuss how they can be successfully applied to bug cases we found in production systems in the next subsection.
-The idea behind \parikshan is to allow devolopers to use various debugging tools and mechanisms in the cloned production environment, without worrying about overhead.
-These tools allow developers to better understand program flow, and data flow in the program, which is key to localizing the root-cause of a bug.
+The idea behind \parikshan is to allow users to use various debugging tools and mechanisms in the production environment, that one would normally use in the development environment.
+Debugging tools and mechanisms allow developers to better understand program flow, and data flow in the program, which is key to localizing the root cause of any bug.
 Program flow can mostly be understood by dynamic instrumentation which can generate \textbf{execution traces}. 
 This can tell the developer which functions were executed, and which conditional statements were met during the execution.
 %Data flow on the other hand requires much finer instrumentation. 
-Debugging Tools like gdb allow users to insert \textbf{breakpoints}, or \textbf{watchpoints} on variables, to track variables.
-%The downside to this is that it halts progress in the application, unlike execution trace which imposes a slowdown. 
+Tools like gdb allow users to insert \textbf{breakpoints}, or \textbf{watchpoints} on variables, to track data-flow whenever a certain variable is triggered.
+The downside to this is that it halts progress in the application, unlike execution trace which imposes a slowdown. 
 Other mechanisms such as \textbf{delta-debugging}, and \textbf{heap-dump} allow users to modify variables to check if that resolves problems hence changing it's behavior.
 In the next subsection we discuss how these techniques can be applied to real-life bugs with the help of the \parikshan framework.
 
@@ -59,16 +59,15 @@ In the next subsection we discuss how these techniques can be applied to real-li
 %\label{sec:performanceBugs}
 
 \textbf{Performance Bugs}: One of the most subtle problems that manifest in production systems is performance bugs especially in usecases which were earlier not thought of during stress testing.
-Such bugs don't usually lead to crashes, but cause significant impact on user experience.
+Such bugs don't usually lead to crashes, but cause significant impact on user satisfaction.
 %The problem can manifest itself because of some configuration parameter, or redundant function calls, non-optimal path, and can require either a bug-fix, or a new feature addition.
 In a previous case-study\cite{shanluPerf}, the authors found that a significant percentage of real-world performance bugs can be attributed to uncoordinated functions, skippable functions and inefficient synchronization among threads (long locks etc.).
 Most such bugs can be caught by function execution tracing with tracking the time taken in each execution function.
-Another key insight provided in the case-study, is that two-thirds of the bugs manifested themselves with special input conditions were met, or execution was done at scale. 
-Hence, it is difficult to capture these bugs with traditional white-box testing mechanisms.
+Another key insight provided in the case-study, is that two-thirds of the bugs manifested themselves with special input conditions were met, or execution was done at scale. Hence, it is difficult to capture these bugs with traditional white-box testing mechanisms.
 
 In an empirical evaluation of 3 such bugs, we found that a function trace overhead to cause a 1.5x - 2x slowdown in the targeted session of the application. 
 With \parikshan and dynamic instrumentation tools such as iProbe\cite{iProbe} we were able to capture a representative execution trace, with no overhead to the production system.
-It was reported by users, that insert queries for complex scripts were running significantly slower than what was expected.
+It was reported by users, that some of the user requests were running significantly slower than others.
 To test out \parikshan to catch this bug, we re-created a 2 tier client-server setup with the server(container) running a buggy MySQL server application, and made a random workload with several repetitive instances of queries triggering the bug.
 We initiated debugging by creating a live clone of the container running the MySQL server.
 For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
