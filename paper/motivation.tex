@@ -11,18 +11,17 @@
   \end{center}
 \end{figure*}
 
-%In figure \ref{fig:motivation} 
-%In Figure \ref{fig:motivation}, we have shown two workflows of the same system running with \parikshan, and without \parikshan.
-To further explain, let us take  user Joe who is an administrator, and IT manager for a multi-tiered system. 
-Much like several IT systems user Joe has a dashboard which informs him of the health status of all of his applications, and provides him with high level statistical views of all tiers of the system.
-Joe observes an unusually high memory usage in his glassfish server for transaction type X and anomalous error logs in associated nginx systems.
-Under usual circumstances, the system would have to go down(depending on the severity of the problem), the problem debugged using offline testing,  and the system would be patched once the problem has been diagnosed.
+\noindent
+As a motivating scenario, let us take user Joe who is an administrator for a multi-tiered system (see Figure \ref{fig:motivation}). 
+Much like several administrators, Joe uses light-weight system instrumentation to get a high level statistical/health view of the system.
+He observes an unusually high memory usage in the glassfish server for transaction type X, and some anomalous error logs in the associated nginx systems.
+Under usual circumstances, the system would have to go down(depending on the severity of the problem), the problem debugged using offline analysis, and the system would be patched once the problem has been diagnosed. 
 However often, it is difficult to find out the configuration of the system, and the user input which is causing this problem.
-In case of modern large scale systems some errors may happen only at scale, and would require a large test-cluster to recreate the error.
+In modern large scale systems some errors may happen only at scale, and would require a large test-cluster to recreate the error.
 Furthermore, taking down the glassfish and nginx servers would impact several more services otherwise are running fine. 
 
 Joe can now use \parikshan, to fork off a clone of nginx container as \textbf{\textit{nginx-debug}}, and glassfish as \textbf{\textit{glassfish-debug}} container. 
-Our proxy network duplication sends a copy of the incoming request to the debug containers, while users can continue using nginx and glassfish services. 
+Our proxy network duplication now sends a copy of the incoming request to the debug containers, while users can continue using nginx and glassfish services. 
 The processes in debug containers follow the same execution paths, as they receive the same input as the production containers.
 This allows Joe to initiate deeper traces, and observe the execution without fearing any problems in the user-facing operations.
 Time to bug resolution is usually a very important criteria in any user-facing service oriented application.

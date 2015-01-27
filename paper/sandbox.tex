@@ -4,7 +4,7 @@
 %USENIX
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{usenix,epsfig,endnotes}
-
+\usepackage{amsmath}
 \usepackage[noend]{algpseudocode}
 \usepackage{paralist,algorithm}
 \usepackage{booktabs}
@@ -34,17 +34,26 @@
 
 %\setlength{\parindent}{0pt}
 \addtolength{\columnsep}{-1.5mm}
-\addtolength{\belowcaptionskip}{-2pt}
-\setlength{\parskip}{2pt}
+\addtolength{\belowcaptionskip}{-1pt}
+\setlength{\parskip}{3pt}
+\setlength{\textfloatsep}{5pt}
 \topmargin=2pt
 \topskip=2pt
 
 \titlespacing*{\section}
-{0pt}{0pt}{0pt}
+{2pt}{2pt}{2pt}
 \titlespacing*{\subsection}
-{0pt}{0pt}{0pt}
+{2pt}{2pt}{2pt}
 \titlespacing*{\subsubsection}
-{0pt}{0pt}{0pt}
+{2pt}{2pt}{2pt}
+
+\titlespacing{\section}
+{2pt}{2pt}{2pt}
+\titlespacing{\subsection}
+{2pt}{2pt}{2pt}
+\titlespacing{\subsubsection}
+{2pt}{2pt}{2pt}
+
 
 %\setlength{\itemindent}{-1in}
 \begin{document}
@@ -70,8 +79,11 @@
 \newcommand{\parikshan}{\texttt{Parikshan}\xspace}
 \newcommand{\comment}[1]{}
 \newtheorem{example}{Example}
+\def\infinity{\rotatebox{90}{8}}
+
 
 \input{introduction}
+%\input{introduction_alternate}
 %\input{motivation}
 \input{design}
 \input{implementation}

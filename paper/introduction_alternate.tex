@@ -9,50 +9,37 @@ DevOps stresses on close coupling between software developers and operators, and
 Most of these companies have very frequent releases and hence require a very short time to a bug fix, test, patch and release in order to realize continuous delivery (Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}).
 Hence, debugging is hard not only because of difficulty to capture the root-cause, it is also increasingly important to localize and fix bugs in a very short period of time.
 
-\noindent
-Existing state-of-art techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation mechanisms to capture application logs. 
-Operators then feed these logs to analytic tools~\cite{magpie,clue} to find the root-cause of the error.
-However, dynamic instrumentation has a trade-off between granularity of tracing and the performance overhead. 
-To avoid higher overheads instrumentation granularity is generally kept low, thereby making the task of finding the root-cause extremely difficult.
-Additionally, debugging is a lengthy process: debuggers try to piece together what could be the possible problem using log information.
-Often more information is required to understand the context better which leads to several iterations before the problem is debugged, thereby increasing the time-to-debug.
 
 \noindent
-Another body of work, has looked into record-and-replay~\cite{odr,revirt,laadan2010transparent,geels2007friday} systems which capture the log of the system, in order to faithfully replay the trace in an offline environment.
-Replay systems try and capture system level information as well as all possible interactions, to allow for indepth \textit{post-facto} analysis of the error.
-However, owing to the amound of instrumentation required, these tools deal with an even heavier overhead.
-
-%However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
-%\noindent
-%Existing techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation in either the kernel or the application. 
+However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
+Existing techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation in either the kernel or the application. 
 % kernel, application or error logs.  
 %as a mechanism to localize and identify the bugs as well.
-%There are several problems with these techniques:
-%\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+There are several problems with these techniques:
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 %\textbf{Unrealistic} because 
-%\item %These techniques rely on instrumentation to gather execution traces.
-%Dynamic instrumentation has a trade-off between granularity of tracing and the performance overhead. 
-%Operators usually avoid high instrumentation in live production system.
-%Hence, the logs captured may not be enough to find root-cause of the error.
-%\item Applications use a variety of third party plugins, are deployed on multiple kernels, which makes generating configurations and state of production systems difficult. 
+\item These techniques rely on instrumentation to gather execution traces.
+Dynamic instrumentation has a trade-off between granularity of tracing and the performance overhead. 
+Operators usually avoid high instrumentation in live production system.
+Hence, the logs captured may not be enough to find root-cause of the error.
+\item Applications use a variety of third party plugins, are deployed on multiple kernels, which makes generating configurations and state of production systems difficult. 
  % traditional whitebox testing in the development environment is unable to capture these bugs.
-%\item Debugging is a lengthy process: Developers try to piece together what could be the possible problem using log information.
-%Often more information is required to understand the context better which leads to several iterations before the problem is debugged.
-%\end{itemize}
+\item Debugging is a lengthy process: Developers try to piece together what could be the possible problem using log information.
+Often more information is required to understand the context better which leads to several iterations before the problem is debugged.
+\end{itemize}
 
 %\noindent
 %Recent work in record-and-replay~\cite{} tools allows operators to capture the context of the application and reproduce bugs in an offline environment.
 %However, these tools incur a relatively high overhead, and can thereby not be used in production systems. 
 
-%One of the proposed mechanisms of addressing this problem is to ``perpetually test''~\cite{perpetual} the application in the field after it has been deployed. 
+One of the proposed mechanisms of addressing this problem is to ``perpetually test''~\cite{perpetual} the application in the field after it has been deployed. 
 %This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which can arise due to various factors such as unpredictable user environment, outdated software, an ever increasing list of hardware devices (e.g. mobile phones, embedded devices etc.), or simply because of imperfect network connectivity (wifi, cellular).
 %which are possible only for a long running production environment. 
 %Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
 %However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
-
 %\noindent
-%Previous approaches such as Chaos Monkey~\cite{chaosmonkey} from Netflix and AB Testing~\cite{abtesting} already use ``testing in the wild'' to check for errors and robustness of the software or to check for new features that have been added.  
-%However, despite a clear need, debugging in the production environment has never gotten much traction in real-world applications as it may consume too much performance bandwidth and more importantly, it can impact the sanity\footnote{The state of the production server may change leading to a crash or wrong output} of real operational state of the software.
+Previous approaches such as Chaos Monkey~\cite{chaosmonkey} from Netflix and AB Testing~\cite{abtesting} already use ``testing in the wild'' to check for errors and robustness of the software or to check for new features that have been added.  
+However, despite a clear need, debugging in the production environment has never gotten much traction in real-world applications as it may consume too much performance bandwidth and more importantly, it can impact the sanity\footnote{State of server may change leading to crash or wrong output} of real operational state of the software.
 %Another trend embraced by mainstream companies such as Flickr, Twitter, Facebook and Google is DevOps\cite{devops}. 
 %And wile testing, analyzing and monitoring are an important aspect of the devops cycle, usually only a very small performance bandwidth in the production server can be dedicated to QA operations as compared to real user activity(so as to not effect user-perceived delay). 
 
@@ -75,7 +62,7 @@ However, owing to the amound of instrumentation required, these tools deal with 
 %Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
 
 \noindent
-The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging and analysis of production applications in order to significantly reduce the time towards bug resolution.
+The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging of production applications in order to significantly reduce the time towards bug resolution.
 %We observe that most 
 Most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
 Additionally, there have been rapid advances in user-space virtualization technologies such as Docker~\cite{docker}, and OpenVZ/LXC~\cite{openvz,lxc}, which allow users to sandbox and ship application containers. 
@@ -100,12 +87,11 @@ The cloning operation is ``live'', hence there is no suspension of the services 
 \noindent
 The key contributions of this paper are:
 \begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
-\item A novel mechanism which significantly \textbf{reduces the time to debug} production errors, by allowing debuggers to directly get information rather then wait for operators.
+\item A novel mechanism which significantly \textbf{reduces the time to debug} errors, by allowing debuggers to directly get information rather then wait for operators.
 \item A tool which provides a sandbox environment to debug the production environment. 
 This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
-\item A network duplication and aggregation mechanism, which ensures non-blocking request duplication to the debug-container, thereby ensuring \textbf{no performance impact} on the production container. 
-\item Allows to \textbf{capture the context} of large scale production systems, with long running applications. Under normal circumstances capturing such states is extremely difficult as they need a long running test input, and a
-  large test-clusters.
+\item A testing harness, and proxy which ensures non-blocking request duplication to the debug-container, which ensures \textbf{no performance impact} on the production container. 
+\item Allows to \textbf{capture the context} of large scale production systems, with long running applications. Under normal circumstances capturing such states is extremely difficult as they need a long running test input, and run on large test-clusters.
 \item We track the \textbf{fidelity of the debug-container} (debug-container faithfully represents the production container). 
 %and creates a flag whenever the containers are out-of-sync. 
 The time till which the debug-container maintains fidelity is called it's \emph{debugging -window}( see section \ref{sec:window}).

@@ -5,38 +5,52 @@
 %The related work can be divided in several categories:
 
 %\begin{itemize}[leftmargin=*]
-  
+\iffalse  
 %\item 
 \textbf{Software Debugging}  
-  In the development phase, it is common to employ debugging tools such as gnu debugger \cite{gdb}, valgrind \cite{valgrind} or just using print statements etc.
-  Several development suites\cite{eclipse, visual_studio, intel_suite} often come with inbuilt debugging capabilities, to assist developers to understand their code, and debug it as they develop new applications.
-  In most cases these tools allow developers to look at the execution traces, and to insert watchpoints or breakpoints.
-  In addition they allow developers to understand the context of the application by looking at variable values at different points.
-  Unfortunately, this practice cannot be followed in production environments, as these tools have a high overhead.
-  
-  \parikshan focuses on this problem by allowing users to do live debugging of the application by cloning the production state, to produce a test-container.
-  This test-container can be debugged using probes as described in~\ref{sec:trigger} to give valuable insight to the developer.
-  
+In the development phase, it is common to employ debugging tools such as gnu debugger \cite{gdb}, valgrind \cite{valgrind} or just using print statements etc.
+Several development suites\cite{eclipse, visual_studio, intel_suite} often come with inbuilt debugging capabilities, to assist developers to understand their code, and debug it as they develop new applications.
+In most cases these tools allow developers to look at the execution traces, and to insert watchpoints or breakpoints.
+In addition they allow developers to understand the context of the application by looking at variable values at different points.
+Unfortunately, this practice cannot be followed in production environments, as these tools have a high overhead.  
+\parikshan focuses on this problem by allowing users to do live debugging of the application by cloning the production state, to produce a test-container.
+This test-container can be debugged using probes as described in~\ref{sec:trigger} to give valuable insight to the developer.
+\fi
     
 %\item 
-\textbf{On-the-fly debugging}
-In recent years there have been approaches which are similar to \parikshan in applying on-the-fly debugging solutions.
+\noindent
+\textbf{Record and Replay:}  
+ Record and Replay systems~\cite{odr,revirt,guo2008r2, geels2007friday, laadan2010transparent} have been an active area of research in the academic community for several years. 
+Typically these systems record enough information to faithfully replay the system offline.
+However, the overhead of most record-and-replay systems are quite high, and recording is generally done in isolation for each VM.  
+In comparison to record-and-replay systems, \parikshan allows debuggers to diagnose the bug in real-time.
+Another closely related work is Aftersight~\cite{aftersight} which records a production system, and replays it concurrently in a parallel VM.
+While both Aftersight and \parikshan allow debuggers an almost real-time diagnosis facility, Aftersight suffers from recording overhead in the production VM.
+On the other hand, in \parikshan we do not impact the production container, as we only duplicate the incoming traffic instead of recording.
+
+\noindent
+\textbf{Large Scale System Debugging}
+Production level diagnosis~\cite{magpie,clue,vpath} approaches use light weight instrumentation to capture traces like system calls, or windows event traces.
+Both CLUE and VPath use end-to-end trace stitching to capture the execution flows across multiple tiers to infer performance bugs.
+While the instrumentation for these tools have a low overhead, the corresponding granularity of the logs is also less.
+This limits the diagnosis capability of these tools, and they are only able to give a hint towards the bug root-cause rather than debug it completely.
+Since, \parikshan does debugging on cloned containers, it can do intensive instrumentation making the diagnosis much easier.
+
+\noindent
+\textbf{Real-Time techniques}
+In recent years there have been approaches which are similar to \parikshan in applying real-time diagnosis on production systems.
 One of these approaches is Chaos Monkey-\cite{chaosmonkey} from netflix which uses fault injection in real production systems to test their fault tolerance.
-Another approach called 
-We are inspired by the notion of perpetual testing\cite{perpetual} which advocates that software testing should be key part of the deployment phase and not just restricted to the development phase.
+ChaosMonkey induces time-outs, extra resoure usage etc. to inject faults in a running system. 
+This is usually done at low usage times.
+Another approach called AB Testing~\cite{abtesting}, probabilistically tests updates or beta releases on some percentage of users, while letting the majority of the application users work on the original system.
+AB Testing allows the developer to understand user-response to any new additions to the software, while most users get the same software.
+While both these approaches focus on real-time-diagnosis on production systems, they are restricted to software testing.
+\parikshan on the other hand, allows for interactive analysis to understand the execution flow.
+%We are inspired by the notion of perpetual testing\cite{perpetual} which advocates that software testing should be key part of the deployment phase and not just restricted to the development phase.
   
-%\item 
-\textbf{Record and Replay}  
-  Record and Replay systems have been an area of research in the academic community for several years.
-  
-  \cite{altekar2009odr,dunlap2002revirt,guo2008r2, geels2007friday, laadan2010transparent}
-
-\textbf{Live Migration}
-
   
  % \item \textbf{A-B Testing}
  % \item \textbf{Symbian Monkey}
   % \item \textbf{DevOps}
 %\end{itemize}
   
-
