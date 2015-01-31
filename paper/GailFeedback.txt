@@ -10,8 +10,6 @@
 
 Nipun:
 
-Output from the debug-containers must seem as if it is communicating with something ye
-
 
 ----------------------------------------------------------------------------
 Abstract:
@@ -22,6 +20,8 @@ This part of the abstract is a concern: "as well as safely discard all outputs
 from the debug-containers"
 
 what if the program does some output, then expects some input in response?  giving it input from some external source that did NOT receive its original output could result in a different result than would happen if that external source responded in some meaningful way to that original output.  even tho it is indeed probably best to keep feeding the debugging environment data sent to the live application, this discrepancy needs to be discussed somewhere.
+
+
 
 also, what if the output is to a file, and then the code reads from that file expecting to read what it just wrote a moment ago?  again we have a semantic discrepancy that would not happen in the live application. one could perhaps argue a model-checking view that the code should adjust to (effectively) random input that does not match what it output a moment before, but this may not lead down the same code paths (for testing and debugging) that would be executed if the output and input matched.  some examples of how/when this occurs in practice would help here.
 

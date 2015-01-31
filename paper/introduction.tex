@@ -2,6 +2,7 @@
 \section{Introduction}
 \label{sec:intro}
 
+\noindent
 As application software grows and gets more complicated, debugging large scale applications has become increasingly important. 
 %This problem is compounded by the recent trend in software engineering industry by large companies towards DevOps \cite{devops}. 
 The recent trend towards DevOps~\cite{devops} by the software engineering industry further compounds this problem by requiring a fast and rapid resolution towards any software bug.
@@ -108,7 +109,9 @@ This allows for a safe and secure mechanism to perturb and diagnose the applicat
   large test-clusters.
 \item We track the \textbf{fidelity of the debug-container} (debug-container faithfully represents the production container). 
 %and creates a flag whenever the containers are out-of-sync. 
-The time till which the debug-container maintains fidelity is called it's \emph{debugging -window}( see section \ref{sec:window}).
+%Parikshan debug-containers can tolerate some degree of divergence from the production state. 
+The debug-container may continue to run correctly even if the analysis run on it perturbs it's state slightly(it can tolerate some divergence from the production).
+The time till which the debug-container can faithfully represent the execution is called it's \emph{debugging -window}( see section \ref{sec:window}).
 %\item We allow for \textbf{dynamic insertion of probes}, and safely capturing the execution trace of the application. 
 %Dynamically inserting probes is important to avoid relaunching binaries in the test-container. 
 %Restarting binaries would break active network connections, and destroy the in memory state of the test container(note: configuration/file-system state is still preserved).
@@ -119,6 +122,16 @@ The time till which the debug-container maintains fidelity is called it's \emph{
 %Of-course testing mechanisms may differ depending upon different languages.
 
 \end{itemize}
+
+Analyzing the executions of a buggy software program is essentially a data mining process. 
+Although many interesting methods have been developed to trace crashing bugs (such as memory violation and core dumps), 
+it is still difficult to analyze noncrashing bugs (such as logical errors, configuration bugs, and performance errors).
+Studies have shown~\cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor} that several bugs in large-scale systems lead to either a changed/inconsistent output, or impact the performance of the application. 
+Examples of this are slow memory leaks, configuration, or performance bugs which do not necessarily stop all services, 
+but need to be fixed quickly so as to avoid degradation in the QoS. 
+\parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, 
+thereby capturing the state, configuration and user-input to assist the debugger.
+
 
 \noindent
 \textbf{Virtual Machines vs Containers:} 
@@ -140,4 +153,4 @@ While \parikshan can be applied to traditional virtual machines, we believe that
 %This approach adds test-cases in predetermined functions before starting the execution of the process, and periodically executes them in the run-time environment based on a probabilistic function. 
 %\cite{dapper}
 \input{motivation}
-\input{contributions}
+%\input{contributions}

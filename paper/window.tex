@@ -7,6 +7,7 @@
 %However, an obvious down-side to any debugging/testing is that it will add an overhead on the performance of the test-container as compared to the production environment.
 %This would mean that the execution of requests in the test-container will lag behind the production container. 
 %To avoid this slowdown impacting the actual production container, 
+\noindent
 The asynchronous forwarding strategy in section \ref{sec:dupMode}, where an unblocking send forwards traffic to a separate thread which manages communication to the debug-container. 
 The thread has an internal buffer where all incoming requests are queued. 
 The incoming request rate to the buffer is dependent on how fast the production container manages the requests (i.e. the production container is the rate-limiter).
@@ -16,6 +17,7 @@ The time period till buffer overflow happens is called the debugging-window.
 For the duration of the debugging-window, we assume that the debug-container faithfully represents the production container as the debugging-window of the debug container. 
 Once the buffer has overflown, the production container must be cloned again to ensure it has the same state.
 
+\noindent
 The debugging window size depends greatly on the \textbf{application behavior}, in particular how it launches TCP connections. 
 In our current design we generate a pipe for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in application.
 For webservers, and application servers, the debugging window size is generally not a problem, as each request is a new ``connection'', and the size of each connection is quite small, hence the proxy is able to tolerate significant slowdowns without pipe overflows.

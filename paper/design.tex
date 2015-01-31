@@ -1,9 +1,11 @@
 \section{Design}
 \label{sec:design}
 
-Each instance of \parikshan can target only one tier at a time.
-However, multiple instances can be orchestrated together to do distributed debug analysis. 
+\noindent
+%Each instance of \parikshan can target only one tier at a time.
+%However, multiple instances can be orchestrated together to do distributed debug analysis. 
 %especially when it's required for integration testing or cross tier results need to be correlated.
+\parikshan can target multiple tiers of a system by cloning the target tiers and stubbing out it's communication with the external evnironment.
 Figure \ref{fig:workflow} shows the architecture of \parikshan when applied to a mid-tier application server.
 It consists of 3 modules: 
 \textbf{Clone Manager}: manages ``live cloning'' between the production and the debug containers, 
@@ -33,6 +35,7 @@ and \textbf{Network Aggregator}: manages network communication from the producti
 \subsection{Proxy Network Duplicator} 
 \label{sec:proxyDuplicator}
 
+\noindent
 In order for \textit{live debugging} to work, both production and debug containers must receive the same input.
 %This can be achieved in multiple ways, the easiest would be a port-mirroring mechanism either using software provided tap devices or in hardware switches (several vendors provide mirroring options). 
 %These are both pretty common, and are blackbox and do not require much configuration.
@@ -42,6 +45,7 @@ Additionally we need to accept responses from both servers and drop all the traf
 Hence simple port-mirroring and proxy mechanisms will not work for us.
 %Hence a layer 2 level network solution is not possible as some context of the address and state are required
 
+\noindent
 %Network proxies can be created at different levels in the network stack, for our purposes we have created a TCP proxy which mirrors the incoming traffic.
 Our solution is a customized TCP level proxy which also duplicates network traffic to the debug container while mantaining the tcp session and state with the production container. 
 Since it works at the TCP/IP layer, the applications are completely oblivious of it.

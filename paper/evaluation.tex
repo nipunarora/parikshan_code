@@ -123,13 +123,13 @@ The key to having "live" operation is to have a short enough suspend time so tha
 Firstly, we ran a macro level experiment where we tested our cloning operation on real-world applications, running a realistic workload.
 In figure \ref{fig:stats}, we show the suspend times for 4 well known applications - Apache, Thttpd, TradeBeans, TradeSoap, PetStore, MySQL. 
 %both internal and external mode while comparing it with a production container, that is idle vs. a container which is running an apache hog benchmark \cite{httperf} on it. 
-For Apache, and thttpd which are webservers, we ran a httperf hog workload. A hog workload essentially, tries to stress out the workload by testing the max throughput that the webserver can achieve.
+For Apache, and thttpd which are web-servers, we ran a httperf hog workload. A hog workload essentially, tries to stress out the workload by testing the max throughput that the web-server can achieve.
 Tradebeans and Tradesoap are both part of the dacapo \cite{dacapo} benchmark ``DayTrader'' application.
 These are realistic workloads which run on a multi-tier trading application provided by IBM. 
 PetStore is a J2EEE 3-tier application, with JBoss, MySQL and Apache server as it's 3 tiers.
 Here we cloned the app-server, and the input workload was a random set of transactions which were repeated for the duration of the cloning process.
 For MySQL we ran a similar workload with some read and write queries to test how well our cloning operation performs.
-For all the applications, we found that for cpu intensive hog benchmarks the container suspend time was 2-3 seconds for a considerable workload.
+For all the applications, we found that for CPU intensive hog benchmarks the container suspend time was 2-3 seconds for a considerable workload.
 For more memory intensive application servers such as PetStore, DayTrader, and MySQL, the suspend time was 8-12 seconds.
 We found that we did not experience any timeouts or errors for the requests in the workload. 
 This confirmed our hypothesis that short suspend times are largely not visible/have minimal performance impact to the user, as they are within the timeout range of most applications.
@@ -141,7 +141,7 @@ Further a clean network migration process ensures that connections are not dropp
 %The main factor that effects this is the number of ``dirty pages'' in the suspend phase, which have not copied over in the pre-commit rsync operation.
 %Naturally, the number of write operations, and in memory pages in the container while cloning the container, will increase the number of dirty pages, and increase the time of the suspend operation.
 To understand the impact that I/O operations have on the cloning operation, we ran a controlled experiment gradually increasing the number of I/O writes. 
-We use fio(flexible io tool for linux)\cite{fio}, to increase the number of i/o operations while doing cloning. 
+We use fio(flexible io tool for Linux)\cite{fio}, to increase the number of i/o operations while doing cloning. 
 Specifically, we do read-write operations of a 500MB file with fixed I/O bandwidth rates.
 As shown in figure \ref{fig:fioResults}, in the internal-mode, the cloning operation has minimal impact till I/O bandwidth for write operations(~ 20Mbps). 
 However, it increased exponentially beyond that, the increased cloning time confirmed our intuition that the cloning operation will be impacted when running an i/o intensive application.
@@ -152,7 +152,7 @@ We can also see that the majority of the time is spent in pcopy after suspend, w
 
 Overall we conclude, that "live cloning" takes only a few seconds (~2/3 secs) and is not disruptive to application clients (there is no loss of service visible). 
 However, in high I/O write intensive workloads, the amount of time taken to clone can go up to a couple of mins (~3/4 mins).
-In such cases, we did observe a few retries and in http but no timeouts, naturally the performance of the server did suffer. 
+In such cases, we did observe a few retries and in HTTP but no timeouts, naturally the performance of the server did suffer. 
 Current research in live migration has looked into further decreasing the sync time by doing active migration, and trigger page fault for the dirty bits which were not copied over.
 This is a similar to a copy-on-write method, that could possibly reduce our suspend time.
 In the interest of time, we have not explored faster means of live cloning, but aim to do so in our future work.
@@ -179,17 +179,18 @@ Poisson, $\lambda$ = 17 rq/s                               & 376 sec            
 	
 
 
-\subsection{Debug-Window Size Evaluation}
+\subsection{How long is the debug window?}
 \label{sec:timewindowPerformance}
 
+\noindent
 %As explained in section \ref{sec:timewindowPerformance} if the overhead of the test-container is too high, the buffer may overflow.
 %This indirectly means that the test-container and the production-container are potentially out of sync.
 We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
-As explained earlier(see section \ref{sec:timewindowPerformance}, the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution and the size of the buffer.
+As explained earlier(see section \ref{sec:timewindowPerformance}), the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
 %In table \ref{table:timewindow}, we first show the ``debug-window'' size for a fixed rate input to a MySQL server. 
-As shown in table \ref{table:timewindow}, in our first set of experiments we send a fixed rate input to a MySQL server.
-The entire experiment ran for about 7 mins(10,000 ``select * from table'' queries), with requests being sent in a while loop with no slowdown.
-The server is able to process 27 req/s\footnote{Not the same as the bandwidth, 27 req/s is the maximum rate of requests MySQL server is able to handle for single user session} in a single user connect session. 
+As shown in Table \ref{table:timewindow}, in our first set of experiments we send a fixed rate input to a MySQL server.
+The entire experiment ran for about 7 minutes(10,000 ``select * from table'' queries), with requests being sent in a while loop with no slowdown.
+The server is able to process 27 req/s\footnote{Not the same as bandwidth, 27 req/s is the maximum rate of sequential requests MySQL server is able to handle for a user session} in a single user connect session. 
 Furthermore, we induce a slowdown for each request, as well as vary the buffer sizes to get an idea of debug-window. 
 %The slowdown is generated by first finding the average bandwidth of the MySQL server, and then putting a sleep to approximately model the overhead.
 In general we found that for overheads upto 1.8x(approx) we experienced no buffer overflows.
