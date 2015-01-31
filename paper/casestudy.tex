@@ -1,19 +1,20 @@
 
 \begin{table*}[!ht]
+\centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-Bug Type                                                                         & Bug Desc                                                                   & Application           & \begin{tabular}[c]{@{}c@{}}Tool \\ Used\end{tabular}       & \begin{tabular}[c]{@{}c@{}}Debug \\ Mechanism\end{tabular}   & Slowdown              & \begin{tabular}[c]{@{}c@{}}Nodes\\ Cloned\end{tabular} & \begin{tabular}[c]{@{}c@{}}Comments/\\ Bug Caught\end{tabular}               \\ \hline
-\multirow{3}{*}{\begin{tabular}[c]{@{}c@{}}Performance \\ Bug\end{tabular}}      & \#15811                                                                    & MySQL                 & iProbe                                                     & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular}   & 1.5x                  & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes - Potentially\\ faster debugging\end{tabular} \\ \cline{2-8} 
-                                                                                 & \#45464                                                                    & Apache                & iProbe                                                     & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular}   & 1.4x                  & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes - Potentially\\ faster debugging\end{tabular} \\ \cline{2-8} 
-                                                                                 & \#49491                                                                    & MySQL                 & iProbe                                                     & \begin{tabular}[c]{@{}c@{}}Execution \\ Trace\end{tabular}   & 1.8x                  & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes - Potentially\\ faster debugging\end{tabular}   \\ \hline
-\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Memory \\ Leak\end{tabular}}          & Injected                                                                   & Glassfish             & \begin{tabular}[c]{@{}c@{}}VisualVM\\ /mTrace\end{tabular} & \begin{tabular}[c]{@{}c@{}}Memory\\ Profiling\end{tabular}   & 6x                    & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes - Timeouts\\ in GlassFish\end{tabular}    \\ \cline{2-8} 
-                                                                                 & Injected                                                                   & MySQL                 & Valgrind                                                   & \begin{tabular}[c]{@{}c@{}}memcheck\end{tabular} & N.A                   & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes \\ \end{tabular}    \\ \hline
-\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Configuration \\ Errors\end{tabular}} & DNS                                                                        & JBOSS                 & Tracing                                                    & DTrace                                                       & 1.5x                   & 2                                                      & Yes                                                                          \\ \cline{2-8} 
-                                                                                 & \begin{tabular}[c]{@{}c@{}}Max no.\\ of threads\end{tabular} & MySQL                 & Tracing                                                    & DTrace                                                       & 1.5x                   & 2                                                      & \begin{tabular}[c]{@{}c@{}}Yes\\ \end{tabular}     \\ \hline
-%\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Concurrency \\ Bug\end{tabular}}      & \begin{tabular}[c]{@{}c@{}}Atomicity \\ Violation\end{tabular}             & Apache                &                                                            &                                                              &                       &                                                        & Maybe                                                                        \\ \cline{2-8} 
-%                                                                                 & \begin{tabular}[c]{@{}c@{}}Race\\ Condition\end{tabular}                   & Apache                &                                                            &                                                              &                       &                                                        & Maybe                                                                        \\ \hline
-%\multirow{2}{*}{Crash Bugs}                                                      & Server Crash                                                               & Apache                & N.A                                                        & N.A                                                          &                       &                                                        & Cannot Debug                                                                 \\ \cline{2-8} 
-%                                                                                 & Request Crash                                                              & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{}                                      & \multicolumn{1}{l|}{}                                        & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{}                                  & Yes                                                                          \\ \hline
+\begin{tabular}[c]{@{}c@{}}Bug \\ Type\end{tabular}                              & Bug Desc                                                       & Application           & \begin{tabular}[c]{@{}c@{}}Tool \\ Used\end{tabular}       & \begin{tabular}[c]{@{}c@{}}Debug \\ Mechanism\end{tabular} & \begin{tabular}[c]{@{}c@{}}Slow-\\ down\end{tabular} & \begin{tabular}[c]{@{}c@{}}Nodes\\ Cloned\end{tabular} & \begin{tabular}[c]{@{}c@{}}Comments/\\ Bug Caught\end{tabular}       \\ \hline
+\multirow{3}{*}{\begin{tabular}[c]{@{}c@{}}Performance\\ Bug\end{tabular}}       & \#15811                                                        & MySQL                 & iProbe                                                     & Exec. Trace                                                & 1.5x                                                 & 1                                                      & Yes                                                                  \\ \cline{2-8} 
+                                                                                 & \#45464                                                        & Apache                & iProbe                                                     & Exec. Trace                                                & 1.4x                                                 & 1                                                      & Yes                                                                  \\ \cline{2-8} 
+                                                                                 & \#49491                                                        & MySQL                 & iProbe                                                     & Exec. Trace                                                & 1.8x                                                 & 1                                                      & Yes                                                                  \\ \hline
+\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Memory \\ Leak\end{tabular}}          & Injected                                                       & Glassfish             & \begin{tabular}[c]{@{}c@{}}VisualVM/\\ mTrace\end{tabular} & \begin{tabular}[c]{@{}c@{}}Memory\\ Profiling\end{tabular} & 3x                                                   & 1                                                      & Yes                                                                  \\ \cline{2-8} 
+                                                                                 & Injected                                                       & MySQL                 & Valgrind                                                   & memcheck                                                   & 6x                                                   & 1                                                      & \begin{tabular}[c]{@{}c@{}}Yes, with \\ buffer overflow\end{tabular} \\ \hline
+\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Configuration \\ Errors\end{tabular}} & DNS                                                            & JBOSS                 & DTrace                                                     & Tracing                                                    & 1.3-4x                                               & 2                                                      & Yes                                                                  \\ \cline{2-8} 
+                                                                                 & \begin{tabular}[c]{@{}c@{}}Max no. \\ of threads\end{tabular}  & MySQL                 & DTrace                                                     & Tracing                                                    & 1.5x                                                 & 2                                                      & Yes                                                                  \\ \hline
+%\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Concurren \\ Bug\end{tabular}}        & \begin{tabular}[c]{@{}c@{}}Atomicity \\ Violation\end{tabular} & Apache                &                                                            &                                                            &                                                      &                                                        & Maybe                                                                \\ \cline{2-8} 
+%                                                                                 & \begin{tabular}[c]{@{}c@{}}Race\\ Condition\end{tabular}       & Apache                &                                                            &                                                            &                                                      &                                                        & Maybe                                                                \\ \hline
+%\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Crash \\ Bugs\end{tabular}}           & Server Crash                                                   & Apache                & N.A                                                        & N.A                                                        &                                                      &                                                        & Cannot Debug                                                         \\ \cline{2-8} 
+%                                                                                 & Request Crash                                                  & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{}                                      & \multicolumn{1}{l|}{}                                      & \multicolumn{1}{l|}{}                                & \multicolumn{1}{l|}{}                                  & Yes                                                                  \\ \hline
 \end{tabular}
 \caption{CaseStudy of various production system bugs}
 \label{table:casestudy}
@@ -36,7 +37,7 @@ Bug Type                                                                        
 Many applications have active application transaction logs, and error logs that alert the operator of any anomalous behavior.
 Often the information in such logs is insufficient to find the root-cause, and can give false-positives or skip errors altogether.
 Using these logs, and their intuition, debuggers run offline test-cases to find the root-cause of the bug. 
-This process may need multiple iterations between the operator and developer, as more information may be required: Thereby, increasing the time-to-debug. 
+This process may need multiple iterations between the operator and developer, as more information may be required from the production system: thereby, increasing the time-to-debug. 
 %Since only minimal dynamic instrumentation is allowed, developers go through a trial and error process of increasing the coverage of instrumentation 
 %(or have higher instrumentation with the production service suffering an overhead).
 
@@ -44,15 +45,20 @@ This process may need multiple iterations between the operator and developer, as
 %We discuss how they can be successfully applied to bug cases we found in production systems in the next subsection.
 The idea behind \parikshan is to allow users to use various debugging tools and mechanisms in the production environment, that one would normally use in the development environment.
 Debugging tools allow developers to better understand program flow, and data flow in the program, which is key to localizing the root cause of any bug.
-Dynamic instrumentation tools can generate \textbf{execution traces}, which give insight into the program flow(functions, conditional statements executed).
+Dynamic instrumentation tools like DTrace~\cite{dtrace}, and iProbe~\cite{iProbe} can generate \textbf{execution traces}, which give insight into the program flow(functions, conditional statements executed).
+iProbe, has statically compiled ``hooks'' in the beginning and end of several functions in the target applications, which can be patched with dynamic instrumentation on-the-fly.
+Whereas, DTrace uses interrupt mechanisms to insert a probe at any point in the application using symbolic information. 
 %Data flow on the other hand requires much finer instrumentation. 
-Tools like dyninst~\cite{dyninst} allow users to insert \textbf{breakpoints}, or \textbf{watchpoints} on variables, to track data-flow whenever a certain variable is triggered.
+Similarly, tools like dyninst~\cite{dyninst} allow users to insert \textbf{breakpoints}, or \textbf{watchpoints} on variables, to track data-flow whenever a certain variable is triggered.
+Memory profiling tools like Valgrind~\cite{valgrind}, PIN~\cite{pin}, and VisualVM~\cite{visualvm} give insight into memory allocation and de-allocation, thus helping in catching memory leaks.
+%Another tool, Valgrind~\cite{valgrind} can do systematic checking of memory allocation, but has a high overhead and requires application restart.
+%On the other hand, profiling tools like VisualVM~\cite{visualvm}, and PIN~\cite{pin} can be dynamically attached to track memory usage. 
 %The downside to this is that it halts progress in the application, unlike execution trace which imposes a slowdown. 
-Other mechanisms such as \textbf{delta-debugging}, and \textbf{heap-dump} allow users to modify variables to check if that resolves problems hence changing it's behavior.
-Next, we discuss how these techniques can be applied to real-life bugs with the help of the \parikshan framework.
+%Other mechanisms such as \textbf{delta-debugging}, and \textbf{heap-dump} allow users to modify variables to check if that resolves problems hence changing it's behavior.
+Next, we discuss how these techniques can be applied to different categories of real-life bugs with the help of the \parikshan framework:
 
-\subsection{Bug Categories}
-\label{sec:bugCategories}
+%\subsection{Bug Categories}
+%\label{sec:bugCategories}
 
 %\subsubsection{Performance Bugs}
 %\label{sec:performanceBugs}
@@ -61,19 +67,23 @@ Next, we discuss how these techniques can be applied to real-life bugs with the 
 % especially in usecases which were earlier not thought of during stress testing.
 These bugs don't usually lead to crashes, but cause significant impact to user satisfaction.
 %The problem can manifest itself because of some configuration parameter, or redundant function calls, non-optimal path, and can require either a bug-fix, or a new feature addition.
-In a previous case-study\cite{shanluPerf}, the authors found that a large percentage of real-world performance bugs can be attributed to uncoordinated functions, functions that can skipped and inefficient synchronization among threads (for example locks held for too long etc.).
+In a previous case-study~\cite{shanluPerf}, the authors found that a large percentage of real-world performance bugs can be attributed to uncoordinated functions, functions that can skipped and inefficient synchronization among threads (for example locks held for too long etc.).
 Typically, such bugs can be caught by function level execution tracing and tracking the time taken in each execution function.
-Another key insight provided in the case-study, is that two-thirds of the bugs manifested themselves with special input conditions were met, or execution was done at scale. 
-Hence, it is difficult to capture these bugs with traditional white-box testing mechanisms.
+Another key insight provided in the case-study, was that two-thirds of the bugs manifested themselves when special input conditions were met, or execution was done at scale. 
+Hence, it is difficult to capture these bugs with traditional offline white-box testing mechanisms.
 
-\noindent
-In an empirical evaluation of 3 such bugs, we found that a function trace overhead to cause a 1.5x - 2x slowdown in the targeted session of the application. 
-With \parikshan and dynamic instrumentation tools such as iProbe\cite{iProbe} we were able to capture a representative execution trace, with no overhead to the production system.
-For MySQL Bug 15811, it was reported by users, that some of the user requests were running significantly slower than others.
-To test out \parikshan to catch this bug, we re-created a 2 tier client-server setup with the server(container) running a buggy MySQL server application, and made a random workload with several repetitive instances of queries triggering the bug.
+%\noindent
+In an empirical evaluation of three such bugs, we used \parikshan, and dynamic instrumentation tool iProbe to capture a representative execution trace.
+We found the tracing overhead to cause a 1.5x - 2x slowdown in the targeted session of the application,  with no impact on the production system.
+For example, one of the bugs reported in  MySQL (Bug 15811) reported that some of the user requests which were dealing with complex scripts( chinese, japanese), were running significantly slower than others.
+To test out \parikshan, we re-created a two-tier client-server setup with the server(container) running a buggy MySQL server. 
+We generated a random workload of user-requests, including queries that triggered the bug.
 We initiated debugging by creating a live clone of the container running the MySQL server.
-For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
-Using the profile for regular latin charactersets, and comparing it to complex charactersets (chinese, japenese) we were easily able to localize the bug to the compare functions in the string module.
+We triggered instrumentation in the query handler, to capture the execution trace of the MySQL server for any queries containing complex scripts.
+%For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
+Finally, we compared the profile(time taken in each function) of the queries for complex scripts, with the queries for latin scripts.
+Using trial-and-error, and iteratively digging in deeper functions, we were able to localize the bug to string compare functions in MySQL.
+%Using the profile for regular latin charactersets, and comparing it to complex charactersets (chinese, japenese) we were easily able to localize the bug to the compare functions in the string module.
 %Using a trial and error method we profiled high granularity functions in MySQL and gradually looked at finer granularity modules to isolate the performance problem.
 %This allowed us to successfully isolate the function with the performance problem.
 %The MySQL queries, were only a few KB's so we were able to queue up several requests in the pipe and there was no divergence in the output produced by both the debug container and the production container. 
@@ -83,33 +93,58 @@ Using the profile for regular latin charactersets, and comparing it to complex c
 %\label{sec:memoryLeaks}
 \noindent
 \textbf{Memory Leaks}: %Localizing a memory leak takes us further than simply execution tracing. 
-Memory leak analysis can be done by doing memory allocation function profiling (malloc, free etc.) or using tools like Valgrind\cite{valgrind}, which use shadow memory techniques to trace all actively allocated objects.
-While shadow-memory tools are good for development debugging, it cannot be applied to real-production environments as they require the service to be closed to compute which objects remained allocated or to show dangling reference(actively allocated memory may or may not be used in the future) etc.. Additionally these tools are resource hungry and have a high overhead (~4-6X).
+Memory leaks are common error in service oriented systems, especially in C/C++ based applications where there is no memory management.
+These leaks usually build up over time, and can cause slowdowns because of resource shortage, or system crashes.
+Debugging can be done either using systematic debugging tools like Valgrind, which use shadow memory to track all objects, or memory profiling tools like VisualVM, mTrace, or PIN, which track allocations, de-allocations, and heap size.
+Although valgrind is more complete, it has a high overhead(~6x), and needs to capture the execution from the beginning of the application, to the end(i.e. needs application restart).
+On the other hand, profiling tools are much lighter, and can be dynamically patched to a running process.
+
+For our emperical evaluation, we injected memory allocations to a random object in glassfish app-server.
+We then, used \parikshan to clone and create a debug-container, where we use VisualVM to track the increase of the heapsize, and statistics of which object is being allocated.
+Tracking memory allocation is able to localize the class where the memory leak is happening, and can simply finding the root-cause of such bugs.
+We experienced a slowdown of 3x, but did not observe any overflow in the buffer.
+
+We also used memory leak detection using Valgrind in MySQL for an injected memory leak in the request handler.
+We wish to stress here, that while tools like valgrind, need application restart, and will most likely cause extremely high slow-downs in the debug-container, \parikshan can still help in debugging a small part of the target system in isolation, thereby quickly resolving errors.
+With Valgrind, we saw requests being dropped in the proxy because of the high overhead, but we were able to capture and trace memory leaks for several traces before the buffer overflow.
+
+
+\iffalse
+Memory leak analysis can be done by doing memory allocation function profiling (malloc, free etc.) or using tools like Valgrind~\cite{valgrind}, which use shadow memory techniques to trace all actively allocated objects.
+While shadow-memory tools are good for development debugging, it cannot be applied to real-production environments as they cannot be dynamically attached to a running service, and the process needs to be closed to compute which objects remained allocated or to show dangling reference(actively allocated memory may or may not be used in the future) etc.. Additionally these tools are resource hungry and have a high overhead (~4-6X).
+
 In our memory leak case study, we first profiled the application to find transactions that could potentially be the cause of the memory leak. 
 We then filter out everything except the suspect transactions, and restart mysqld service with valgrind memcheck tool turned on.
 The valgrind tool was able to summarize and point to the root-cause of the bug which we validated from the bug report.
 In this case the considerable overhead because of valgrind, and the fact that it serialized the execution (other transactions were not able to follow), led to transactions being dropped in the proxy. 
 However, this did not impact us in finding the root cause.
 
-\noindent
-In another memory leak scenario for Java Glassfish\cite{glassfish} app server, we were able to apply a memory profiler(visualVM), to look at allocation and deallocation patterns.
+%\noindent
+In another memory leak scenario for Java Glassfish~\cite{glassfish} app server, we were able to apply a memory profiler(visualVM), to look at allocation and deallocation patterns.
 This has comparatively lesser overhead, and can point to stale objects, or can profile how different classes are using the heap memory.
 %In cases where memory leak exhibits because of the application state after a long running execution, memory profiling may be a better choice than shadow memory tools, as they require a service restart.
 Using memory profiling in \parikshan will allow users to capture the ``long-running'' context of the application which may be important to capture the bug.
+\fi
 
 \noindent
 \textbf{Configuration Errors}:
-Configuration errors are usually caused by wrong values put in application services by the operators.
-This is not necessarily a bug in the program, but a bug in the input.
-It is especially difficult to catch, as configuration bugs usually get triggered at scale, or for certain edge cases inputs.
-For example in a 3 Tier Application(WebServer, JBoss, MySQL), it was reported that certain queries were returning empty or ``null'' pages. 
-The operator can potentially find out which machines in the cluster were affected by this bug.
-Since debug logs have not been turned on we can only see the path the query is taking but do not see any error report generated.
-This can be used by the operator, to find which containers need to be cloned. 
-Using parikshan, it was possible for the developer to clone both the app and the sql server containers to capture the entire flow of some of the queries ( remember the cluster has several machines).
-We instrument and follow the execution flow across distributed machines, and were able to see that the mysql server was not creating worker threads for the incoming requests.
+Configuration errors are usually caused by wrongly configured configuration parameters, i.e.this is not a bug in the application, but a bug in the input(configuration) by the user.
+Configuration bugs usually get triggered at scale, or for certain edge cases, making them extremely difficult to catch.
+
+For our emperical evaluation, we created a three tier(apache,jboss,mysql) service using Java PetStore a popular J2EE example application.
+We inserted a configuration error setting an arbitrarily low number for the maximum number of requests MySQL can handle.
+We then triggered requests to PetStore, and found some of them timing out.
+Using \parikshan, we were able clone both JBoss and the MySQL servers, and capture the entire flow of the queries across distributed machines.
+Using traces of higher level modules, we were able to see that the mysql server was not creating worker threads for the incoming requests.
 Error logs had been turned off for optimization, hence the error could not be easily reported. 
 Parikshan, was able to successfully localize the error to misconfiguration in the ``maximum no. of worker thread'' allowed parameter.
+While the error itself may seem simple, without \parikshan a 3-tier testbed would be required in an offline environment, with the exact same system configuration, and a large enough test workload.
+
+
+% it was reported that certain queries were returning empty or ``null'' pages. 
+%The operator can potentially find out which machines in the cluster were affected by this bug.
+%Since debug logs have not been turned on we can only see the path the query is taking but do not see any error report generated.
+%This can be used by the operator, to find which containers need to be cloned. 
 
 %\subsubsection{Configuration Bugs}
 %\label{sec:configurationBugs}

@@ -6,7 +6,7 @@
 %As mentioned earlier, we clone the entire state of the production container, and replicate the incoming requests. 
 %We believe that this should capture most non-determinism in the application, and the debug container should be a close representative of the production container. 
 %However, 
-\noindent
+%\noindent
 It is possible that the behavior of the production and debug container may diverge with time.
 To understand and capture this divergence, we compare the corresponding values of tcp send and receive within the proxy.
 This component is optional and it gives us a black-box mechanism to check the fidelity of the debug-container.
