@@ -1,0 +1,73 @@
+ \section{Design}
+\label{sec:design}
+
+%Each instance of \parikshan can target only one tier at a time.
+%However, multiple instances can be orchestrated together to do distributed debug analysis. 
+%especially when it's required for integration testing or cross tier results need to be correlated.
+%\parikshan can target multiple tiers of a system by cloning the target tiers and stubbing out it's communication with the external environment.
+In figure~\ref{fig:workflow}, we show the architecture of \parikshan when applied to a single mid-tier application server.
+\parikshan consists of 3 modules: 
+\textbf{Clone Manager}: manages ``live cloning'' between the production and the debug containers, 
+\textbf{Network Duplicator}: manages network traffic duplication from downstream servers to both the production and debug containers, 
+and \textbf{Network Aggregator}: manages network communication from the production and debug containers to upstream servers.
+The duplicator, and aggregator can be used to target multiple connected tiers of a system by duplicating traffic at the beginning and end of a workflow.
+Furthermore, the aggregator module is not required if the debug-container has no upstream services. 
+Network duplication, and aggregation can be used in one or more protocols to partially or completely isolate the debug container, depending on the interacting services and the debugging requirements.
+At the end of this section, we also discuss the \textbf{debug window} during which we believe that the debug-container faithfully represents the execution of the production container.
+Finally, we discuss \textbf{divergence checking} which allows us to observe if the production and debug containers are still in sync.
+
+%which uses user-space containers OpenVZ~\cite{openvz} and a variant of live migration to implement the cloning.
+%To begin with let us look at a simple example of client web-server with a database server as the backend (as shown in Figure \ref{fig:workflow}), where the test harness needs to be applied on the backend.
+%As explained earlier basic workflow of our system is to duplicate all network requests to the production backend server and a ``live cloned'' test container.
+%Traffic duplication is managed by our proxy network duplicator (see section \ref{sec:proxyDuplicator}), which uses several different strategies to clone user input to our test-container, with minimal impact on the production container.
+%Another core aspect of our design is ``live cloning''; this is the process by which a production container (in this case our backend service), can be cloned to create a test-container which has the same file system and process state. 
+%Next, we explain each of the modules in detail.
+%The architecture can be divided into two parts: (1) A Proxy Network Duplicator, (2) container clone manager
+%\begin{itemize} 
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{figs/arch.png}
+    \caption{\parikshan applied to a mid-tier service: It is comprised of: (1) Clone Manager for Live Cloning, (2) Proxy Duplicator to duplicate network traffic, and (3) Proxy Aggregator to replay network traffic to the cloned debug container.}
+    \label{fig:workflow}
+  \end{center}
+\end{figure}
+
+
+\input{clone}
+\input{proxyDup}
+\input{proxyAgg}
+\input{window}
+\input{divergence}
+
+\iffalse
+\subsection{Network State Model}
+\label{sec:networkStateModel}
+
+Network communication in most applications consists of two core types of protocols: UDP \& TCP.
+The UDP(User Datagram Protocol) allows the applications to send messages(referred to as datagrams) to other hosts in the network without prior communications to set up any transmission channels.
+UDP uses a simple communication mechanism while minimizing protocols. 
+It has no handshaking dialogs or acknowledgment of package delivery. It is broadly used for network traffic where speed is much more important than reliability (viz. network streaming applications like video etc.)
+On the other hand TCP(Transmission Control Protocol) is a reliable error checked delivery stream.
+It involves initially establishing the connection, and allowing for packet re-delivery or re-ordering to allow for reliable and dependable connection. 
+While TCP is slower than UDP it is preferred for most normal connections between clients and server applications.
+
+Since the UDP protocol has no error management mechanism, it automatically follows that machine state in a UDP connection is not important.
+Hence in our design the duplicator can easily flood packets to the cloned UDP server by simply sending packets to the targeted host and port. 
+Our solution for this is 
+\fi
+\iffalse
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{figs/duplicator.eps}
+    \caption{Description of the Network Duplicator}
+    \label{fig:duplicator}
+  \end{center}
+\end{figure}
+
+The workflow of each component is as follows: Traffic from the client (Node 1 in figure \ref{fig:duplicator}) is forwarded to the Connection Manager (Node 2 in figure \ref{fig:duplicator}). 
+The connection manager essentially is a socket reader which copies, parses the incoming traffic. 
+Based on the type of TCP request, a new connection is created or data is forwarded/received to/from the TCP Connector( Node 3, figure \ref{fig:duplicator}) which in turn creates a connection to actual production server.
+In this way the connection manager and TCP connector follow the TCP state machine hence maintaining network packet sanity while forwarding traffic to the production container.
+Simultaneously, the connection manager creates an internal copy of incoming traffic, and parses and sends it to the Buffer Manager (Node 5, figure \ref{fig:duplicator}).
+\fi

@@ -1,218 +1,34 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
+We evaluate \parikshan on two key aspects: (1). Live cloning, and (2). the debug window size.
+In this section, we first look at the cloning suspend time, by evaluating it against some real-world applications, and a customized micro-benchmark.
+We then evaluate debug-window sizes under different circumstances for a persistent network connection.
+
 \subsection{How does cloning impact the performance of the production container?}
 \label{sec:performance}
-As explained in section \ref{sec:design}, the cloning operation requires a short suspend time, which is imperceptible to the user.
-The suspend time is necessary to ensure that both containers are in the exact same system state.
-Broadly, the suspend time during the cloning operation can be divided in 4 parts: 
-(1) Suspend \& Dump: Suspend time due to the time taken to pause the container, 
-(2) Pcopy after suspend: Time in the suspend phase required to complete rsync operation 
+As explained in section \ref{sec:design}, live cloning requires a small suspend time, which has minimal impact on users.
+Suspending is necessary to ensure that both containers are in the exact same system state.
+Broadly, suspend time during live cloning can be divided in 4 parts: 
+(1) Suspend \& Dump: time taken to pause and dump the container, 
+(2) Pcopy after suspend: time required to complete rsync operation 
 (3) Copy Dump File: time taken to copy an initial dump file.
-(4) Undump and Resume: time taken to resume the containers. 
-Depending on the workload of the container different aspects of the suspend time can be impacted.
-The key to having "live" operation is to have a short enough suspend time so that it has minimal impact on the user and the workload.
+(4) Undump \& Resume: time taken to resume the containers. 
+To evaluate ``live cloning'', we ran a micro-benchmark of I/O operations, and evaluated live-cloning on some real-world applications running real-workloads:
+%Depending on the workload of the container, different aspects of the suspend time can be impacted.
+%The key to having "live" operation, is to have a short enough suspend time, so that it has minimal impact on the user.
 %To understand the process better, and to see if it is viable for real-world scenario's, we ran two sets of experiments.
+\input{microCloneEval}
+\input{realWorldCloneEval}
 
-
-\begin{figure*}[ht]
-\centering
-\begin{minipage}[b]{0.45\textwidth}
-%\begin{figure}
-  % [b]{0.45\textwidth}
-  \centering
-  \resizebox{\linewidth}{!}{
-    \begin{tikzpicture}
-      \begin{axis}[
-        xmode=log,
-        legend style={at={(-0.2,1.09)},anchor=north west,legend columns=2},
-        xlabel=I/O ops(Kbps),
-        ylabel=Time (secs)]
-        \addplot[color=red,mark=x] coordinates {
-          (0,1.85)
-          (250,1.99)
-          (500,1.93)
-          (1000,1.97)
-          (2000,2.49)
-          (5000,2.51)
-          (10000,2.77)
-          (20000,2.86)
-        };
-        \addlegendentry{read-internalMode}
-        \addplot[color=green,mark=x] coordinates {
-          (0,1.97)
-          (250,2.19)
-          (500,2.23)
-          (1000,2.67)
-          (2000,3.19)
-          (5000,3.51)
-          (10000,3.87)
-          (20000,4.01)
-        };
-        \addlegendentry{read-externalMode}				
-        \addplot[color=blue,mark=x] coordinates {
-          (0,1.85)
-          (250,2.31)
-          (500,2.48)
-          (1000,4.00)
-          (2000,4.29)
-          (5000,5.51)
-          (10000,6.55)
-          (20000,15.86)
-        };
-        \addlegendentry{write-internalMode}				
-        \addplot[color=magenta,mark=x] coordinates {
-          (0,1.87)
-          (250,2.51)
-          (500,2.98)
-          (1000,4.50)
-          (2000,4.99)
-          (5000,7.71)
-          (10000,10.85)
-          (20000,17.86)
-        };
-        \addlegendentry{write-externalMode}
-      \end{axis}
-    \end{tikzpicture}
-  }
-  \captionsetup{justification=centering}
-  \caption{Live Cloning suspend time whith increasing amounts of I/O operations }
-  \label{fig:fioResults}
-%\end{figure}
-\end{minipage}
-\quad
-\begin{minipage}[b]{0.45\textwidth}
-%\begin{figure}
-%\begin{figure}[ht]
-  % [b]{0.45\textwidth}
-%  \centering
-  \resizebox{\linewidth}{!}{
-    \begin{tikzpicture}
-      \begin{axis}[
-        ybar stacked,
-        bar width=15pt,
-        %	nodes near coords,
-        enlargelimits=0.15,
-        legend style={at={(0.02,1.12)},anchor=north west,legend columns=2},
-        ylabel={Time(seconds)},
-        symbolic x coords={Basic, Apache, Thttpd, TradeBeans, TradeSoap, 
-          PetStore, MySQL},
-        xtick=data,
-        x tick label style={rotate=45,anchor=east},
-        ]
-        \addplot+[ybar] plot coordinates {(Basic,0.49) (Apache,0.46) (Thttpd,0.21) (TradeBeans,3.10) (TradeSoap,3.68) (PetStore,0) (MySQL,2) };
-        \addplot+[ybar] plot coordinates {(Basic,0.22) (Apache,0.27) (Thttpd,0.50) (TradeBeans,0.44) (TradeSoap,0.25) (PetStore,1) (MySQL,1) };
-        \addplot+[ybar] plot coordinates {(Basic,0.62) (Apache,0.64) (Thttpd,0.57) (TradeBeans,5.47) (TradeSoap,5.03) (PetStore,6) (MySQL,5) };
-        \addplot+[ybar] plot coordinates {(Basic,1.33) (Apache,1.53) (Thttpd,2.14) (TradeBeans,2.51) (TradeSoap,2.57) (PetStore,3) (MySQL,2) };
-        \addlegendentry{\strut Suspend + Dump}
-        \addlegendentry{\strut Pcopy after suspend}
-        \addlegendentry{\strut Copy Dump File}
-        \addlegendentry{\strut Undump and Resume}
-        %	\legend{\strut Suspend + Dump, \strut Pcopy after suspend, \strut Copy Dump File, \strut Undump and Resume}
-      \end{axis}
-    \end{tikzpicture}
-  }
-  \captionsetup{justification=centering}
-  \caption{Suspend time for live cloning, when running a representative benchmark}
-  \label{fig:stats}
-%\end{figure}
-\end{minipage}
-\end{figure*}
-
-
-Firstly, we ran a macro level experiment where we tested our cloning operation on real-world applications, running a realistic workload.
-In figure \ref{fig:stats}, we show the suspend times for 4 well known applications - Apache, Thttpd, TradeBeans, TradeSoap, PetStore, MySQL. 
-%both internal and external mode while comparing it with a production container, that is idle vs. a container which is running an apache hog benchmark \cite{httperf} on it. 
-For Apache, and thttpd which are web-servers, we ran a httperf hog workload. A hog workload essentially, tries to stress out the workload by testing the max throughput that the web-server can achieve.
-Tradebeans and Tradesoap are both part of the dacapo \cite{dacapo} benchmark ``DayTrader'' application.
-These are realistic workloads which run on a multi-tier trading application provided by IBM. 
-PetStore is a J2EEE 3-tier application, with JBoss, MySQL and Apache server as it's 3 tiers.
-Here we cloned the app-server, and the input workload was a random set of transactions which were repeated for the duration of the cloning process.
-For MySQL we ran a similar workload with some read and write queries to test how well our cloning operation performs.
-For all the applications, we found that for CPU intensive hog benchmarks the container suspend time was 2-3 seconds for a considerable workload.
-For more memory intensive application servers such as PetStore, DayTrader, and MySQL, the suspend time was 8-12 seconds.
-We found that we did not experience any timeouts or errors for the requests in the workload. 
-This confirmed our hypothesis that short suspend times are largely not visible/have minimal performance impact to the user, as they are within the timeout range of most applications.
-Further a clean network migration process ensures that connections are not dropped, and the workload is executed successfully.
-
-%To understand the impact of cloning in further detail, we ran a micro-benchmark of an I/O application to see how well cloning scales
-%As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a follow-up rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
-%The idea is to reduce the time taken to suspend the production container, so that it has minimal effect on the user.
-%The main factor that effects this is the number of ``dirty pages'' in the suspend phase, which have not copied over in the pre-commit rsync operation.
-%Naturally, the number of write operations, and in memory pages in the container while cloning the container, will increase the number of dirty pages, and increase the time of the suspend operation.
-To understand the impact that I/O operations have on the cloning operation, we ran a controlled experiment gradually increasing the number of I/O writes. 
-We use fio(flexible io tool for Linux)\cite{fio}, to increase the number of i/o operations while doing cloning. 
-Specifically, we do read-write operations of a 500MB file with fixed I/O bandwidth rates.
-As shown in figure \ref{fig:fioResults}, in the internal-mode, the cloning operation has minimal impact till I/O bandwidth for write operations(~ 20Mbps). 
-However, it increased exponentially beyond that, the increased cloning time confirmed our intuition that the cloning operation will be impacted when running an i/o intensive application.
-Here we also compare the performance of cloning in the internal mode vs the external mode, while showing the time taken in various stages of cloning.
-While for lower I/O operations, the performance of both were similar, as we go higher, the external mode which uses the network to transfer the dirty pages during the cloning operations becomes a bottleneck. 
-The internal mode is much faster as both the production and debug-container are hosted in the same physical device, so they have a much higher bandwidth between them.
-We can also see that the majority of the time is spent in pcopy after suspend, which is doing the copy of the dirty bits after suspend, especially for higher I/O's the other operations become negligible in comparison.
-
-Overall we conclude, that "live cloning" takes only a few seconds (~2/3 secs) and is not disruptive to application clients (there is no loss of service visible). 
-However, in high I/O write intensive workloads, the amount of time taken to clone can go up to a couple of mins (~3/4 mins).
-In such cases, we did observe a few retries and in HTTP but no timeouts, naturally the performance of the server did suffer. 
-Current research in live migration has looked into further decreasing the sync time by doing active migration, and trigger page fault for the dirty bits which were not copied over.
-This is a similar to a copy-on-write method, that could possibly reduce our suspend time.
-In the interest of time, we have not explored faster means of live cloning, but aim to do so in our future work.
+Live cloning can be viewed as an amortized cost paid upfront, instead of recording overhead throughout the execution.
+For our future work, we aim to reduce suspend time, rate-limiting of incoming requests in the proxy, or copy-on-write mechanisms between the production container and the clone.
+%Other approaches include triggering page fault for the dirty bits which were not copied over.
+%This is a similar to a copy-on-write method, that could possibly reduce our suspend time.
+%In the interest of time, we have not explored faster means of live cloning, but aim to do so in our future work.
 %However, it would impact, the overall performance of both systems as it would do the rsync operation for a much longer time-period.
 
-\begin{table}[t]
-\begin{centering}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\begin{tabular}[c]{@{}c@{}}Input \\ Rate\end{tabular} & \begin{tabular}[c]{@{}c@{}}Debug\\ Window\end{tabular} & \begin{tabular}[c]{@{}c@{}}Pipe\\ Size\end{tabular} & Delay                     \\ \hline
-530 bps, 27 rq/s                                      & $\infinity$                                                    & 4096                                                & 1.8x                      \\ \hline
-530 bps, 27 rq/s                                      & 8 sec                                                  & 4096                                                & 3x                        \\ \hline
-530 bps, 27 rq/s                                      & 72 sec                                                 & 16384                                               & 3x                        \\ \hline
-Poisson, $\lambda$ = 17 rq/s                               & 16 sec                                                 & 4096                                                & 8x                        \\ \hline
-Poisson, $\lambda$ = 17 rq/s                               & 18 sec                                                 & 4096                                                & 5x                      \\ \hline
-Poisson, $\lambda$ = 17 rq/s                               & $\infinity$                                                    & 65536                                               & 3.2x \\ \hline
-Poisson, $\lambda$ = 17 rq/s                               & 376 sec                                                & 16384                                               & 3.2x \\ \hline
-\end{tabular}
-\caption{Approximate debug window sizes for a MySQL request workload}
-\label{table:timewindow}
-\end{centering}
-\end{table}
-
-	
-
-
-\subsection{How long is the debug window?}
-\label{sec:timewindowPerformance}
-
-\noindent
-%As explained in section \ref{sec:timewindowPerformance} if the overhead of the test-container is too high, the buffer may overflow.
-%This indirectly means that the test-container and the production-container are potentially out of sync.
-We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
-As explained earlier(see section \ref{sec:timewindowPerformance}), the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
-%In table \ref{table:timewindow}, we first show the ``debug-window'' size for a fixed rate input to a MySQL server. 
-As shown in Table \ref{table:timewindow}, in our first set of experiments we send a fixed rate input to a MySQL server.
-The entire experiment ran for about 7 minutes(10,000 ``select * from table'' queries), with requests being sent in a while loop with no slowdown.
-The server is able to process 27 req/s\footnote{Not the same as bandwidth, 27 req/s is the maximum rate of sequential requests MySQL server is able to handle for a user session} in a single user connect session. 
-Furthermore, we induce a slowdown for each request, as well as vary the buffer sizes to get an idea of debug-window. 
-%The slowdown is generated by first finding the average bandwidth of the MySQL server, and then putting a sleep to approximately model the overhead.
-In general we found that for overheads upto 1.8x(approx) we experienced no buffer overflows.
-% most function tracing and profiling tools generally have an overhead of 1-1.5x for lower granularity and 2x for higher granularity tracing.
-For higher overheads the overflow had a linear increase primarily based on buffer-size and slowdown.
-
-Requests emnating from a user will most likely be bursty in nature.
-To mimic this behavior, we simulated a poisson process with an average request rate of 17 requests per second. 
-Varying the inter-request arrival time let's the cloned debug-container catch up with the production container during idle time-periods in between request bursts.
-The buffer size is configurable and for most of our case studies we kept it at 1MB.
-Hence, this is a configuration parameter that depends on the desired window size and the workload.
-
- 
-%We also tried a gaussian request distribution with request interarrival time being randomized to exhibhit a bursty behavior with high utilization. 
-%We found that 
- 
-%In this section we evaluate the testing window size using varying amounts of instrumentation, and the workload.
-%For the purpose of this evaluation, we keep a fixed buffer size. 
-%First we use a controlled workload rate, and gradually increase the overhead, then we use another scenario, where we keep the try to keep the same overhead, and try to increase the workload.
-%We also use real-world network packet capture data, to simulate a realistic workload and gradually increase the overhead there
-
-%\texttt{Nipun's note: This section still needs to be completed, I'm finishing up some of the results, before I can generate the charts}
+\input{windowEval}
 
 \iffalse
 \subsection{Overhead while Running tests}
@@ -220,10 +36,10 @@ Hence, this is a configuration parameter that depends on the desired window size
 
 One of the most important goals of using \parikshan is to allow debugging without having any overhead on the actual application.
 In this section we verify that this goal of \parikshan holds true i.e. debugging in the sandbox-container, does not effect the performance container. 
-To understand the effect we ran some tests on our cloned container, with an independent cpu hog (infinite while loop with sleep) running within the test.
-We gradually increased the amount of cpu being used by the cpu hog and found that while in the external mode there is no effect on the performance of the production container, in the internal mode at higher cpu hog percentages, the throughput of the production container is reduced.
+To understand the effect we ran some tests on our cloned container, with an independent CPU hog (infinite while loop with sleep) running within the test.
+We gradually increased the amount of CPU being used by the CPU hog and found that while in the external mode there is no effect on the performance of the production container, in the internal mode at higher CPU hog percentages, the throughput of the production container is reduced.
 This was an expected result, as the production container and debug-container time share resources on the same machine, whereas in the external mode, they are completely isolated.
-However, it is to be noted, that most debugging scenarios are unlikely to be cpu hogs, and if resource management in the container level is done properly, the containers in the internal-mode can be largely isolated from each other.
+However, it is to be noted, that most debugging scenarios are unlikely to be CPU hogs, and if resource management in the container level is done properly, the containers in the internal-mode can be largely isolated from each other.
 \fi
 
 

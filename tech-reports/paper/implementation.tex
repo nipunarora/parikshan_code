@@ -1,0 +1,30 @@
+
+\section{Implementation}
+\label{sec:implementation}
+
+%\noindent
+%\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32.
+%Each container disk layout uses ploop~\cite{ploop} devices to enable faster and easier cloning.
+%The OpenVZ functionality, was extended to enable live-cloning as explained in section \ref{sec:design}.
+%We modified and used the OpenVZ toolkit vzctl version 4.8 to create our cloning, creation and destroy scripts for the container. 
+%While the technology has also been tested on Debian systems, the evaluation in this paper has been done on RHEL(Centos) Systems. 
+%For our evaluation, we have not put in resource restriction on the containers (i.e. the containers have access to the same hardware resources as the host machine).
+%Users using \parikshan may put resource restriction as required.
+%\parikshan also requires a number of commonly available linux modules to allow for network connectivity and 
+%\noindent
+\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32.
+We implemented the system in 3 different configurations: 
+(1). We applied \parikshan 's internal mode configuration by installing it in a single host OS VM with Intel i7 CPU, with 4 Cores, and 16GB RAM. 
+%\parikshan was installed on multiple VM's running on the host OS using KVM based virtualization. 
+Containers were cloned within the machine, with a seperate VM acting as the client.
+We used NAT, and IP namespaces for network access to the VM's.
+(2). We impelemted our system's external mode on the base kernel in identical host nodes. 
+Each of these host nodes have an Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
+(3). We also implemented our system on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}).
+The production and the debug container's were run on different virtual nodes, with 2 VCPU's and 4G RAM. 
+%The main advantage of using the Google Compute Engine was to run our cloning scripts on real data-centers, and also to scale out our evaluation. 
+
+The network proxy was implemented in C/C++.
+The forwarding in the proxy is done by forking off multiple processes each handling one send/or receive connection in a loop.
+Data from processes handling communication with the production container, is  transferred to those handling communication with the debug containers using pipes.
+Pipe buffer size is a configurable input based on user-specifications. 

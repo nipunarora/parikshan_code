@@ -1,0 +1,9 @@
+\section{Budget based adaptive debugging}
+\label{sec:adaptive}
+
+Low runtime overheads are critical when programs are deployed in production environments.
+In actual production systems, even marginal slowdown in execution time or increase in resource consumption is unacceptable. 
+\livedebugging allows for significantly larger overheads for debugging applications.
+Previous approaches for statistical debugging have use sparse random sampling of predicate profiles to reduce the overhead of instrumentation.
+Statistical debugging relies on a large number of both failing and successful runs of the program to build a representative profile.
+On the other hand, profile sampling relies on observing path profiles in finding

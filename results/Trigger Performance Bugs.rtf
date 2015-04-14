@@ -1,0 +1,99 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red20\green160\blue194;\red56\green110\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+\
+[Apache 45464]\
+Bug report: {\field{\*\fldinst{HYPERLINK "https://issues.apache.org/bugzilla/show_bug.cgi?id=45464"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 https://issues.apache.org/bugzilla/show_bug.cgi?id=45464}}\
+Patch: {\field{\*\fldinst{HYPERLINK "http://svn.apache.org/viewvc?view=revision&revision=683626"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://svn.apache.org/viewvc?view=revision&revision=683626}}\
+Source revision with patch: 683626\
+Binary version with patch: 2.2.10\
+Patched function: libapr-1.dll!apr_stat\
+How to reproduce bug:\
+# Run httpd.exe on a terminal with mod_dav_fs enabled\
+# ({\field{\*\fldinst{HYPERLINK "http://www.akadia.com/services/mod_dav.html"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://www.akadia.com/services/mod_dav.html}}).\
+# Use a WebDAV client to connect to the WebDAV directory on the web\
+# server.\
+# The version before the patch should be about 10 times slower than\
+# the version after the patch.\
+\
+\
+[MySQL 15811]\
+Bug report: {\field{\*\fldinst{HYPERLINK "http://bugs.mysql.com/bug.php?id=15811"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://bugs.mysql.com/bug.php?id=15811}}\
+Patch: {\field{\*\fldinst{HYPERLINK "http://lists.mysql.com/commits/8085"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://lists.mysql.com/commits/8085}}\
+Source revision with patch: 8085\
+Binary version with patch: 5.0.23\
+Patched function: mysql.exe!strlen\
+How to reproduce bug:\
+\
+cd client_debug\
+.\\mysqld-debug.exe\
+.\\mysql.exe -u root\
+use test;\
+drop table if exists t1;\
+create table t1(c1 char(10)) engine=myisam default charset=latin1;\
+insert into t1 values('1234567890');\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+insert into t1 select * from t1;\
+# You should have 16384 rows.\
+exit\
+.\\mysqldump.exe -u root test t1 > temp.sql\
+cat temp.sql | .\\mysql test -u root --default-character-set=ujis\
+# The version before the patch should execute the last command for\
+# about 20 seconds.\
+# The version after the patch should execute the last command for\
+# less than 1 second.\
+.\\mysqladmin.exe -u root shutdown\
+\
+\
+[MySQL 49491]\
+Bug report: {\field{\*\fldinst{HYPERLINK "http://bugs.mysql.com/bug.php?id=49491"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://bugs.mysql.com/bug.php?id=49491}}\
+Patch: {\field{\*\fldinst{HYPERLINK "http://lists.mysql.com/commits/98225"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://lists.mysql.com/commits/98225}}\
+Source revision with patch: 98225\
+Binary version with patch: 5.1.44\
+Patched function: mysqld.exe!Item_func_sha::val_str\
+How to reproduce bug:\
+\
+# Copy win\\data to sql\\data.\
+cd sql\\debug\\\
+.\\mysqld.exe\
+cd client\\debug\\\
+.\\mysql.exe -u root\
+select * from (select\
+sha1(t.help_topic_id),sha1(t.name ({\field{\*\fldinst{HYPERLINK "http://t.name/"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://t.name}})),sha1(help_category_id),\
+sha1(t.description),sha1(t.example),sha1(t.url),\
+sha1(k.help_keyword_id),sha1(k.name ({\field{\*\fldinst{HYPERLINK "http://k.name/"}}{\fldrslt \cf3 \expnd0\expndtw0\kerning0
+\ul \ulc3 http://k.name}}))\
+from mysql.help_topic t,mysql.help_keyword k) sub limit 1\\G;\
+# The version before the patch should execute the queries for about 3\
+# and 5 seconds respectively.\
+# The version after the patch should execute the queries for about\
+# 1.5 and 3 seconds respectively.\
+exit\
+.\\mysqladmin.exe -u root shutdown\
+}

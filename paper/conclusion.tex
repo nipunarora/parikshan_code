@@ -1,18 +1,21 @@
-\section{Future Work}
-\label{sec:futurework}
-
-\section{Conclusion}
+\section{Conclusion \& Future Work}
 \label{sec:conclusion}
-\noindent
-Quick bug resolution is an important requirement for any production system maintenance effort.
-Existing techniques either add substantial overhead detering their application in real-world systems, or are unable to capture enough trace information to localize the bug offline. 
 
-We have presented \parikshan a mechanism to do live-debugging and analysis of large scale systems.
-\parikshan is a novel technique to debug live systems allowing faster times to reach bug resolution.
-We evaluated \parikshan on real-world scenarios to show it's applicability \& discussed several modes in which it can be used.
-\comment{
+%Quick bug resolution is an important requirement for any production system maintenance effort.
+%Existing techniques either add substantial overhead making them impractical in real-world systems, or are unable to capture enough trace information to localize the bug offline. 
+
+We presented \parikshan a framework to do live-debugging and analysis of large scale systems.
+\parikshan presents a novel technique to debug systems in real-time allowing for fast bug resolution.
+We show several case-studies to see how our system can be applied on real problems.
+
+In the future, we wish to explore \parikshan further in 3 key areas: (1). Application: we aim to apply our system to real-time intrusion detection, and fault tolerance testing.
+(2). Analysis: we wish to define ``real-time'' data analysis techniques for traces and instrumentation done in \parikshan.
+We believe with streaming data analytic techniques, we can do much better than execution tracing/profiling.
+(3). Live Cloning: we plan to reduce the suspend time of ``live cloning'', by applying optimizations suggested in several recent works in live migration.
+%Running a clone in the same machine as the production container opens several venues such as copy-on-write migration, and asynchronous container syncing etc.
+
+
+%comment{
 %We would like to acknowledge Qiang Xu, Abhishek Sharma, and Pallavi Joshi for their insight and feedback in designing \parikshan, and in the evaluation of this technology.
-
 The authors are affiliated with NEC Labs, Princeton, Google Inc, and Columbia University. 
 Kaiser is funded in part by NSF CCF-1302269, CCF-1161079, and NIH U54 CA121852.
-}

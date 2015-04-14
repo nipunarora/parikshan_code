@@ -1,12 +1,12 @@
-%\section{Motivation}
-\subsection{Motivating Scenario}
+\section{Motivating Scenario}
+%\subsection{Motivating Scenario}
 \label{sec:motivation}
 
-\begin{figure*}[ht]
+\begin{figure*}[ht!]
   \begin{center}
 %    \includegraphics[width=0.7\textwidth]{figs/motivation.eps}
-    \includegraphics[width=0.9\textwidth]{figs/workflow3.png}
-    \caption{Workflow of \parikshan in a live multi-tier production system with several interacting services. When the admin of the system observes errors in two of it's tiers, he can create a sandboxed clone of these tiers and observe/debug them in a sandbox environment without impacting the actual production system.}
+    \includegraphics[width=0.95\textwidth]{figs/workflow3.pdf}
+    \caption{Workflow of \parikshan in a live multi-tier production system with several interacting services. When the administrator of the system observes errors in two of it's tiers, he can create a sandboxed clone of these tiers and observe/debug them in a sandbox environment without impacting the actual production system.}
     \label{fig:motivation}
   \end{center}
 \end{figure*}
@@ -14,7 +14,7 @@
 \noindent
 As a motivating scenario, let us take a complex multi-tier service-oriented system (figure \ref{fig:motivation}), with several interacting services(web-servers, application servers, search and indexing, database etc.). 
 The system is maintained by an operator, who can observe the health of the system using light-weight monitoring, which is part of the deployed system.
-Production system monitoring is usually limited to system resource usage, application usage statistics, transaction logs, and error logs.
+In the interest of application performance, production system monitoring is usually limited to system resource usage, application usage statistics, transaction logs, and error logs.
 
 At a certain time in the execution of the system, the operator observes unusual memory usage in the glassfish application server, and some error logs being generated in the nginx web-server. 
 He surmises, that there is a potential memory leak/allocation problem in the app-server, or a problem in the web-server.

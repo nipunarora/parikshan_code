@@ -8,21 +8,30 @@
 %This would mean that the execution of requests in the test-container will lag behind the production container. 
 %To avoid this slowdown impacting the actual production container, 
 %\noindent
-The asynchronous forwarding strategy in section \ref{sec:dupMode}, where an unblocking send forwards traffic to a separate thread which manages communication to the debug-container. 
-The thread has an internal buffer where all incoming requests are queued. 
+In the asynchronous forwarding mode, an unblocking send forwards traffic to a separate thread which manages communication to the debug-container. 
+This thread has an internal buffer, where all incoming requests are queued, and subsequently forwarded to the debug-container. 
 The incoming request rate to the buffer is dependent on how fast the production container manages the requests (i.e. the production container is the rate-limiter).
-Whereas the outgoing rate from the buffer is dependent on how fast the debug-container processes the requests, which can be higher than the production container because of added instrumentation, debugging etc..
-Depending on the workload, and the overhead induced in the debug-container, the buffer can overflow. 
-The time period till buffer overflow happens is called the debugging-window.
-For the duration of the debugging-window, we assume that the debug-container faithfully represents the production container as the debugging-window of the debug container. 
-Once the buffer has overflown, the production container must be cloned again to ensure it has the same state.
+Whereas the outgoing rate from the buffer is dependent on how fast the debug-container processes the requests.
+Because of instrumentation overhead in the debug-container, the outgoing rate is likely to be less than the production container.
+The time period till buffer overflow happens is called the \emph{debug-window}.
+This depends on the size of the buffer, the incoming request rate, and the overhead induced in the debug-container. 
+For the duration of the debugging-window, we assume that the debug-container faithfully represents the production container. 
+Once the buffer has overflown, the production container may need to be cloned again to ensure it has the same state.
 
 %\noindent
-The debugging window size depends greatly on the \textbf{application behavior}, in particular how it launches TCP connections. 
-In our current design we generate a pipe for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in application.
-For webservers, and application servers, the debugging window size is generally not a problem, as each request is a new ``connection'', and the size of each connection is quite small, hence the proxy is able to tolerate significant slowdowns without pipe overflows.
-Database servers, and other session based services usually have small request sizes, but multiple requests can be sent in one session which is initiated by a user. In such cases the amount of calls in a single session can eventually have a cumulative effect to cause overflows.
-Photosharing, file sharing and other datasharing services transfer a lot of data in a single burst over each tcp connection. Such protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
+The debug window size also depends on the application behavior, in particular how it launches TCP connections. 
+\parikshan generates a pipe for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in the application.
+Hence, buffer overflows happens only if the requests being sent in the same connection overflow the queue.
+For webservers, and application servers, the debugging window size is generally not a problem, as each request is a new ``connection'', hence the proxy is able to tolerate significant slowdowns.
+Database servers, and other session based services usually have small request sizes, but multiple requests can be sent in one session which is initiated by a user. 
+In such cases, the amount of calls in a single session can eventually have a cumulative effect to cause overflows.
+Photosharing, file sharing and other datasharing services transfer a lot of data in a single burst over each TCP connection. 
+These protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
+
+To further increase the \emph{debug window}, we propose load balancing debugging across multiple debug-containers, which can each get a duplicate copy of the incoming data. 
+This would mean that there are multiple threads handling the incoming connection, one for the production container, and one for each of the debug containers.
+We believe that such a strategy would significantly reduce the chance of a buffer overflow in cases where the debug-container is significantly slower.
+We evaluate debug-window overflows in section~\ref{sec:timewindowPerformance}.
 
 %\iffalse
 %In this section we try to model the testing window by using concepts well used in queuing theory(for the sake of brevity we will avoid going into too much detail, readers can find more about queuing theory models in~\cite{queueWiki}).

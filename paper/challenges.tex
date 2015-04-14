@@ -1,11 +1,14 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Designing large scale distributed systems is complex. They are often comprised of several interacting services such as storage, ntp, backup service, controllers and resource managers.
-Based on the design and architecture of the system, services for the cloned ``debug container'' may need to be (a). Cloned, (b). Turned off or (c). allowed without any modification.
-For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propogate changes from the cloned container to the production containers.
-Similarly, services such as ntp service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
-\parikshan can be used on one or more containers, and can be used to stub out more than one communicating service depending on the system requirement.
+%Designing large scale distributed systems is complex. 
+Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup service, controllers and resource managers.
+\parikshan can be used on one or more containers, and can be used to clone more than one communicating service.
+Based on the nature of the service, it may be (a). Cloned, (b). Turned off or (c). allowed without any modification.
+For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propagate changes from the cloned container to the production containers.
+Similarly, services such as NTP service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
+Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
+For instance, instrumentation in a MySQL query handler, will not slowdown file-sharing or NTP services running in the same container.
 %In this paper we have shown a proof-of-concept design and implementation with several case studies on  how \Parikshan can be applied for real-world debugging.
 
 %\textbf{Concurrency non-determinism}: \parikshan can capture the system state and the user input.
@@ -38,7 +41,7 @@ Similarly, services such as ntp service can be allowed, as they are publish\/sub
 
 \textbf{Consistency Requirements}: Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
 In such cases the time-window can be arbitrarily long. 
-For example in mysql read transactions, even if there is a transaction failiure or an overflow, it will not effect MySQL itself.
+For example in MySQL read transactions, even if there is a transaction failure or an overflow, it will not effect MySQL itself.
 Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
 
 
@@ -49,7 +52,7 @@ Execution of the same input in different conditions can produce different output
 With the exception of dedicated controlled executions in embedded systems etc., most large scale applications and complex systems exhibit non-determinism, which is what makes debugging a challenge.
 Broadly non-determinism can be caused because of the following reasons: 1. Input non-determinism, 2. Configuration non-determinism, 3. Concurrency based non-determinism.
 
-Input non-determinism is non-deterministic behavior caused because of different input received by the application (eg. requests to the server, user input etc.). 
+Input non-determinism is non-deterministic behavior caused because of different input received by the application (e.g. requests to the server, user input etc.). 
 Obviously, any output in the application and it's execution trace, will depend on the input it receives. 
 In offline debugging it is often difficult to capture all possible inputs, and hence deal with input non-determinism.
 In order to avoid input non-determinism, \parikshan uses a network proxy to send all inputs received in the production container also to the debug-container. 

@@ -1,0 +1,38 @@
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[width=0.49\textwidth]{figs/aggregator.pdf}
+%    \captionsetup{justification=centering}
+    \caption{Description of the Network Aggregator. Thread 1 executes step [1,3], Thread 2 executes [2,4], and Thread 3 executes [5], and Thread 4 executes [6]}
+    \label{fig:aggregator}
+  \end{center}
+\end{figure}
+
+\subsection{Proxy Network Aggregator \& Replay }
+\label{sec:proxyAggregator}
+The proxy described in section~\ref{sec:proxyDuplicator} is used to forward requests from downstream tiers to production and debug containers.
+This manages incoming ``requests'' to the target container, however the same mechanism cannot be directly applied for isolating responses from upstream servers.
+Imagine if you are trying to debug a mid-tier application container, the proxy network duplicator will replicate all incoming traffic from the client to both debug and the production container. 
+Both the debug container and the production, will then try to communicate further to the back-end containers.
+This could mean duplicate queries to the backend servers (for e.g. duplicate deletes to MySQL), thereby leading to an inconsistent state.
+However, to have forward progress the debug-container must be able to communicate and get responses from upstream servers.
+The ``proxy aggregator'' module stubs the requests from a duplicate debug container by replaying the responses sent to production container, to the debug-container.
+As well as dropping all packets sent from it to upstream servers.
+
+As shown in  fig~\ref{fig:aggregator}, when an incoming request comes to the aggregator, it first checks if the connection is from the production container or debug container. 
+In case of the production container (link 1), the aggregator forwards the connection to the backend (link 3), responses from the backend are sent to the aggregator (link 4), and then forwarded to the production container (link 2) and simultaneously saved in an internal queue.
+The aggregator creates an in-memory persistent inter-process FIFO queue for each connection where the responses for each of these connections are stored.
+When the corresponding connection from the duplicate debug container connects to the proxy (link 5); all packets being sent are quietly dropped. 
+The aggregator then uses the queue to send replies to the debug-container (link 6).
+In a way this is a streaming online record-and-replay, where we are recording the data in our buffer.
+We assume that the production and the debug container are in the same state, and are sending the same requests. 
+Hence, sending the corresponding responses from the FIFO stack instead of the backend ensures: (a) all communications to and from the debug container are isolated from the rest of the network, (b) the debug container gets a logical response for all it's outgoing requests.
+
+In this design we assume that the order of incoming connections remains largely the same.
+We use a fuzzy checking mechanism using the hash value of the data being sent to correlate the connections. 
+Each queue has a short wait time to check against incoming connections, this allows us to match slightly out of order connections.
+In case a connection cannot be correlated, we send a TCP\_FIN, to close the connection, and inform the debugger.
+We believe that this should be relatively rare.
+Furthermore, since we are looking into SOA applications, each user request is technically a seperate thread and should have minimal impact on other requests. 
+Hence killing a small percentage of requests which could not be correlated, should not have a drastic impact on the status of the status of the debug container as compared to the production container. 
+To further insure the debug container fidelity, we have an optional divergence checking mechanism explained in section~\ref{sec:divergenceChecking}.
+%In case a connection cannot be correlated, we allow the connection to time out and send a TCP\_FIN.

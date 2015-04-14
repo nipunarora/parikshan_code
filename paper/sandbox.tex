@@ -23,6 +23,7 @@
 %\epstopdfsetup{outdir=./}
 %\usepackage[showframe=true]{geometry}
 \usepackage{enumitem}
+\usepackage{adjustbox}
 
 %ACM
 % ---- TR: remove copyright box -------------
@@ -33,12 +34,12 @@
 % ---- TR: remove copyright box -------------
 
 %\setlength{\parindent}{0pt}
-\addtolength{\columnsep}{-1.5mm}
+\addtolength{\columnsep}{-1mm}
 \addtolength{\belowcaptionskip}{-1pt}
 \setlength{\parskip}{3pt}
 \setlength{\textfloatsep}{5pt}
-\topmargin=2pt
-\topskip=2pt
+\topmargin=1pt
+\topskip=1pt
 
 \titlespacing*{\section}
 {2pt}{2pt}{2pt}
@@ -59,10 +60,11 @@
 \begin{document}
 
 %USENIX
-\date{}
+%\date{}
 
-\title{\Large \bf Parikshan\xspace: Debugging Production Systems in Isolation}
-%\input{usenix_authors}
+\title{\Large \bf Parikshan\xspace: Live Debugging of Production Systems in Isolation}
+
+\input{usenix_authors}
 \maketitle
 
 \input{abstract}
@@ -109,7 +111,7 @@
 % latex bibtex latex latex
 % to resolve all references
 
-\small{
+\footnotesize{
 \bibliographystyle{acm}
 \bibliography{sandbox}
 }

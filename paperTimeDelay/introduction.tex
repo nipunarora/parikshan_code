@@ -1,0 +1,19 @@
+\section{Introduction}
+\label{sec:intro}
+
+Modern 24x7 software systems are often shipped out with undetected bugs despite the best efforts of programmers and bug detection tools. 
+Fixing these bugs often requires painstaking effort in trying to recreate the problem, isolate and localize the root-cause of the error.
+In a large-scale distributed, the process of recreating an error can be tedious, lengthy as well as costly in terms of the infrastructure required.
+The time taken in debugging such errors can lead to a substantial loss of revenue.
+Hence, it is important to have a fast and easy environment to recreate problems, with the shortest possible time to bug resolution.
+
+The live debugging~\cite{parikshan} project aims to streamline the process of debugging by reducing the gap between the production and the debugging environment. 
+It achieves this goal by leveraging user-space container virtualization, and live migration technologies in order to create a replica debug environment. 
+The framework clones active production systems(production-containers), and creates a debug-container, which receives the same input as the original production container.
+Hence both the production and debug-container, are running in parallel in the same state, while only the output of the production container is visible to the user.
+This clear separation of the production and debug environment, significantly reduces time to bug resolution by allowing developers to safely debug the application in the debug-container, without impacting user-facing operations.
+
+However, one of the limitations of live debugging is the need to ensure that the time-lag induced in the debug container because of instrumentation,  does not exceed a preset threshold which stops the containers from syncing their state.
+Essentially, the debug container maintains a buffer where it queues the incoming requests, 
+
+In this work, we model the 

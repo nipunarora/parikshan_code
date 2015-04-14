@@ -2,26 +2,33 @@
 \section{Introduction}
 \label{sec:intro}
 
-\noindent
-As application software grows and gets more complicated, debugging large scale applications has become increasingly important. 
-%This problem is compounded by the recent trend in software engineering industry by large companies towards DevOps \cite{devops}. 
-The recent trend towards DevOps~\cite{devops} by the software engineering industry further compounds this problem by requiring a fast and rapid resolution towards any software bug.
-DevOps stresses on close coupling between software developers and operators, and to merge the operations of both. 
-Most of these companies have very frequent releases and hence require a very short time to a bug fix, test, patch and release in order to realize continuous delivery (Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}).
-Hence, debugging is hard not only because of difficulty to capture the root-cause, it is also increasingly important to localize and fix bugs in a very short period of time.
+Although software bugs are nothing new, the complexities of virtualized environments coupled with large distributed systems have made bug localization harder. 
+The large size of distributed systems means that any downtime has significant financial penalties for all parties involved.
+%Furthermore, whether to repair flaws or add features, software patches are released all the time.
+%For instance, Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}).
+Hence, it is increasingly important to localize and fix bugs in a very short period of time.
+%As application software grows and gets more complicated, debugging large scale applications has become increasingly important. 
+%This problem is further compounded by the recent trend in software engineering industry by large companies towards DevOps \cite{devops}. 
+%The recent trend towards DevOps~\cite{devops} by the software engineering industry further compounds this problem. 
+%by requiring a fast and rapid resolution towards any software bug.
+%DevOps stresses on close coupling between software developers and operators, in order to have shorter release cycles (Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}). 
+%This re-emphasizes the need to have a very short time to diagnose and fix a bug.
+%Hence, debugging is hard not only because of difficulty to capture the root-cause, it is also increasingly important to localize and fix bugs in a very short period of time.
 
-\noindent
-Existing state-of-art techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation mechanisms to capture application logs. 
-Operators then feed these logs to analytic tools~\cite{magpie,clue} to find the root-cause of the error.
+Existing state-of-art techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation to capture execution traces. 
+Operators then feed these traces to analytic tools~\cite{magpie,clue} to find the root-cause of the error.
 However, dynamic instrumentation has a trade-off between granularity of tracing and the performance overhead. 
-To avoid higher overheads instrumentation granularity is generally kept low, thereby making the task of finding the root-cause extremely difficult.
-Additionally, debugging is a lengthy process: debuggers try to piece together what could be the possible problem using log information.
-Often more information is required to understand the context better which leads to several iterations before the problem is debugged, thereby increasing the time-to-debug.
+Operators keep instrumentation granularity low, to avoid higher overheads in the production environment.
+This often leads to multiple iterations between the debugger and the operator, to increase instrumentation in specific modules, in order to diagnose the root-cause of the bug. 
+%To avoid higher overheads instrumentation granularity is generally kept low, thereby making bug diagnosis harder.
+%Debugging is a lengthy process: debuggers try to piece together what could be the possible problem using log information.
+%Often more information is required to understand the context better which leads to several iterations before the problem is debugged, thereby increasing the time-to-debug.
 
-\noindent
-Another body of work, has looked into record-and-replay~\cite{odr,revirt,laadan2010transparent,geels2007friday} systems which capture the log of the system, in order to faithfully replay the trace in an offline environment.
-Replay systems try and capture system level information as well as all possible interactions, to allow for indepth \textit{post-facto} analysis of the error.
-However, owing to the amound of instrumentation required, these tools deal with an even heavier overhead.
+Another body of work has looked into record-and-replay~\cite{odr,revirt,laadan2010transparent,geels2007friday} systems which capture the log of the system, in order to faithfully replay the trace in an offline environment.
+Replay systems try and capture system level information, user-input, as well as all possible sources of non-determinism, to allow for in-depth \textit{post-facto} analysis of the error.
+%Another tool, aftersight~\cite{aftersight} looks into recording, and replaying the execution in parallel, to allow for decoupled analysis. 
+However, owing to the amount of instrumentation required, record-and-replay tools deal with an even heavier overhead, making them impractical for real-world production systems.
+
 
 %However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
 %\noindent
@@ -75,43 +82,70 @@ However, owing to the amound of instrumentation required, these tools deal with 
 %This gives them an immediate insight as to whether the application is behaving correctly, and where the bug could be.
 %Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
 
-\noindent
-The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging and analysis of production applications in order to significantly reduce the time towards bug resolution.
-%We observe that most 
-Most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
-Additionally, there have been rapid advances in user-space virtualization technologies such as Docker~\cite{docker}, and OpenVZ/LXC~\cite{openvz,lxc}, which allow users to sandbox and ship application containers. 
+%The work aims to provide \textbf{``bug diagnosis as a service''} for real-time debugging and analysis of production applications, with no recording overhead on the production application.
+%We observe that most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
+%Additionally, there have been rapid advances in user-space virtualization technologies such as Docker~\cite{docker}, and OpenVZ/LXC~\cite{openvz,lxc}, which allow users to easily launch and create light-weight application containers. 
 %Check THIS LINE
 %In particular, docker provides pre-installed containers(webservers, loadbalancers, appservers) which can be integrated together to create a service.
-Leveraging this abundance of resources we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment without impacting the actual application: thereby, enabling real-time diagnosis.
+%Leveraging this abundance of resources, we present a debugging mechanism, which allows the user to dynamically insert probes in a \emph{cloned} production environment without impacting the actual application: thereby, enabling real-time diagnosis.
 
-\noindent
-Our system called \parikshan\footnote{\parikshan is the Sanskrit word for testing}, allows capturing the context of application, and debugging to to done without impacting the sanctity and performance of the actual user-facing application. 
-This is done by cloning a production server and creating two containers: a production container, and a debug container. 
-We duplicate the incoming traffic to both the production container and the debug container using a custom proxy, which ignores the responses from the debug-container.
-Similarly, we have another module which replays responses sent to the production container, to the debug container so that it is completely isolated as far as network communication is concerned. 
-The debugging on the debug-container is done on-the-fly using dynamic instrumentation. %hence any set of test-cases can be turned on whenever required. 
+Our system called \parikshan\footnote{\parikshan is the Sanskrit word for  testing}, allows \textbf{real-time debugging} without any performance impact on the production service. 
+We provide a facility to sandbox the production and debug environments so that any modifications in the debug environment do not impact user-facing operations.
+\parikshan avoids the need of large test-clusters, and can target specific sections of a large scale distributed application.
+In particular, \parikshan allows debuggers to apply debugging techniques with deeper granularity instrumentation, and profiling, without impacting application performance.
+
+%We avoid recording overhead in the production container, while providing a facility for deeper bug diagnosis, and instrumentation.
+%We have deployed \parikshan in IAAS cloud infrastructure using user-space containers.
+\parikshan is composed of three modules:
+(a). a \textit{clone manager}, which manages cloning of production containers to debug-containers.
+(b). a \textit{network duplicator} module, which duplicates all incoming traffic from downstream servers to both production and debug containers.
+(c). a \textit{network aggregator} module, which manages all communication from upstream servers to the debug-container.
+The cloning operation is ``live'', hence there is no suspension of the services of the production server.
+The debug container acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or impacting the sanity of the responses to the production client. 
+This allows debuggers to use debugging tools without any fear of crashing or modifying the production application.
+
+\iffalse
+This is done by cloning an application container, and creating two containers: a production container, and a debug container. 
+We duplicate incoming traffic from downstream servers to both production and debug containers.
+Similarly, we have another module, which replays responses sent from the production container, to the debug container so that it is completely isolated from the network. 
+The debugging on the debug-container is done on-the-fly using dynamic instrumentation tools like DTrace~\cite{dtrace}, or iProbe~\cite{iProbe}. 
+%hence any set of test-cases can be turned on whenever required. 
 %This is achieved by using dynamic instrumentation mechanisms to clone a VM by forking off from a running executed state and encapsulating the forked execution in a VM.
 %The user can pre-define probe points for dynamically inserting test-cases (by default the entry and exit of each function is considered a probe point).
 The cloned debug container acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or impacting the sanity of the responses to the production client. 
 The cloning operation is ``live'', hence there is no suspension of the services of the production server.
+\fi
 
+\parikshan primarily focuses on such \emph{non-crashing bugs}, where the application continues to get input from the user.
+Studies have shown~\cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor} that several bugs lead to either an inconsistent output, or impact the performance of the application, without crashing the system.
+Examples of these bugs are slow memory leaks, configuration, or performance bugs, which do not crash the application, but need to be fixed quickly to avoid degradation in service quality. 
+Although many interesting methods have been developed to trace crashing bugs (memory violation, core dumps etc.), it is still difficult to analyze non-crashing bugs, as they often happen in scaled out systems, or because of edge-case inputs.
+
+We have deployed \parikshan in the context of cloud IAAS platform using user-space container virtualization technologies (OpenVZ/LXC~\cite{openvz,lxc}).
+Our techniques can also be applied to traditional virtual machines. 
+However, containers are more light-weight, and utilize less resources.
+%While full VM virtualization has existed for several years, recent advances in user-space container technologies (OpenVZ/LXC~\cite{openvz,lxc}) has changed software engineering methodology. 
+Furthermore, container based technologies like docker \texttt{Docker}~\cite{docker} emphasize the use of micro-service architectures, where each service (application, DNS, indexing, storage) is sandboxed in separate containers. 
+This allows us to launch debug-containers, which can target one application at a time.
+
+%In particular, there have been rapid advances in user-space virtualization technologies such as Docker~\cite{docker}, and , which allow users to easily launch and create light-weight application containers. 
 %\textit{Parikshan}
 %We provide a flexible framework which allows user access to a parallel test-container which behaves identically as the production container. 
 %While we discuss several case-studies to debug/ test production applications that show how our framework can be used, we wish to stress that \textbf{the main advantage of \parikshan is a harness/ framework for testing/ debugging in a live environment rather than a new testing methodology}. 
 \noindent
-The key contributions of this paper are:
+%\parikshan provides a facility for diagnosing bugs in containers cloned from a production system. 
+The key contributions of our system are:
 \begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
-\item A novel mechanism which significantly \textbf{reduces the time to debug} production errors, by allowing debuggers to directly get information rather then wait for operators.
-\item A tool which provides a sandbox environment to debug the production environment. 
-This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
-\item A network duplication and aggregation mechanism, which ensures non-blocking request duplication to the debug-container, thereby ensuring \textbf{no performance impact} on the production container. 
-\item Allows to \textbf{capture the context} of large scale production systems, with long running applications. Under normal circumstances capturing such states is extremely difficult as they need a long running test input, and a
-  large test-clusters.
-\item We track the \textbf{fidelity of the debug-container} (debug-container faithfully represents the production container). 
+\item \textbf{Short time-to-debug:} A novel mechanism which significantly reduces the time to debug production errors, by allowing debuggers to directly get information rather then wait for operators. 
+\item \textbf{Secure \& sandboxed debugging} \parikshan provides a cloned sandbox environment to debug the production application.
+This allows a safe \& secure mechanism to diagnose the application, without impacting the functionality of the production container.
+\item \textbf{No performance impact:} A network duplication and aggregation mechanism, which ensures non-blocking request duplication to the debug-container, thereby ensuring no performance impact on the application. 
+\item \textbf{Capture large-scale context:} Allows to capture the context of large scale production systems, with long running applications. Under normal circumstances capturing such states is extremely difficult as they need a long running test input, and large test-clusters.
+%\item \textbf{Track debug container fidelity:} We track the fidelity of the debug-container (debug-container faithfully represents the production container). 
 %and creates a flag whenever the containers are out-of-sync. 
 %Parikshan debug-containers can tolerate some degree of divergence from the production state. 
-The debug-container may continue to run correctly even if the analysis run on it perturbs it's state slightly(it can tolerate some divergence from the production).
-The time till which the debug-container can faithfully represent the execution is called it's \emph{debugging -window}( see section \ref{sec:window}).
+%The debug-container may continue to run correctly even if the analysis run on it perturbs it's state slightly (it can tolerate some divergence from the production).
+%The time till which the debug-container can faithfully represent the execution is called it's \emph{debugging -window} (see section \ref{sec:window}).
 %\item We allow for \textbf{dynamic insertion of probes}, and safely capturing the execution trace of the application. 
 %Dynamically inserting probes is important to avoid relaunching binaries in the test-container. 
 %Restarting binaries would break active network connections, and destroy the in memory state of the test container(note: configuration/file-system state is still preserved).
@@ -123,22 +157,19 @@ The time till which the debug-container can faithfully represent the execution i
 
 \end{itemize}
 
-Analyzing the executions of a buggy software program is essentially a data mining process. 
-Although many interesting methods have been developed to trace crashing bugs (such as memory violation and core dumps), 
-it is still difficult to analyze noncrashing bugs (such as logical errors, configuration bugs, and performance errors).
-Studies have shown~\cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor} that several bugs in large-scale systems lead to either a changed/inconsistent output, or impact the performance of the application. 
-Examples of this are slow memory leaks, configuration, or performance bugs which do not necessarily stop all services, 
-but need to be fixed quickly so as to avoid degradation in the QoS. 
-\parikshan primarily focuses on such bugs, as it can provide live debugging while the bug exists in the production environment, 
-thereby capturing the state, configuration and user-input to assist the debugger.
 
+%\parikshan has been deployed on cloud IAAS platform using user-space container virtualization technologies (OpenVZ/LXC~\cite{openvz,lxc}).
+%We tested \parikshan on several real world system, using realistic workloads.
+For the remainder of this paper, we define \textbf{downstream servers} as servers from which requests are being sent to the production container, and \textbf{upstream servers} as servers to which the production container sends request. 
+In figure~\ref{fig:workflow}, the webserver is downstream, and the backend is upstream of our target container.
 
-\noindent
-\textbf{Virtual Machines vs Containers:} 
-While full VM virtualization has existed for several years, recent advances in user-space container technologies has changed software engineering methodology. 
-In particular applications like \texttt{Docker} have emphasized the use of micro-service architectures, where each service (such as the application, dns, indexing, or storage) is sandboxed in separate containers. 
-This allows developers to isolate each software and spin off containers at ease.
-While \parikshan can be applied to traditional virtual machines, we believe that containers are more light-weight(less resouce usage), and lend themselves better to our design.
+The rest of the paper is organized as follows.
+In section~\ref{sec:motivation}, we describe a motivating scenario.
+Section~\ref{sec:design}, describes the design of our system, and section~\ref{sec:implementation} describes the implementation.
+Next we discuss several real-world bugs, which we analyzed using \parikshan.
+Finally, we evaluate our system, and conclude. 
+
+%\textbf{Virtual Machines vs Containers:} 
 %Frequent synchronization is necessary because the test container can potentially go out of sync with the production because of non-determinism or because a test-case changes the state of the container, and effects future problems. 
 %\textit{@Nipun edit -> consider why use user-space containers instead of VMs?}
 %While VM virtualization has existed for several years, recent advances in user-space container technologies, along with support for migration, has created a space for light-weight testing in live environments.

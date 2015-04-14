@@ -1,0 +1,129 @@
+
+\section{Introduction}
+\label{sec:intro}
+
+As application software grows and gets more complicated, debugging large scale applications has become increasingly important. 
+%This problem is compounded by the recent trend in software engineering industry by large companies towards DevOps \cite{devops}. 
+The recent trend towards DevOps~\cite{devops} by the software engineering industry further compounds this problem by requiring a fast and rapid resolution towards any software bug.
+DevOps stresses on close coupling between software developers and operators, and to merge the operations of both. 
+Most of these companies have very frequent releases and hence require a very short time to a bug fix, test, patch and release in order to realize continuous delivery (Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}).
+Hence, debugging is hard not only because of difficulty to capture the root-cause, it is also increasingly important to localize and fix bugs in a very short period of time.
+
+
+\noindent
+However, it is extremely difficult to meet the quick debugging demands of a devops environment, as it is not feasible to recreate realistic workloads in an offline development environment for large scale multi-tier or cloud based applications.
+Existing techniques for monitoring production systems~\cite{dtrace, iProbe, winetw} rely on light-weight dynamic instrumentation in either the kernel or the application. 
+% kernel, application or error logs.  
+%as a mechanism to localize and identify the bugs as well.
+There are several problems with these techniques:
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+%\textbf{Unrealistic} because 
+\item These techniques rely on instrumentation to gather execution traces.
+Dynamic instrumentation has a trade-off between granularity of tracing and the performance overhead. 
+Operators usually avoid high instrumentation in live production system.
+Hence, the logs captured may not be enough to find root-cause of the error.
+\item Applications use a variety of third party plugins, are deployed on multiple kernels, which makes generating configurations and state of production systems difficult. 
+ % traditional whitebox testing in the development environment is unable to capture these bugs.
+\item Debugging is a lengthy process: Developers try to piece together what could be the possible problem using log information.
+Often more information is required to understand the context better which leads to several iterations before the problem is debugged.
+\end{itemize}
+
+%\noindent
+%Recent work in record-and-replay~\cite{} tools allows operators to capture the context of the application and reproduce bugs in an offline environment.
+%However, these tools incur a relatively high overhead, and can thereby not be used in production systems. 
+
+One of the proposed mechanisms of addressing this problem is to ``perpetually test''~\cite{perpetual} the application in the field after it has been deployed. 
+%This is important since testing in a production system enables us to capture previously ``unreachable'' system states, which can arise due to various factors such as unpredictable user environment, outdated software, an ever increasing list of hardware devices (e.g. mobile phones, embedded devices etc.), or simply because of imperfect network connectivity (wifi, cellular).
+%which are possible only for a long running production environment. 
+%Since we are testing in a real environment, we get real user-input for test-cases, and are able to test a real environment.
+%However, perpetual testing has never gotten much traction because of an obvious flaw : executing such test-cases will adversely effect the user-experience, both in performance and potentially in application logic.
+%\noindent
+Previous approaches such as Chaos Monkey~\cite{chaosmonkey} from Netflix and AB Testing~\cite{abtesting} already use ``testing in the wild'' to check for errors and robustness of the software or to check for new features that have been added.  
+However, despite a clear need, debugging in the production environment has never gotten much traction in real-world applications as it may consume too much performance bandwidth and more importantly, it can impact the sanity\footnote{State of server may change leading to crash or wrong output} of real operational state of the software.
+%Another trend embraced by mainstream companies such as Flickr, Twitter, Facebook and Google is DevOps\cite{devops}. 
+%And wile testing, analyzing and monitoring are an important aspect of the devops cycle, usually only a very small performance bandwidth in the production server can be dedicated to QA operations as compared to real user activity(so as to not effect user-perceived delay). 
+
+%Embedding test-case logic within the context of the application will result in state-change, or performance slow-down that would otherwise not be there in an optimized implmentation of the application.
+%This is something which is usually unacceptable in user-facing applications.
+%The authors have previously looked into amortizing the cost of running the test, by running it in parallel \cite{invite}.
+%However such approaches cannot completely avoid the slowdown, and additonally do not completely sandbox the effects of the test case on the production server. 
+
+%An alternate approach is to record live applications, and replay them offline.
+%Over the years there have been several systems which have explored this direction with promising results.
+%However most record and replay systems have high overheads, and require replication of the running configuration which may not be possible. 
+%Additionally the administrator needs to wait for offline analysis, instead of doing real-time diagnosis.
+
+%On the other hand, there has been an impressive increase in the scale of computing resources, and distributed scalability of infrastructure.
+%Web based applications are often hosted in cloud environments, this allows for easily scaling up the hardware resources.
+%This often allows for redundant computation, which can be used for testing purposes. 
+
+%The main reason that debugging in the development environment is easier, is because developers can trace the execution flow of the program using tools such as gdb~\cite{gdb}, valgrind~\cite{valgrind} etc. and look at variable values for the given input. 
+%This gives them an immediate insight as to whether the application is behaving correctly, and where the bug could be.
+%Unfortunately, such techniques are not possible in the production environment as they would lead to unacceptable slow-down, alter the application functionality, or worse crash the application.
+
+\noindent
+The motivation behind our work is to provide \textbf{``bug diagnosis as a service''} for real-time debugging of production applications in order to significantly reduce the time towards bug resolution.
+%We observe that most 
+Most modern day service oriented applications are hosted on IAAS cloud providers, and can hence be easily scaled  up. 
+Additionally, there have been rapid advances in user-space virtualization technologies such as Docker~\cite{docker}, and OpenVZ/LXC~\cite{openvz,lxc}, which allow users to sandbox and ship application containers. 
+%Check THIS LINE
+%In particular, docker provides pre-installed containers(webservers, loadbalancers, appservers) which can be integrated together to create a service.
+Leveraging this abundance of resources we present a debugging mechanism which allows the user to dynamically insert probes in a \emph{cloned} production environment without impacting the actual application: thereby, enabling real-time diagnosis.
+
+\noindent
+Our system called \parikshan\footnote{\parikshan is the Sanskrit word for testing}, allows capturing the context of application, and debugging to to done without impacting the sanctity and performance of the actual user-facing application. 
+This is done by cloning a production server and creating two containers: a production container, and a debug container. 
+We duplicate the incoming traffic to both the production container and the debug container using a custom proxy, which ignores the responses from the debug-container.
+Similarly, we have another module which replays responses sent to the production container, to the debug container so that it is completely isolated as far as network communication is concerned. 
+The debugging on the debug-container is done on-the-fly using dynamic instrumentation. %hence any set of test-cases can be turned on whenever required. 
+%This is achieved by using dynamic instrumentation mechanisms to clone a VM by forking off from a running executed state and encapsulating the forked execution in a VM.
+%The user can pre-define probe points for dynamically inserting test-cases (by default the entry and exit of each function is considered a probe point).
+The cloned debug container acts like a sandbox which restricts it from causing any perturbation to the state of the parent process, or impacting the sanity of the responses to the production client. 
+The cloning operation is ``live'', hence there is no suspension of the services of the production server.
+
+%\textit{Parikshan}
+%We provide a flexible framework which allows user access to a parallel test-container which behaves identically as the production container. 
+%While we discuss several case-studies to debug/ test production applications that show how our framework can be used, we wish to stress that \textbf{the main advantage of \parikshan is a harness/ framework for testing/ debugging in a live environment rather than a new testing methodology}. 
+\noindent
+The key contributions of this paper are:
+\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+\item A novel mechanism which significantly \textbf{reduces the time to debug} errors, by allowing debuggers to directly get information rather then wait for operators.
+\item A tool which provides a sandbox environment to debug the production environment. 
+This allows for a safe and secure mechanism to perturb and diagnose the application, \textbf{without effecting the functionality} of the  production container.
+\item A testing harness, and proxy which ensures non-blocking request duplication to the debug-container, which ensures \textbf{no performance impact} on the production container. 
+\item Allows to \textbf{capture the context} of large scale production systems, with long running applications. Under normal circumstances capturing such states is extremely difficult as they need a long running test input, and run on large test-clusters.
+\item We track the \textbf{fidelity of the debug-container} (debug-container faithfully represents the production container). 
+%and creates a flag whenever the containers are out-of-sync. 
+The time till which the debug-container maintains fidelity is called it's \emph{debugging -window}( see section \ref{sec:window}).
+%\item We allow for \textbf{dynamic insertion of probes}, and safely capturing the execution trace of the application. 
+%Dynamically inserting probes is important to avoid relaunching binaries in the test-container. 
+%Restarting binaries would break active network connections, and destroy the in memory state of the test container(note: configuration/file-system state is still preserved).
+%In our case studies we show how dynamic instrumentation mechanisms can be used with \parikshan
+
+%\item One of the key advantages of our approach is that it is \textbf{language agnostic}. 
+%Since the underlying mechanism takes advantage of containers as a platform to do the cloning, the language or interface does not matter as far as cloning is concerned. 
+%Of-course testing mechanisms may differ depending upon different languages.
+
+\end{itemize}
+
+\noindent
+\textbf{Virtual Machines vs Containers:} 
+While full VM virtualization has existed for several years, recent advances in user-space container technologies has changed software engineering methodology. 
+In particular applications like \texttt{Docker} have emphasized the use of micro-service architectures, where each service (such as the application, dns, indexing, or storage) is sandboxed in separate containers. 
+This allows developers to isolate each software and spin off containers at ease.
+While \parikshan can be applied to traditional virtual machines, we believe that containers are more light-weight(less resouce usage), and lend themselves better to our design.
+%Frequent synchronization is necessary because the test container can potentially go out of sync with the production because of non-determinism or because a test-case changes the state of the container, and effects future problems. 
+%\textit{@Nipun edit -> consider why use user-space containers instead of VMs?}
+%While VM virtualization has existed for several years, recent advances in user-space container technologies, along with support for migration, has created a space for light-weight testing in live environments.
+%Technically our sandbox techniques could also be applied using more traditional Virtual Machines. 
+%However, the overhead of using Virtual Machines is considerably higher, and it would technically require double the amount of resources for the target production servers.
+%User-Space containers reduce this overhead considerably by using the resources in the same machine.
+%We believe the availablity of resources in IAAS cloud infrastructures combined 
+%\texttt{Zero-Probe Effect} probe points are added to the application which can be activated to insert test cases using ptrace~\cite{ptrace}.
+%The use of dynamic instrumentation capability to add test cases in an application is an extension of our previous work of a dynamic instrumentation tool iProbe \cite{iProbe}
+%Traditional testing approaches break states and are unable to  
+%The authors previous work in in-vivo testing~\cite{invite} explored testing in the wild by initiating test cases in the production environment and sharing the load across several instances of deployed application.
+%This approach adds test-cases in predetermined functions before starting the execution of the process, and periodically executes them in the run-time environment based on a probabilistic function. 
+%\cite{dapper}
+\input{motivation}
+\input{contributions}

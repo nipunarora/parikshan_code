@@ -1,0 +1,121 @@
+%SIGMETRICS
+%\documentclass{sig-alternate}
+
+%USENIX
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes}
+\usepackage{amsmath}
+\usepackage[noend]{algpseudocode}
+\usepackage{paralist,algorithm}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{tikz}
+\usepackage{tkz-tab}
+\usepackage{titlesec}
+\usepackage{xspace}
+%\usepackage{epsfig}
+%\epstopdfsetup{outdir=./}
+%\usepackage[showframe=true]{geometry}
+\usepackage{enumitem}
+\usepackage{adjustbox}
+
+%ACM
+% ---- TR: remove copyright box -------------
+% \usepackage{etoolbox}
+% \makeatletter
+% \patchcmd{\maketitle}{\@copyrightspace}{}{}{}
+% \makeatother
+% ---- TR: remove copyright box -------------
+
+%\setlength{\parindent}{0pt}
+\addtolength{\columnsep}{-1mm}
+\addtolength{\belowcaptionskip}{-1pt}
+\setlength{\parskip}{3pt}
+\setlength{\textfloatsep}{5pt}
+\topmargin=1pt
+\topskip=1pt
+
+\titlespacing*{\section}
+{2pt}{2pt}{2pt}
+\titlespacing*{\subsection}
+{2pt}{2pt}{2pt}
+\titlespacing*{\subsubsection}
+{2pt}{2pt}{2pt}
+
+\titlespacing{\section}
+{2pt}{2pt}{2pt}
+\titlespacing{\subsection}
+{2pt}{2pt}{2pt}
+\titlespacing{\subsubsection}
+{2pt}{2pt}{2pt}
+
+
+%\setlength{\itemindent}{-1in}
+\begin{document}
+
+%USENIX
+%\date{}
+
+\title{\Large \bf Parikshan\xspace: Live Debugging of Production Systems in Isolation}
+
+\input{usenix_authors}
+\maketitle
+
+\input{abstract}
+
+%SIGMETRICS
+% A category with the (minimum) three required fields
+%\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+%\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+%\terms{Theory}
+%\keywords{ACM proceedings, \LaTeX, text tagging}
+
+\newcommand{\iprobe}{\texttt{iProbe}\xspace}
+\newcommand{\parikshan}{\texttt{Parikshan}\xspace}
+\newcommand{\comment}[1]{}
+\newtheorem{example}{Example}
+\def\infinity{\rotatebox{90}{8}}
+
+
+\input{introduction}
+%\input{introduction_alternate}
+%\input{motivation}
+\input{design}
+\input{implementation}
+%\input{trigger}
+%\input{network-issues}
+\input{casestudy}
+\input{evaluation}
+\input{related}
+\input{challenges}
+%\input{futurework}
+\input{conclusion}
+
+
+%SIGMETRICS - ACM
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+%\bibliographystyle{abbrv}
+%\bibliography{sandbox}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+
+\footnotesize{
+\bibliographystyle{acm}
+\bibliography{sandbox}
+}
+
+%\theendnotes
+
+\end{document}

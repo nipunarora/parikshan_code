@@ -1,0 +1,29 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Software bugs are \emph{everywhere}.
+They often escape extermination efforts in software testing causing frustration to operators, and a loss of business revenue.
+\emph{Bug Diagnosis} is the ``art'' of identifying the reason, the root-cause and the possible ``fix'' for the failure.
+In general the process involves a trial-and-error process in the development environment. 
+The debugger uses the input causing the failure and tries to localize the problem in a small part of the application.
+He then manually skims through the code in the localized area to correctly identify the problem.
+This process can be long and arduous, causing significant loss of revenue.
+
+Automating the bug diagnosis process can significantly reduce this problem.
+However, despite significant previous work ~\cite{gdb} the problem is still unsolved.
+
+We believe that by closing the gap between the production and debugging environment, we can provide the developer with a deeper insight of the cause of the bug.
+In a previous approach called \livedebugging, we have developed a framework which allows debuggers to safely debug applications within the production environment.
+This is done by creating a parallel debugging environment, which gets the same input as the normal production system.
+This debugging environment provides a powerful tool for the debugger, to freely instrument or modify the application without impacting the performance of the production system.
+
+In this work, we focus on real-time debugging techniques, which can be used on the production environment.
+Firstly, we will present an adaptive guided profiling mechanism, which can provide rich profiles in order to localize the bug, while keeping the instrumentation overhead within a preset limit(called budget).
+We are inspired by previous approaches in delta debugging~\cite{delta}, and statistical debugging~\cite{statistical, holmes}. 
+These approaches use sampled profiles from pre-determined instrumentation points, and compare traces, with and without the bug, to localize the problem.
+Holmes~\cite{holmes} in particular aslo includes a feedback loop, which iteratively modifies the instrumentation profiles to gather more relevant traces.
+We use a similar technique along with dynamic instrumentation to iteratively change profiles to get a better understanding of the root-cause of the error while debugging the application on-the-fly.
+Budgeting the overhead is important so that the instrumentation in the debug environment does not make it lag too far behind the production environment.
+
+Secondly, we will also look at a more proactive approach, where we modify the debug container to not simply trace, but see if a potential fix/optimization solves the problem.
+We show how for some performance bugs, we can dynamically patch and verify that the problem is indeed solved.

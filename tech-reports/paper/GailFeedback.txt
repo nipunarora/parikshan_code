@@ -1,0 +1,598 @@
+.. 
+.. 
+.. Filename: GailFeedback.rst
+.. Author: Nipun Arora
+.. Created: Sat Jan 24 14:47:20 2015 (-0500)
+.. URL: http://www.nipunarora.net 
+.. 
+.. Description: 
+.. 
+
+Nipun:
+
+
+----------------------------------------------------------------------------
+Abstract:
+
+This is from reading the new paper.
+
+This part of the abstract is a concern: "as well as safely discard all outputs
+from the debug-containers"
+
+what if the program does some output, then expects some input in response?  giving it input from some external source that did NOT receive its original output could result in a different result than would happen if that external source responded in some meaningful way to that original output.  even tho it is indeed probably best to keep feeding the debugging environment data sent to the live application, this discrepancy needs to be discussed somewhere.
+
+
+
+also, what if the output is to a file, and then the code reads from that file expecting to read what it just wrote a moment ago?  again we have a semantic discrepancy that would not happen in the live application. one could perhaps argue a model-checking view that the code should adjust to (effectively) random input that does not match what it output a moment before, but this may not lead down the same code paths (for testing and debugging) that would be executed if the output and input matched.  some examples of how/when this occurs in practice would help here.
+
+more later
+
+abstract
+
+Additionally, most modern
+companies
+
+change most to many unless you have proof (citation) that it is truly most
+
+we present “live-debugging” a mechanism which allows
+debugging production system
+
+comma after live-debugging
+
+debugging *a* production system
+
+or
+profile etc.
+
+comma after profile
+
+OpenVZ/ LXC
+
+is there a space before L, if so remove
+
+Customized-network proxy
+
+should the hyphen be network-proxy not customized-network
+
+replicate/or replay
+
+space not slash / here
+
+to both the production
+and test-container, as well as safely discard all outputs
+from the debug-containers.
+
+is the test-container and the debug-container the same thing, if so they should be called the same thing here
+
+why is there singular test-container but plural debug-containers
+
+These sandbox debug-containers
+can be run either on the same physical host as
+the production container,
+
+again its confusing to change the name from test-container to debug-container mid-paragraph
+
+These sandbox debug-containers -> not plural, The sandbox test-container
+
+unless you really do mean plural, in which case earlier in paragraph should make more than two containers, one live and a whole bunch test
+
+or scaled out on dedicated physical
+test servers.
+
+on a dedicated physical test server, singular again unless you really mean there are multiple test containers for every one production container - in which case the paper needs to say somewhere why multiple are needed
+
+We used our system called Parikshan,
+
+comma between system and called
+
+real-production bugs,
+
+probably real-world bugs
+
+
+----------------------------------------------------------------------------
+
+intro
+
+Facebook mobile has 2 releases a day,
+and Flickr has 10 deployment cycles per day
+
+cite how you know this
+
+Existing debugging techniques[29, 10, 28] rely on light
+weight system level instrumentation or application transaction
+and error logs as a mechanism to localize and identify
+the bug in the development environment.
+
+existing debugging techniques include record-replay
+
+Most instrumentation
+tools capture minimal information to reduce
+the impact on application performance.
+
+I don't know about "most", but there are low overhead record-replay systems that capture enough information to support deterministic replay
+
+Applications use a variety of 3rd party plugins, & on
+multiple kernels, which makes generating configurations
+and state of production systems difficult.
+
+deterministic replay (as in Jason's scribe system) does not require replicating the configuration and so forth because all system calls are replayed from the log - but "going live" does require that replicated configuration
+
+Debugging is a lengthy process: Developers try to
+piece together what could be the possible problem using
+log information. Often more information is required
+to understand the context better which leads to
+several iterations before the problem is debugged.
+
+again, record-replay allows to replay over and over.  does parkishan do this?  i thought it only played *once*, alongside the production system, and thus is indeed more of a debug-container not a test-container (change abstract)
+
+One of the proposed mechanisms of addressing this
+problem is to “perpetually test”[26] the application in the
+field after it has been deployed.
+
+perpetual testing addresses testing, i.e., checking for errors, but does not directly address debugging
+
+Other approaches such
+as Chaos Monkey[11] from Netflix, and AB Testing[15]
+also use “testing in the wild” to do fault tolerance testing,
+or to check for new features that have been added.
+
+I'm not sure about these, but seems they are also testing not debugging, per se, although catching the bug as it happens should simplify the fault localization problem
+
+However,
+despite a clear need, debugging in the production
+environment has never gotten much traction in real-world
+applications as it may consume too much performance
+bandwidth and more importantly, it can affect the sanity1
+of real operational state of the software.
+
+do these testing in the wild systems really run direct on the production system and cause side-effects?  or do they disallow side-effects?  embedded assertions is another mechanism to mention, which definitely is restricted to no side-effects
+
+in-vivo testing clones the production system at the point where an instrumented function is reached and runs in sandbox, so no side-effects, but also does not directly address *debugging*.  where it seems parikshan supports debugging but not testing.
+
+We observe that most
+modern day service oriented applications are hosted on
+IAAS cloud providers, and can hence be easily scaled
+up.
+
+why is scaling up relevant here? going from one copy to two copies is not all that significant as scaling goes, are there instead an arbitrary number of debug containers running simultaneously?
+
+A novel mechanism which significantly reduces the
+time to debug production errors, by allowing debuggers
+to directly get information rather then wait for operators.
+
+how do the debugging people know that an error has actually occurred, is there some kind of checking for errors in the debug container?
+
+Allows to capture the context of large scale production
+systems, with long running applications. Under
+normal circumstances capturing such states is extremely
+difficult as they need a long running test input,
+and run on large test-clusters.
+
+seems this is already addressed by process migration as noted by the 3rd nier reviewer
+
+The time till which the debug-container maintains
+fidelity is called it’s debugging -window( see section
+2.4).
+
+I think more explanation is needed here in the intro rather than wait until 2.4, what is meant by fidelity and why is there a window after which fidelity is lost (if indeed it is lost, not clear what the point is here otherwise)
+
+
+more later
+
+
+----------------------------------------------------------------------------
+
+motivation
+
+Joe can now use Parikshan , to fork off a clone of nginx
+container as nginx-debug, and glassfish as glassfishdebug
+container.
+
+do these two debug containers interact with each other, or are they independently receiving inputs from the live environment?
+
+This allows Joe to initiate
+deeper traces, and observe the execution without fearing
+any problems in the user-facing operations.
+
+I would think the debug containers would run much slower than the production container and thus be far behind.  So the resource problem going on in the production container could become extreme, and still cause crash, while Joe is still debugging.
+
+Examples of this are configuration
+bugs, performance bugs, or slow memory leaks, which
+do not necessarily stop all services, but need to be fixed
+quickly so as to avoid degradation in the quality of service.
+Parikshan primarily focuses on such bugs, as it
+can provide live debugging while the bug exists in the
+production environment, thereby capturing the state,
+configuration and user-input to assist the debugger.
+
+doesn't the production system still need to be restarted to apply the patch?
+
+Monitoring application health/Usage statistics: As
+explained in section 1.1, most user-end applications
+have monitoring mechanisms to capture the health of
+the application built within the system. Such monitoring
+mechanisms can often indicate problems in the systems
+showing spikes or slowdown in CPU usage, memory
+footprint, cache misses etc. Additionally, business
+intelligence and future product enhancements often
+rely on understanding how the user is using the application.
+While several tools allow for dynamic instrumentation,
+in practice the amount of instrumentation
+cannot be increased because it adds too much overhead.
+Parikshan can be used to do a live analysis
+from the point of time when the clone is done, with
+much deeper monitoring, without worrying about the
+slowdown to the production system.
+
+not clear what is going on here. if the real production system already has monitoring, then that monitoring is already slowing it down.  what is an example of deeper monitoring that would be too slow for production but ok for debug environment?
+
+the testing software updates paragraph seems orthogonal to the notion of using this system for *debugging*, and doesn't fit the material before this point.  further, cloning the inputs to the system may be nonsensical after the software has been modified, it may now require different inputs or inputs in different orders. yes, I see that you say some changes do not affect the inputs, but how do you know that this particular patch does not?  or is not supposed to anyway?
+
+if this notion of patch testing is not central to the rest of the paper, this material might be moved to the end of the paper as another use of live cloning to be investigated in future work.
+
+more later
+
+
+----------------------------------------------------------------------------
+
+design
+
+Each instance of Parikshan can target only one tier at
+a time. However, multiple instances can be orchestrated
+together especially when it’s required for integration testing
+or cross tier results need to be correlated.
+
+again, patch testing seems like a separate application to debugging.  also does parikshan target one *tier* or really one os process, a tier could be multiple interacting processes
+
+Network Aggregator:
+manages responses from the debug container
+by replaying and sandboxing all network communication
+in case of mid-tier(non-backend) systems.
+
+not clear what is mean by in the case of mid-tier, what happens with backend systems?  don't they also receive network communications?  what about front-tier user facing?  does parikshan really only address middle tiers?
+
+While this mechanism
+can have a higher overhead in terms of suspend
+time ( 3 seconds, dependent on process state), and it
+will require provisioning an extra host-node, the advantage
+of this mechanism is that once cloned, the VM
+is totally separate and will not effect the performance
+of the production-container.
+
+where does the 3 seconds come from?  if it depends on process state then couldn't be always exactly 3 seconds, is there a range?
+
+This can be viewed
+as a variant of the External Mode, where we can scale out test cases to
+several testing containers which can be used to distribute the instrumentation
+load to reduce the overhead.
+
+why does it matter what the overhead is in the debug container?  another reason to have multiple copies is because multiple different people are simultaneously debugging the same process
+
+have modified the migration
+mechanism in vzctl [5] to make it work for live cloning
+instead.
+
+what exactly is changed and why
+
+To make the cloning
+easier and faster, we used OpenVZ’s ploop devices [4] to
+host the containers. Ploop devices are a variant of disk
+loopback devices where the entire file system of the container
+is stored as a single file. This makes features such
+as syncing, moving, snapshots, backups and easy separation
+of inodes of each container file system.
+
+what are the implications of storing entire file system as single file, isn't this a big problem for the application - which expects to work with multiple distinct files?
+
+Safety Checks (Checks that a destination server is
+available via ssh w/o entering a password, and version
+checking of OpenVZ running in it)
+
+why are password and version issues?
+
+Start container locally
+6. Set up port forwarding and packet duplication
+   7. Starts the container on the destination
+
+      can some network traffic be lost in between starting local container (is this the production container?) and starting forwarding/duplication?  can some duplicated traffic be lost between setting up forwarding and starting the second container (is this debug container?) or is all this atomic?
+
+      A few iteration
+      of cloning a container back and forth between two
+      OpenVZ instances ( on KVM’s within the same physical
+      machine), resulted in an average suspend time of 1.8
+      seconds for the production container.
+
+      a few???  seems like this should be a specific number
+
+      more later
+
+
+----------------------------------------------------------------------------
+
+besides delta execution, which does the same kind of live cloning but then executes the modified version of the code separately, you also need to compare carefully to aftersight, which supposed both live and offline debugging from a clone - in this case using a vm rather than a container, see attached
+
+
+----------------------------------------------------------------------------
+
+In this section
+we first discuss several strategies(we call duplication
+modes) to design the duplication of traffic to the test container,
+and next we discuss briefly the “testing window”
+during which we believe that the debug-container faithfully
+represents the execution of the production container.
+
+previously it was called debug window, pick one name and stick too it.  debug or debugging window sounds better given this paper is supposed to be about debugging not testing
+
+To further increase this debug window, we propose
+load balancing debugging across multiple debugcontainers,
+which can each get a duplicate copy of the
+incoming data. This would mean that there are multiple
+threads handling the incoming connection, one for
+the production container, and one for each of the debug
+containers. We believe that such a strategy would significantly
+reduce the chance of a buffer overflow in cases
+where the debug-container is significantly slower.
+
+I don't understand this at all.  Since every single one of the debug containers needs to get all of the incoming data, there would now be N chances of buffer overflow (for the N buffers) instead of just 1.  Plus what would actually be happening in all the extra debug containers other than running a slower version of the production application?  I suppose there could be different instrumentation checking different things, but this is not discussed.
+
+In any case, what happens after the input buffer indeed overflows?  the debug container will then start missing inputs, so its execution could arbitrarily diverge
+
+Since we assume that the production
+and the debug container are in the same state, and
+are sending the same requests, sending the corresponding
+responses from the FIFO stack instead of the backend
+ensures: (a) all communications to and from the debug
+container are isolated from the rest of the network, (b) the
+debug container gets a logical response for all it’s outgoing
+requests, thereby behaving logically correctly.
+
+this will not work if there is any non-determinism in the order of messages being sent out by the application (or if there's any non-det in what its expecting as input)
+
+In this design we assume that the order of incoming
+connections remains largely the same. We use a fuzzy
+checking mechansim using the hash value of the data being
+sent to correlate the connections. In case a connection
+is out of order or cannot be correlated, we allow the connection
+to time out and send a TCP FIN.
+
+largely?  it seems like exactly...  tcp fin seems ok for the production container, but it will be dropped for the debug container
+
+Whereas the outgoing
+rate from the buffer is dependent on how fast the
+test-container processes the requests, which can be higher
+than the production container because of added instrumentation,
+debugging etc..
+
+isn't this lower not higher?
+
+For the duration of the
+testing-window, we assume that the test-container faithfully
+represents the production container as the testingwindow
+of the test container.
+
+this seems like a circular definition
+
+Once the buffer has overflown,
+the production container must be cloned again to
+ensure it has the same state.
+
+what happens to the first debug container?  if some human is single-stepping through it with a debugging tool, it shouldn't just go poof
+
+For webservers, and application servers, the
+testing window size is generally not a problem, as each
+request is a new “connection”, and the size of each connection
+is quite small, hence the proxy is able to tolerate
+significant slowdowns without pipe overflows.
+
+I though http 1.1 supported keeping the tcp connection open across multiple requests from the client, e.g., to get the images on the same page
+
+more later
+
+
+----------------------------------------------------------------------------
+
+related work
+
+obviously not really written yet
+
+I already sent you some material that might help, which you can copy from as warranted.  Definitely need to compare to process checkpoint/resume with and without migration as well as record-replay.
+
+aftersight and delta execution are the most obvious comparisons that i can think of right now
+
+
+----------------------------------------------------------------------------
+
+Comparisons
+are based on hash of the data packets, which
+are collected and stored in memory for the duration that
+the connections are active. The degree of acceptable
+divergence (the point till which the production and debug
+containers can be assumed to be in sync) is dependent
+on the application behavior.
+
+altho hashing is useful for fast matching, it loses all semantics - which would be needed for the degree of dependence to be application-specific
+
+In the third mode, we tested our system on Google’s
+Cloud Infrastructure (Google Compute [?]). The production
+and the test container’s were run on different virtual
+nodes, with 2 VCPU’s and 4G RAM. The main advantage
+of using the Google Compute Engine was to run our
+cloning scripts on real data-centers, and also to scale out
+our evaluation.
+
+since these were virtual nodes, they could have actually all been on the same machine or be distributed across the universe, you have no way of knowing, right?
+
+The
+forwarding in the proxy is done by forking off multiple
+processes each handling one send/or receive connection
+in a loop.
+
+processes or threads?  os processes seem awfully heavyweight for this
+
+The idea behind Parikshan is to allow devolopers
+to use various debugging tools and mechanisms in the
+cloned production environment, without worrying about
+overhead.
+
+this is exactly the premise behind aftersight, see previous note about this
+
+Other
+mechanisms such as delta-debugging, and heap-dump
+allow users to modify variables to check if that resolves
+problems hence changing it’s behavior.
+
+if the user starts modifying variables, then it gets more likely that the incoming input stream will no longer match
+
+the authors found that a significant
+percentage of real-world performance bugs can
+be attributed to uncoordinated functions, skippable functions
+and inefficient synchronization among threads (long
+locks etc.).
+
+what actually are uncoordinated functions?  what are skippable functions?  what is a long lock?
+
+It was reported by users, that insert queries for
+complex scripts were running significantly slower than
+what was expected. To test out Parikshan to catch this
+bug, we re-created a 2 tier client-server setup with the
+server(container) running a buggy MySQL server application,
+and made a random workload with several repetitive
+instances of queries triggering the bug. We initiated
+debugging by creating a live clone of the container running
+the MySQL server. For all transactions with insert
+queries with a complex character set, we triggered instrumentation
+to track execution in high granularity functions
+in insert and characterstring module. Using the profile
+for regular latin charactersets, and comparing it to complex
+charactersets (chinese, japenese) we were easily able
+to localize the bug to the compare functions in the string
+module.
+
+this is confusing.  did the users actually report that the problem arose specifically for chinese and japanese character sets?  or was that found during debugging?  how did you know to focus on complex character sets?  you first say only "insert queries for complex scripts" which does not imply anything about character sets.
+
+as they require the service to be closed to compute
+which objects remained allocated or to show dangling
+reference(actively allocated memory may or may
+not be used in the future) etc..
+
+what does closed to compute mean?
+
+We then filter out everything except
+the suspect transactions,
+
+what does it mean to filter these out?  what if the production container is still getting other transactions?
+
+and restart mysqld service with
+valgrind memcheck tool turned on.
+
+is mysqld the application you were debugging, or a service used by the application you were debugging?  if the latter, then what happens to the mysqld service being used by the production container?  is that restarted, or only for the debug container - but then throughout this paper its claimed the debug container gets the same inputs from external services as the production container, not its own copy.
+
+the fact
+that it serialized the execution (other transactions were
+not able to follow)
+
+what does it mean that other transactions were not able to follow?  and follow what?  not sure what it means for transactions to be dropped by the proxy, does this mean that only certain transactions were forwarded to the debug server not all, but of course the production server still got all of them?  how is the proxy told to do this?  you didn't discuss anything about proxy filtering mechanisms earlier.
+
+For example in a 3 Tier PetStore Application, it was reported
+
+huh?  isn't the petstore a sample, not a real system any user would report errors in?
+
+Since debug
+logs have not been turned on we can only see the path
+the query is taking but do not see any error report generated.
+This can be used by the operator, to find which
+containers need to be cloned.
+
+*what* is used to determine which containers need to be cloned, the path? what actually is in such a path?
+
+Using parikshan, it was
+possible for the developer to clone both the app and the
+sql server containers to capture the entire flow of some of
+the queries ( remember the cluster has several machines).
+
+why just some and not all of the queries?
+
+
+this brings up the issue that N tier applications typically run on clusters, with N copies of each tier element.  does cloning just one of these elements really help, given it is (effectively) random which element is sent a given request by the load balancer?  how does parikshan deal with load balanced tiers in general?
+
+more later
+
+
+----------------------------------------------------------------------------
+
+Yes - Timeouts
+in GlassFish?
+
+what does this mean in table 1?
+
+for 4 well known applications - Apache,
+Thttpd, TradeBeans, TradeSoap, PetStore, MySQL.
+
+i count 6
+
+For
+apache, and thttpd which are webservers, we ran a httperf
+hog workload. A hog workload essentially, tries to stress
+out the workload by testing the max throughput that the
+webserver can achieve. Tradebeans and Tradesoap are
+both part of the dacapo[?] benchmark “DayTrader” application.
+These are realistic workloads which run on
+a multi-tier trading application provided by IBM. Pet-
+Store is a J2EEE 3-tier application, with JBoss, MySQL
+and apache server as it’s 3 tiers. Here we cloned the
+app-server, and the input workload was a random set of
+transactions which were repeated for the duration of the
+cloning process. For MySQL we ran a similar workload
+with some read and write queries to test how well
+our cloning operation performs.
+
+it would be better if you ran standard benchmarks for all of them, in cases where you did not you either need to give the exact details of the workload in this paper or refer to a tech report that has those details.   don't leave "some read and write queries" and such to the reader's imagination
+
+For more memory intensive application
+servers such as PetStore, DayTrader, and MySQL, the
+suspend time was 8-12 seconds.
+
+12 seconds is actually an incredibly long time for users to wait for a web application, it is definitely not "imperceptible".  instead of pretending this is good, it would be better to give some hint that we plan to improve this in future work by investigating ... something ...
+
+As shown in figure 7, in the internalmode,
+the cloning operation has minimal impact till
+I/O bandwidth for write operations( 20Mbps).
+
+i can't parse this
+
+Overall we conclude, that ”live cloning” takes only a
+few seconds ( 2/3 secs) and is not disruptive to application
+clients (there is no loss of service visible).
+
+i don't see how you can conclude this given the examples with 12 seconds
+
+Overall we conclude, that ”live cloning” takes only a
+few seconds ( 2/3 secs) and is not disruptive to application
+clients (there is no loss of service visible). However,
+in high I/O write intensive workloads, the amount of time
+taken to clone can go up to a couple of mins ( 3/4 mins).
+In such cases, we did observe a few retries and in http
+but no timeouts, naturally the performance of the server
+did suffer. Current research in live migration has looked
+into further decreasing the sync time by doing active migration,
+and trigger page fault for the dirty bits which
+were not copied over. This is a similar to a copy-on-write
+method, that could possibly reduce our suspend time. In
+the interest of time, we have not explored faster means of
+live cloning, but aim to do so in our future work.
+
+need to compare to corresponding times for process migration, the 3rd nier reviewer mentioned this and the usenix reviewers will be even more concerned than icse
+
+We also tried a gaussian request distribution with request
+interarrival time being randomized to exhibhit a
+bursty behavior with high utilization. We found that
+
+the rest of this sentence is missing
+
+btw, there are TONS of typos, bad grammar, etc. throughout, i only sent corrections for the abstract
+
+more later
+
+
+----------------------------------------------------------------------------

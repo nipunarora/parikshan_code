@@ -2,16 +2,17 @@
 %SIGMETRICS
 \begin{abstract}
 \noindent
-One of the biggest problems faced by developers debugging large scale systems is replicating the deployed environment to figure out errors. 
+%One of the biggest problems faced by developers debugging large scale systems is replicating the deployed environment to figure out errors. 
 %Additionally, many modern companies are combining their development and operation management activities (DevOps), which has led to an increased emphasis on fast bug resolution. 
-Modern 24x7 systems rely on fast bug resolution to mantain their services. Hence, time-to-bug localization, is an extremely important metric for service oriented applications.
-In this work, we present \textit{``live-debugging''}, a mechanism which allows debugging a production system (run test-cases, debug, or profile, etc.) on-the-fly. 
+Modern 24x7 systems rely on short deployment cycles, and fast bug resolution to maintain their services. 
+Hence, time-to-bug localization is extremely important for any SOA application.
+In this work, we present \textit{``live-debugging''}, a mechanism which allows debugging of production systems (run test-cases, debug, or profile, etc.) on-the-fly. 
 %in a sandbox environment cloned from the live running system. 
-The paper leverages user-space containers (OpenVZ/LXC), to launch containers cloned and migrated from running instances of an application, thereby launching two containers: \textit{production} (which provides the real output), and \textit{debug-container} (for debugging). 
-This \textit{debug-container} provides a sandbox environment for debugging without any perturbation to the execution environment. 
+We leverage user-space virtualization technology (OpenVZ/LXC), to launch containers cloned and migrated from running instances of an application, thereby having two containers: \textit{production} (which provides the real output), and \textit{debug} (for debugging). 
+The \textit{debug-container} provides a sandbox environment for debugging without any perturbation to the production environment. 
 %Our sandboxes provide name-space, and resource management for the processes executing the test/debug cases. 
 Customized network-proxy agents replicate or replay network inputs from clients to both the production and debug-container, as well as safely discard all network output from the debug-container. 
-The sandboxed debug-container can be run either on the same physical host as the production container, or scaled out on dedicated physical debug servers. 
+%The sandboxed debug-container can be run either on the same physical host as the production container, or scaled out on dedicated physical debug servers. 
 We used our system, called \texttt{Parikshan}, to do \textit{``live-debugging''} on several real-world bugs, and effectively reduced debugging complexity and time.
 %We believe our tool provides a mechanism for practical live-debugging of large scale multi-tier and cloud applications, without requiring any application down-time, and minimal performance impact.
 
