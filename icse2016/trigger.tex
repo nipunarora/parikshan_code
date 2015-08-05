@@ -1,0 +1,49 @@
+\noindent\section{Inserting probes \& Performance Analysis}
+\label{sec:trigger}
+
+The key idea behind sandbox testing is to debug problems in real-world scenarios
+Once we have forked off a clone, we are now ready to do some deeper analysis. 
+Here we explain how debugging can potentially be done in real live systems to give the operator and developers a deeper view of the target application.
+\parikshan could potentially be used in several ways for application debugging and introspection. 
+However, in the interest of brevity, we talk about only two categories. 
+Firstly, inserting probes which can help in generating traces so that the user can understand the execution path of the application.
+Secondly, performance analysis, such as memory usage, number of context switches etc. this can give the user an idea of what could be the bottleneck for the target application.
+
+%By design, \textit{Parikshan} can allow a variety of test cases. 
+%We divide such analysis in two parts based on the time window required for analysis: (1).Statistical
+
+\noindent\subsection{Inserting Probes \& TestCases}
+\label{sec:unitTests}
+
+Execution tracing is a key debugging tool for locating any bugs. 
+Essentially, an execution trace is a log of the functions executed, values of certain variables being tracked etc. within a time-frame.
+The path taken and the value of the variables are important as they explain the logic flow of the application for the \emph{"configuration"} and \emph{"context"} at the time of creating the clone.
+To generate this trace, we insert probes or watch points for variables in the application similar to existing development phase debugging tools such as GDB(gnu debugger) \cite{gdb}.
+Inserting probes in the sandbox can be done using any existing dynamic instrumentation tools  such as PIN \cite{pin}, Valgrind \cite{valgrind}, Dyninst \cite{dyninst}.
+For our purposes we used \iprobe\footnote{we have used iProbe only because of our familiarity} \cite{iProbe} a dynamic binary instrumentation tool designed by the authors to insert probes in running applications. 
+ \iprobe  uses compile time flags to generate placeholders in the binary, and inserts instrumentation probes in the binary at run-time.
+Users can use it to insert print statements on function executions. 
+
+
+
+\subsection{Performance Analysis}
+\label{sec:Performance}
+
+While execution traces provide a good indication for localizing bugs, often system level statistics, such as memory usage, cpu usage, context switches, number of threads can be a good indication towards bug localization.
+This is especially true if the bug is because of a configuration error or in the interaction of the application to the base kernel system.
+
+Given that the production and the test-container have similar resources allocated to them, we believe that the system level statistics of the test-container will be a close representation of the original as it was a clone of the production container.
+We accept that it cannot represent the production container entirely, as there is bound to be some non-determinism in the containers.
+However, any input driven state changes are bound to be caught.
+
+Previous approaches including some of the work done by the authors \cite{clue} \cite{kscope} and others in academia \cite{sherlog} \cite{vscope} have often used kernel level statistics or system call traces, in localizing bugs. 
+The idea behind these approaches is generally to provide a black-box solution to applications.
+However, in practice they can only be used in lower workload's or can only provide vague clues as they need to restrict the amount of instrumentation to avoid a heavy overhead.
+
+%Analysis which need a long time window to record, and run the status across multiple requests are considered as long running analysis. 
+%Such analysis can be considered to be similar to monitoring of live applications, and are usually statistical in nature.
+%Typically tools such as PIN \cite{pin}, Valgrind \cite{valgrind}, Dyninst \cite{dyninst}, can do deep analysis without modifying the logic of the application.
+%However, they impose a heavy penalty in terms of performance.
+%Such tools can be easily used in \textit{Parikshan}, without effecting system performance.
+%However, there are a few challanges with such statistics which need a longer window to run.
+

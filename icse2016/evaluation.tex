@@ -1,0 +1,99 @@
+\section{Evaluation}
+\label{sec:evaluation}
+
+We evaluate \parikshan on two key aspects: (1). Live cloning, and (2). the debug window size.
+In this section, we first look at the cloning suspend time, by evaluating it against some real-world applications, and a customized micro-benchmark.
+We then evaluate debug-window sizes under different circumstances for a persistent network connection.
+
+\subsection{How does cloning impact the performance of the production container?}
+\label{sec:performance}
+As explained in section \ref{sec:design}, live cloning requires a small suspend time, which has minimal impact on users.
+Suspending is necessary to ensure that both containers are in the exact same system state.
+Broadly, suspend time during live cloning can be divided in 4 parts: 
+(1) Suspend \& Dump: time taken to pause and dump the container, 
+(2) Pcopy after suspend: time required to complete rsync operation 
+(3) Copy Dump File: time taken to copy an initial dump file.
+(4) Undump \& Resume: time taken to resume the containers. 
+To evaluate ``live cloning'', we ran a micro-benchmark of I/O operations, and evaluated live-cloning on some real-world applications running real-workloads:
+%Depending on the workload of the container, different aspects of the suspend time can be impacted.
+%The key to having "live" operation, is to have a short enough suspend time, so that it has minimal impact on the user.
+%To understand the process better, and to see if it is viable for real-world scenario's, we ran two sets of experiments.
+\input{microCloneEval}
+\input{realWorldCloneEval}
+
+Live cloning can be viewed as an amortized cost paid upfront, instead of recording overhead throughout the execution.
+For our future work, we aim to reduce suspend time, rate-limiting of incoming requests in the proxy, or copy-on-write mechanisms between the production container and the clone.
+%Other approaches include triggering page fault for the dirty bits which were not copied over.
+%This is a similar to a copy-on-write method, that could possibly reduce our suspend time.
+%In the interest of time, we have not explored faster means of live cloning, but aim to do so in our future work.
+%However, it would impact, the overall performance of both systems as it would do the rsync operation for a much longer time-period.
+
+\input{windowEval}
+
+\iffalse
+\subsection{Overhead while Running tests}
+\label{sec:overhead}
+
+One of the most important goals of using \parikshan is to allow debugging without having any overhead on the actual application.
+In this section we verify that this goal of \parikshan holds true i.e. debugging in the sandbox-container, does not effect the performance container. 
+To understand the effect we ran some tests on our cloned container, with an independent CPU hog (infinite while loop with sleep) running within the test.
+We gradually increased the amount of CPU being used by the CPU hog and found that while in the external mode there is no effect on the performance of the production container, in the internal mode at higher CPU hog percentages, the throughput of the production container is reduced.
+This was an expected result, as the production container and debug-container time share resources on the same machine, whereas in the external mode, they are completely isolated.
+However, it is to be noted, that most debugging scenarios are unlikely to be CPU hogs, and if resource management in the container level is done properly, the containers in the internal-mode can be largely isolated from each other.
+\fi
+
+
+\iffalse
+In this section we present the evaluation of \parikshan. 
+The key questions facing us were:
+\begin{itemize}
+%  \item How can \parikshan be used in the real world? 
+%  \item Does the test container faithfully represent the execution and the state of the production container? 
+   \item How does cloning the container effect the performance of the production container?
+   \item How long of a testing-window do we have? 
+   \item How does running tests in the debug-container effect the performance of the production container?
+\end{itemize}
+In order to answer these questions, we separated our evaluation in looking at two different stages: cloning stage, time-window analysis.
+
+\begin{table*}[ht]
+  \centering
+    \begin{tabular}{ | p{4cm} | l | l | l | l | l | l | l | l | l |}
+    \hline
+    \textbf{Modes} & \multicolumn{3}{|c|}{\textbf{Internal Mode}} & \multicolumn{3}{|c|}{\textbf{External Mode}} & \multicolumn{3}{|c|}{\textbf{Google Compute}}\\\hline
+    \textbf{ } & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} & \textbf{Cl} & \textbf{Hog} & \textbf{Hog+Cl} \\ \hline
+    \hline
+    \textbf{Throughput} & -- & 1691.0 req/s & 1509 req/s & -- & 712 & 625 & -- & 510 & 450\\ \hline
+    \hline
+    \textbf{Suspend + Dump} & 0.49 & -- & 0.46 & 0.10 & -- & 0.10 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Pcopy after suspend} & 0.22 & -- & 0.27 & 0.44 & -- & 0.39 & 0.00 & 0.00 & 0.00\\ \hline
+    \textbf{Copy Dump File} & 0.62 &  -- & 0.64 & 0.28 & -- & 0.31 & 0.67 & 0.00 & 0.00\\ \hline
+    \textbf{Undump and Resume} & 1.33 &  -- & 1.53 & 0.84 & -- & 1.03 & 0.00 & 0.00 & 0.00\\ \hline 
+    %\textbf{--------------} & --- & --- & --- & --- & --- & --- & --- & --- & --- \\ 
+    \hline
+    \textbf{Total Suspend Time} & 2.66 &  -- & 2.91 & 1.67 & -- & 1.83 & 0.00 & 0.00 & 0.00\\ \hline
+    \end{tabular}
+    \captionsetup{justification=centering}
+	\caption{Performance of httpd throughput, and cloning time in external vs internal vs google compute modes}
+	\label{table:clonePerf}
+\end{table*}
+\fi
+
+
+\iffalse
+The first column gives the average performance of the cloning operation without any hog operation running on it.  
+An idle or a container with minimal processing is cloned relatively fast ~ 2.66 seconds on the idle container. 
+We then tried to run an apache hog to make a baseline of apache's performance without cloning, and found that a simple page fetch gave us a throughput of 1691 req/s (internal mode), and then we tried to do cloning of the same container while running the hog. and found negligible change in the cloning performance.
+The key thing to note in these experiments for all 3 modes, was that we \textbf{did not have any connection failure or connection refused, and only a slight decline in the throughput during the cloning operation}. 
+Naturally, at the application layer, the tcp packet drops are hidden as packet resends from within tcp protocol hides the performance impact.
+To further investigate the tcp packet dropping, we ran an iperf\cite{iperf}( a tool to measure tcp benchmark) server while cloning the production container. 
+We were indeed able to observe packet dropping for about 2 seconds in the iperf client, however, the important point to note is that there were no requests dropped for the application while doing cloning. 
+
+
+\begin{figure*}[t]
+	\begin{center}
+		\includegraphics[width=1\textwidth]{figs/fioResult.png}
+		\caption{Comparison between cloning between the internal vs external mode, while continuously increasing the file write operations to disk}
+		\label{fig:fioResults}
+	\end{center}
+\end{figure*}
+\fi

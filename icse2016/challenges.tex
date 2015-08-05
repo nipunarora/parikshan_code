@@ -1,0 +1,82 @@
+\section{Discussion}
+\label{sec:discussion}
+
+%Designing large scale distributed systems is complex. 
+Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup service, controllers and resource managers.
+\parikshan can be used on one or more containers, and can be used to clone more than one communicating service.
+Based on the nature of the service, it may be (a). Cloned, (b). Turned off or (c). allowed without any modification.
+For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propagate changes from the cloned container to the production containers.
+Similarly, services such as NTP service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
+Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
+For instance, instrumentation in a MySQL query handler, will not slowdown file-sharing or NTP services running in the same container.
+%In this paper we have shown a proof-of-concept design and implementation with several case studies on  how \Parikshan can be applied for real-world debugging.
+
+%\textbf{Concurrency non-determinism}: \parikshan can capture the system state and the user input.
+%However, it is still possible that we will miss errors which happen because of specific schedules or caching in the production system.
+%\parikshan can still be applied 
+
+%\subsection{Rate Limiting}
+%\label{sec:ratelimiting}
+
+%\textbf{Rate Limiting}: As we show in section \ref{sec:evaluation}, at extremely high write I/O's it is possible that the suspend time for cloning is sometimes prohibitively high, and can cause TCP timeouts. 
+%The operator can thereby chose to use cloning and sandboxing, at low workload conditions. 
+%Alternatively, a simple solution to this problem is to use rate-limiting at the proxy which would allow the I/O consumption in the target container to become lower, thereby reducing the suspend time.
+%Rate limiting is a commonly used mechanism in proxies, while it reduces the QoS of the application momentarily, it may be better for fast bug resolution.
+
+%\subsection{Dynamic Proxy Insertion}
+%\label{sec:dynamicProxyInsertion}
+
+%\textbf{Dynamic Proxy Insertion}: While cloning does happen live, we do not really need to have the proxy to be inserted dynamically as well. 
+%Proxies are commonly used in several applications so they can be essentially all the time. 
+%However, based on design choice, the proxy can be inserted by starting it up on any server, and then putting a flow redirection rule in the router using dynamic network programming mechanism such as OpenFlow\cite{openflow}.
+%Router flows are updated dynamically, and are \texttt{flow-based}, hence can be redirected on the fly using an openflow\cite{openflow} controller.
+
+%\subsection{Slowdown}
+%\label{sec:slowdown}
+
+
+%\subsection{Consistency Requirements}
+%\label{sec:consistency}
+\iffalse
+
+\textbf{Consistency Requirements}: Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
+In such cases the time-window can be arbitrarily long. 
+For example in MySQL read transactions, even if there is a transaction failure or an overflow, it will not effect MySQL itself.
+Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
+
+
+\subsection{Non-Determinism}
+\label{sec:nonDeterminism}
+
+Execution of the same input in different conditions can produce different outputs from an application, this behavior is referred to as non-deterministic execution.
+With the exception of dedicated controlled executions in embedded systems etc., most large scale applications and complex systems exhibit non-determinism, which is what makes debugging a challenge.
+Broadly non-determinism can be caused because of the following reasons: 1. Input non-determinism, 2. Configuration non-determinism, 3. Concurrency based non-determinism.
+
+Input non-determinism is non-deterministic behavior caused because of different input received by the application (e.g. requests to the server, user input etc.). 
+Obviously, any output in the application and it's execution trace, will depend on the input it receives. 
+In offline debugging it is often difficult to capture all possible inputs, and hence deal with input non-determinism.
+In order to avoid input non-determinism, \parikshan uses a network proxy to send all inputs received in the production container also to the debug-container. 
+Hence both of them behave in almost the same fashion.
+
+Configuration non-determinism relates to the state of the container, the application configuration, system/kernel parameters, hardware resources etc.
+Once again, this can often effect the logic of the application.
+For e.g. max no. of threads is a common configuration parameter in several multi-process server applications, and can effect the performance of the application in high workloads.
+\parikshan can deal with most configuration/state non-determinism as it captures the state of the production container at the time of cloning, and creates an exact replica.
+This replica should have an identical behavior to the original and should have similar memory consumption, threading behavior etc. 
+However, some amount of inconsistency between the debug-container and production container is possible.
+
+Another kind of non-determinism is caused by parallel applications which may behave differently in each execution.
+Capturing this kind of non-determinism is important to debug bugs such as race-conditions, locks etc.
+Unfortunately, the current system design of \parikshan cannot capture concurrency based non-determinism, we hope to revise and include this in future versions.
+
+\subsection{Mid-Tier Servers}
+\label{sec:midTier}
+
+\parikshan is not a completely black-box approach, and may require developers to design their applications in a way to support \parikshan, and allow themselves to debug their applications online.
+In the paper we have presented a preliminary prototype of our system, applied to some real-world scenarios, to give an understanding of how the approach can be used.
+While scaling it out on multi-tier applications, we observed that at times when testing a mid-tier server (which forwards and connects to downstream connections), we need to take care of responses from servers the debug-container is connecting to.
+A naive and useful strategy is to clone the downstream connections, hence if we are targeting a application server, we need to clone the application server as well as the database server.
+Another approach is to use a proxy between the application server(both production and test), and the database server, where the responses of the database to the original production container are cached, and are used to respond to the debug-container.
+The design of this proxy is similar to our client facing proxy, where requests and responses are being buffered and forwarded. The only difference here is that requests and responses need to be buffered, and checked against incoming requests and then a response needs to be generated. 
+
+\fi

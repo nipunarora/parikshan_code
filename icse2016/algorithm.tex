@@ -1,0 +1,56 @@
+\begin{algorithm}[h!]
+\caption{Network Duplication Algorithm}
+\label{algoDuplication}
+
+\scalebox{0.85}{
+\begin{minipage}[t]{\linewidth}
+
+\begin{algorithmic}
+\State $prod\_port$: The port at which the production server is running
+\State $test\_port$: The port at which the test container is running
+\State $listen\_port$: The port at which the proxy is listening
+\State $mode$: 1 -> synchronous packet forwarding, 2 -> asynchronous packet forwarding, 3 -> asynchronous load balanced packet forwarding
+\\
+\Function{main}{$prod\_port,test\_port,listen\_port$} 
+\State spawn\_worker\_threads()  
+\State bind(listen\_port) 
+\State listen(listen\_port).on\_event(mode,prod\_port,test\_port) 
+\EndFunction
+\\
+\Function{on\_event}{$mode, prod\_port, test\_port$}
+\If {$mode==1$}
+\State accept()
+\State buffer=read\_input()
+\State communicate\_production (buffer, prod\_port)
+\State communicate\_test (buffer, test\_port)
+\EndIf
+\If{$mode==2$}
+\State accept()
+\State buffer=read\_input()
+\State send\_to\_worker\_thread( communicate\_production (buffer, prod\_port))
+\State send\_to\_worker\_thread( communicate\_test (buffer, test\_port))
+\EndIf
+\If{$mode==3$}
+\State accept()
+\State buffer=read\_input()
+\State send\_to\_worker\_thread( communicate\_production (buffer, prod\_port))
+\State send\_to\_worker\_thread( communicate\_test (buffer, test\_port))
+\EndIf
+\EndFunction
+\\
+\Function{communicate\_production}{$buffer, prod\_port$}
+\State connect(prod\_port)
+\State sendall(buffer)
+\State sendToClient(recv())
+\EndFunction
+\\
+\Function{communicate\_test}{$buffer, test\_port$}
+\State connect(test\_port)
+\State sendall(buffer)
+\State recv()
+\EndFunction
+\end{algorithmic}
+\end{minipage}
+} % scalebox
+
+\end{algorithm}
