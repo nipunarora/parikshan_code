@@ -9,21 +9,21 @@
 %In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
 %This cloning requires modification in both how compute migration is handled, and especially how the network migration is handled. 
 
-Before describing cloning in our context, let us first review some details about live migration. 
+Before describing cloning in our context, let us first review some details about live migration~\cite{livemigration}. 
 Live migration refers to the process of moving a running virtual machine, or container from one server to another, without disconnecting any client or process running within the machine. 
 %It is supported by most well known Hypervisors (VMware, VirtualBox, Xen, Qemu, KVM).
 % with different amounts of efficiency.
 %There are several different mechanisms for migration, some of which require a short suspend time, while others are able to seamlessly transfer without any noticeable down-time by the user.
 In general, this involves the following steps: 
-(1). a pre-copy \texttt{rsync}, whereby the underlying hypervisor copies all the memory pages from the source node to the destination node. 
-(2). Once the pre-copy phase is finished, the VM is temporarily suspended, and all pages which were modified are transferred to the target node. 
+(1) A pre-copy \texttt{rsync}, whereby the underlying hypervisor copies all the memory pages from the source node to the destination node. 
+(2) Once the pre-copy phase is finished, the VM is temporarily suspended, and all pages which were modified are transferred to the target node. 
 %Live migration needs two rsync's, the first one moves most of the data while the container is still up and running, and the second one moves the changes made during the time period between the first rsync run and the container pause.
 The second step can be done in multiple iterations to avoid a long suspend time, in-case the memory pages have significantly changed after the first rsync. 
 %\footnote{Network migration is managed by the IAAS which publishes the same MAC address for the copied VM. 
 %Since the identity of the target container remains the same, the IAAS is able to give it same IP Address, and network traffic is rerouted after the identity is published in the network}.
 %To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
 
-In contrast with live migration where the original container is destroyed, the ``Live Cloning'' process used in \parikshan requires both containers to be actively running, and be still attached to the original network.
+In contrast, live migration where the original container is destroyed, the ``Live Cloning'' process used in \parikshan requires both containers to be actively running, and be still attached to the original network.
 %Instead of Live Migration, in Live Cloning, we do not delete the source container, rather we allow the container to keep executing in both production and test locations.
 The challenge here is to manage two containers with the same identities in the network and application domain. 
 This is important, as the operating system and the application processes running in it may be configured with the IP address, which cannot be changed on the fly.
@@ -35,7 +35,7 @@ We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning h
 \begin{figure}[t]
   \begin{center}
     \includegraphics[width=0.45\textwidth]{figs/ModesCloning.pdf}
-    \caption{External and Internal Mode for live cloning: P1 is the production container, and T1 is the debug container, the clone manager interacts with an agent which has drivers to implement live cloning}
+    \caption{External and Internal Mode for live cloning: P1 is the production container, and D1 is the debug container, the clone manager interacts with an agent which has drivers to implement live cloning.}
     \label{fig:modesCloning}
   \end{center}
 \end{figure}
@@ -47,7 +47,7 @@ We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning h
 \textbf{\textit{Internal Mode}}: In this mode we allocate the production and debug containers to the same host node. 
 This would mean less suspend time, as the production container can be locally cloned (instead of streaming over the network). 
 Additionally, it is more cost-effective since the number of servers remain the same.
-On the other hand, co-hosting the debug and production containers can have an adverse effect on the performance of the production container because of resource contention.
+On the other hand, co-hosting the debug and production containers could potentially have an adverse effect on the performance of the production container because of resource contention.
 
 To manage network identities, we encapsulate each container in separate network namespaces.
 This allows both the containers, to have the same IP address, although in separate interfaces.
@@ -58,14 +58,14 @@ The duplicator is then able to communicate to both these containers with no netw
 
 %\item 
 \noindent
-\textbf{\textit{External Mode}}: In this mode we provision an extra server as the host of our debug-container (this server can host more than one debug-containers). 
+\textbf{\textit{External Mode}}: In this mode we provision an extra server as the host of our debug-container (this server can host more than one debug-container). 
 While this mechanism can have a higher overhead in terms of suspend time (dependent on workload), and requires provisioning an extra host-node, the advantage of this mechanism is that once cloned, the debug-container is totally separate and will not impact the performance of the production-container.
 We believe that external mode will be more practical in comparison to internal mode, as cloning is likely to be transient, and high network bandwidth between physical hosts can offset the slowdown in cloning performance. 
 %It is often more important to not impact user experience. 
 %However, when running in the internal-mode, the test could potentially impact the production run due to co-location in the same host (resource contention etc.).
 
 Network identities in external mode are managed using NAT~\cite{nat} (network address translator) in both host machines. 
-Hence both containers can have the same address without any conflict.\footnote{Another additional mode can be \textit{Scaled Mode}: This can be viewed as a variant of the external mode, where we can execute debug analysis in parallel on more than one debug-containers each having it's own cloned connection. This will distribute the instrumentation load and allow us to do more analysis concurrently, without overflowing the buffer. We aim to explore this in a future publication.}
+Hence both containers can have the same address without any conflict.\footnote{Another additional mode can be \textit{Scaled Mode}: This can be viewed as a variant of the external mode, where we can execute debug analysis in parallel on more than one debug-containers each having it's own cloned connection. This will distribute the instrumentation load and allow us to do more analysis concurrently, without overflowing the buffer. We aim to explore this in the future.}
 
 
 % the production container P1 and debug container T1 are hosted on two different host machines, and are encapsulated behind a .
@@ -94,6 +94,8 @@ This allows for easier snapshots/checkpoints, as \textit{ploop} ensures separati
 %The algorithm for live cloning is explained in 
 %Algorithm \ref{algCloning} describes the process of live-cloning.
 
+\iffalse
+%This was included for USENIX
 \begin{algorithm}[ht!]
   \caption{Live cloning algorithm using OpenVZ} 
   \label{algCloning}
@@ -111,27 +113,10 @@ A second rsync is run when the container is suspended to bring both production a
   \item Transfer dump file and resume both production and debug containers
   \end{enumerate}
 \end{algorithm}
-
-\iffalse
-\begin{algorithm}[ht!]
-  \caption{Live cloning algorithm using OpenVZ} 
-  \label{algCloning}
-  \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
-  \item Safety checks and pre-processing 
-%(Checks that a destination server is available via ssh w/o entering a password, and version checking of OpenVZ running in it) 
-  \item Run rsync of source \textit{ploop} file system to the destination server  
-  \item Checkpoint and suspend the container 
-  \item Run a second rsync of the \textit{ploop} device to the destination  server
-  %\item Start container locally 
-  \item Set up port forwarding, packet duplication, and aggregation proxy
-  \item Start both containers on the destination server
-  \end{enumerate}
-\end{algorithm}
 \fi
 
 %\begin{example}
-Algorithm \ref{algCloning}, shows the live cloning process. To further understand it we illustrate the details using a concrete example:
-Let us imagine we are cloning production container C1 on Host H1 as debug-container C2 on Host H2. 
+Let's imagine we are cloning production container C1 on Host H1 as debug-container C2 on Host H2. 
 The initial setup requires certain safety checks and pre-processing to ensure easy cloning. 
 These include: ssh-copy-id operation for password-less rsync, checking pre-existing container ID's, version of OpenVZ etc. 
 This ensures that H1 and H2 are compatible, and ready for live-cloning.
@@ -147,8 +132,7 @@ Simultaneously, we setup the networking proxy and aggregation infrastructure to 
 Next we copy the dump file from step 3, from H1 to H2, and resume both containers.
 %\end{example}
 
-The suspend time of cloning depends on the operations happening within the container between step 2 and step 4 (the first and the second rsync), 
-as this will increase the number of dirty pages in the memory, which in turn will impact the amount of memory that needs to be copied during the suspend phase.
+The suspend time of cloning depends on the operations happening within the container between step 2 and step 4 (the first and the second rsync), as this will increase the number of dirty pages in the memory, which in turn will impact the amount of memory that needs to be copied during the suspend phase.
 In section \ref{sec:performance}, we evaluate the performance of live cloning on some real-world examples and a micro-benchmark of I/O operations. 
 %(as mostly the dirty bits at suspend time are those which were not committed to memory and hence need to be transferred).  
 %A few iteration of cloning a container back and forth between two OpenVZ instances (on KVM's within the same physical machine), resulted in an average suspend time of 1.8 seconds for the production container.

@@ -12,7 +12,7 @@
 \end{figure*}
 
 \noindent
-As a motivating scenario, let us take a complex multi-tier service-oriented system (figure \ref{fig:motivation}), with several interacting services(web-servers, application servers, search and indexing, database etc.). 
+As a motivating scenario, let us take a complex multi-tier service-oriented system (Figure \ref{fig:motivation}), with several interacting services (web-servers, application servers, search and indexing, database etc.). 
 The system is maintained by an operator, who can observe the health of the system using light-weight monitoring, which is part of the deployed system.
 In the interest of application performance, production system monitoring is usually limited to system resource usage, application usage statistics, transaction logs, and error logs.
 
@@ -34,7 +34,7 @@ Typically, trouble tickets are generated for such problems, and they are debugge
 However, the operator can now use \parikshan, to fork off clones of the nginx and glassfish containers as \textbf{\textit{nginx-debug}} and \textbf{\textit{glassfish-debug}}.
 %Our proxy network duplication now sends a copy of the incoming request to the debug containers, while users can continue using nginx and glassfish services. 
 Our network duplication mechanisms ensure that the debug-containers receive the same inputs as the production, and that the production containers continue to provide service without interruption.
-This separation of the production and debug environment, allows the operator to use dynamic instrumentation tools to do deeper diagnosis without fearing any problems in the user-facing operations.
+This separation of the production and debug environment, allows the operator to use dynamic instrumentation tools to perform deeper diagnosis without fearing any problems in the user-facing operations.
 Since the system has been cloned from the original potentially ``buggy'' production container, it will also exhibit the same memory leaks/or logical errors.
 Additionally, \parikshan can focus on the ``buggy'' parts of the system, without needing to replicate the entire system in a test-cluster.
 This process will greatly reduce the time to bug resolution, and allow real-time bug diagnosis capability.

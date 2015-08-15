@@ -58,7 +58,7 @@ Unlike \parikshan, both these approaches are restricted to software testing, and
 Live migration of virtual machines, facilitates fault management, load balancing, and low-level system maintenance for the administrator.
 Most existing approaches use \textit{pre-copy} approach, which copies the memory state over several iterations, and then copies the process state.
 This includes hypervisors such as VMWare~\cite{nelson2005fast}, Xen~\cite{clark2005live}, and KVM~\cite{kivity2007kvm}.
-VM Cloning, on the other hand, is usually done offline by taking a snapshot of a suspended/shutdown VM, and restarting it in another machine.
+VM Cloning, on the other hand, is usually done offline by taking a snapshot of a suspended/ shutdown VM, and restarting it in another machine.
 Cloning is helpful for scaling out applications, which use multiple instances of the same server.
 There has also been limited work towards live cloning. 
 For example Sun et al.~\cite{Sun:2009:FLC:1581383.1582148} use copy-on-write mechanism, to create a duplicate of the target VM without shutting it down.

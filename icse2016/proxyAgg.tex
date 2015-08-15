@@ -15,10 +15,10 @@ Imagine if you are trying to debug a mid-tier application container, the proxy n
 Both the debug container and the production, will then try to communicate further to the back-end containers.
 This could mean duplicate queries to the backend servers (for e.g. duplicate deletes to MySQL), thereby leading to an inconsistent state.
 However, to have forward progress the debug-container must be able to communicate and get responses from upstream servers.
-The ``proxy aggregator'' module stubs the requests from a duplicate debug container by replaying the responses sent to production container, to the debug-container.
+The ``proxy aggregator'' module stubs the requests from a duplicate debug container by replaying the responses sent to the production container, to the debug-container.
 As well as dropping all packets sent from it to upstream servers.
 
-As shown in  fig~\ref{fig:aggregator}, when an incoming request comes to the aggregator, it first checks if the connection is from the production container or debug container. 
+As shown in  Fig~\ref{fig:aggregator}, when an incoming request comes to the aggregator, it first checks if the connection is from the production container or debug container. 
 In case of the production container (link 1), the aggregator forwards the connection to the backend (link 3), responses from the backend are sent to the aggregator (link 4), and then forwarded to the production container (link 2) and simultaneously saved in an internal queue.
 The aggregator creates an in-memory persistent inter-process FIFO queue for each connection where the responses for each of these connections are stored.
 When the corresponding connection from the duplicate debug container connects to the proxy (link 5); all packets being sent are quietly dropped. 

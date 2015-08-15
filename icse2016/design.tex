@@ -1,11 +1,11 @@
- \section{Design}
+\section{Design}
 \label{sec:design}
 
 %Each instance of \parikshan can target only one tier at a time.
 %However, multiple instances can be orchestrated together to do distributed debug analysis. 
 %especially when it's required for integration testing or cross tier results need to be correlated.
 %\parikshan can target multiple tiers of a system by cloning the target tiers and stubbing out it's communication with the external environment.
-In figure~\ref{fig:workflow}, we show the architecture of \parikshan when applied to a single mid-tier application server.
+In Figure~\ref{fig:workflow}, we show the architecture of \parikshan when applied to a single mid-tier application server.
 \parikshan consists of 3 modules: 
 \textbf{Clone Manager}: manages ``live cloning'' between the production and the debug containers, 
 \textbf{Network Duplicator}: manages network traffic duplication from downstream servers to both the production and debug containers, 

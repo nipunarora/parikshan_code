@@ -75,9 +75,10 @@ The tracing caused a 1.5x - 2x slowdown in the targeted session of the applicati
 For one of the bugs in  MySQL (Bug 15811), it was reported that some of the user requests which were dealing with complex scripts (Chinese, Japanese), were running significantly slower than others.
 To evaluate \parikshan, we re-created a two-tier client-server setup with the server (container) running a buggy MySQL server. 
 We generated a random workload of user-requests, including queries that triggered the bug.
-Next, we created a live clone of the MySQL container.
+Now the slow queries may be reported by either a user, or a transaction latency monitoring available in several production systems. 
+Based on this trigger, we created a live clone of the MySQL container. 
 We then inserted function level instrumentation in MySQL for higher level functions, object constructors, and destructors belonging to each module in the code.
-Finally, we used the query handler to trigger instrumentation for queries containing complex scripts.
+Finally, we used the query handler to trigger instrumentation for queries containing complex scripts(this ensures no slow-down for other queries).
 %For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
 We then compared the profile (time taken in each function) of the queries for complex scripts, with the queries for Latin scripts.
 Using trial-and-error, and iteratively digging into deeper functions, we were able to localize the bug to string compare functions in MySQL.
