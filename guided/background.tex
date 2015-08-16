@@ -12,7 +12,73 @@
 \section{Background}
 \label{sec:background}
 
-In this section, we give a short description of the design of live debugging and our \parikshan framework to facilitate the exposition of the ideas in this paper. 
+Before presenting our approach let us review basic concepts and terminology used in previous work in statistical/sampling based debugging approaches, and generating interesting predicates for capturing bugs.
+
+\subsection{Terminology}
+\label{sec: terminology-guided}
+
+
+% ---- NIPUN -> THIS HAS BEEN COPIED IN PARTS FROM HOLMES BACKGROUND
+
+The decision of what to monitor is crucial as the debugger can only decipher where the bug is located based on clues he  finds in the instrumentation output.
+The decision of what to chose as an instrumentation point has been well studied in previous approaches \cite{}.
+An \emph{instrumentation site} is a single program location at which the state of the running program will be inspected.
+Instrumentation points are selected based on importance of the code location being tracked.
+The idea behind instrumentation is to capture enough data to get a decent clue towards finding the bug.
+
+Each of these instrumentation sites are decomposed into predicates which are conditionals with a true/false value.
+Predicates can be branch conditionals, loops, function calls, return instructions and if conditionals.
+Predicates provide significant advantages in terms of memory/performance overheads.
+Instead of printing predicates, they are usually counted, and a profile is generated.
+This reduces the amount of instrumentation overhead, and several predicates can easily be encoded in a small memory space.
+
+Existing approaches also offer sampling as a means to more effective predicate instrumentation with minimal overhead.
+This technique, creates instrumentation that yields a sparse but fair random subset of the complete counts.
+Other approaches have extended this technique to adaptive automated sampling to better manage the overhead.
+
+\subsection{Statistical Debugging}
+\label{sec:Statistical Debugging}
+
+% ---- NIPUN -> THIS HAS BEEN COPIED IN PARTS FROM HOLMES BACKGROUND
+
+The Cooperative Bug Isolation Project forms the basis of our statistical debugging approach.
+This project uses predicates at instrumentation points such as branch conditionals, call instructions etc., and statistically samples their counts to get a profile of the bug.
+Each run of the program is further tagged with a feedback report for a single execution is a bit-vector with two bits for every path: one bit indicates whether the predicate was \emph{observed} and the other bit that indicates whether the predicate was executed in that run.
+Predictors are scored based on \emph{sensitivity} (accounts for many failed runs) and \emph{specificity} (does not mis-predict failure in a successful run).
+These scores are balanced using a numeric importance score computed as follows
+The events corresponding to a predicate p from all the runs can be aggregated into four values: (1) $S_{o}(p)$: the number of successful runs in which the predicate p was observed (2) $F_{o}(p)$: the number of failed runs in which the predicate  p was observed (3) $S_{e}(p)$: the number of successful runs in which the predicate p was executed, and (4) $F_{e}(p)$: the number of failed runs in which the predicate p was executed.
+Using these values, three scores of bug relevance are calculated.
+
+\begin{equation}
+\label{eq:sensitivity}
+Sensitivity(p) = \frac{log|F_{e}(p)|}{log|F|}
+\end{equation}
+
+\begin{equation}
+\label{eq:context}
+Context(p) = \frac{F_{o}(p)}{S_{o}(p) + F_{o}(p)}
+\end{equation}
+
+\begin{equation}
+\label{eq:increase}
+Increase(p) = \frac{F_{e}(p)}{S_{e}(p) + F_{e}(p)} - Context(p)
+\end{equation}
+
+where F is the total number of failing runs. The harmonic mean of Sensitivity and Increase identifies predicates that are both highly sensitive and highly specific :
+
+\begin{equation}
+\label{eq:importance}
+Importance = \frac{2}{\frac{1}{Sensitivity(p)}+\frac{1}{Increase(p)}}
+\end{equation}
+
+The Importance score is calculated for each path, and the top results are selected and presented to the programmer as potential root causes.
+
+Nainar et Al\cite{}, further extend this approach in their work on adaptive statistical bug isolation.
+They aim to reduce the instrumentation amount by initially instrumenting only a small part of the total predicates, then adaptively turn on the predicates which are more indicative of the error.
+In particular, they define a vicinity function by which they aim to find predicates which are likely indicators of the error.
+The main hypothesis is that predicates in the vicinity of existing predicates which are good error indicators, are also likely to be error indicators.
+
+In the next section, we give a short description of the design of live debugging and our \parikshan framework to facilitate the exposition of the ideas in this paper. 
 %A detailed explanation of the complete design of the paper can be found in ~\cite{parikshan}.
 
 \subsection{The case for Live Debugging}

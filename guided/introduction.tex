@@ -3,27 +3,58 @@
 
 Software bugs are \emph{everywhere}.
 They often escape extermination efforts in software testing causing frustration to operators, and a loss of business revenue.
-\emph{Bug Diagnosis} is the ``art'' of identifying the reason, the root-cause and the possible ``fix'' for the failure.
+\emph{Bug Diagnosis} is the ``art'' of identifying the root-cause and the possible ``fix'' for the failure.
 In general the process involves a trial-and-error process in the development environment. 
 The debugger uses the input causing the failure and tries to localize the problem in a small part of the application.
 He then manually skims through the code in the localized area to correctly identify the problem.
 This process can be long and arduous, causing significant loss of revenue.
 
-Automating the bug diagnosis process can significantly reduce this problem.
-However, despite significant previous work ~\cite{gdb} the problem is still unsolved.
-
 We believe that by closing the gap between the production and debugging environment, we can provide the developer with a deeper insight of the cause of the bug.
-In a previous approach called \livedebugging, we have developed a framework which allows debuggers to safely debug applications within the production environment.
+Our previously proposed approach called \livedebugging~\cite{livedebugging}, we have developed a framework which allows debuggers to safely debug applications within the production environment.
 This is done by creating a parallel debugging environment, which gets the same input as the normal production system.
 This debugging environment provides a powerful tool for the debugger, to freely instrument or modify the application without impacting the performance of the production system.
 
 In this work, we focus on real-time debugging techniques, which can be used on the production environment.
 Firstly, we will present an adaptive guided profiling mechanism, which can provide rich profiles in order to localize the bug, while keeping the instrumentation overhead within a preset limit(called budget).
 We are inspired by previous approaches in delta debugging~\cite{delta}, and statistical debugging~\cite{statistical, holmes}. 
-These approaches use sampled profiles from pre-determined instrumentation points, and compare traces, with and without the bug, to localize the problem.
-Holmes~\cite{holmes} in particular aslo includes a feedback loop, which iteratively modifies the instrumentation profiles to gather more relevant traces.
+These approaches use sampled profiles from predetermined instrumentation points, and compare traces, with and without the bug, to localize the problem.
+Holmes~\cite{holmes} in particular also includes a feedback loop, which iteratively modifies the instrumentation profiles to gather more relevant traces.
 We use a similar technique along with dynamic instrumentation to iteratively change profiles to get a better understanding of the root-cause of the error while debugging the application on-the-fly.
 Budgeting the overhead is important so that the instrumentation in the debug environment does not make it lag too far behind the production environment.
 
 Secondly, we will also look at a more proactive approach, where we modify the debug container to not simply trace, but see if a potential fix/optimization solves the problem.
 We show how for some performance bugs, we can dynamically patch and verify that the problem is indeed solved.
+
+\section{Overview}
+\label{sec:overview}
+
+
+In recent years several monitoring techniques have been developed to monitor the health of production systems.
+For example most modern operating systems have resource monitors~\cite{linuxHealth, windowsHealth, macHealth}, which can be used to track the CPU, memory usage, cache misses, temperature etc. of the physical machine.
+These are useful to discover high workloads, or if the machine is stressed because of heavy resource usage.
+Similarly, application level monitoring tools are used to report transactions or errors in the application.
+Monitoring outputs usually provide the first clue towards resolving an error in the debugging process.
+%While useful, these monitoring mechanisms  have a performance trade-off with the amount of instrumentation that can be done.
+%Furthermore, the information provided by these logs may not be enough to understand the root-cause of the error.
+
+However all monitoring/instrumentation techniques impose a performance overhead on the applications.
+This can adversely impact user-experience, hence real-world production instrumentation is generally kept at very low levels.
+\parikshan provides an alternative mechanism where this debugging/instrumentation can be done in parallel on a sandboxed cloned container.
+Any instrumentation or monitoring in the debug-container has no performance impact on the production container.
+In the context of our system, debuggers can use a variety of ad-hoc approaches to capture the root-cause of an error.
+For example a naive approach could be to use trial-and-error instrumentation to find the execution trace for the error.
+Alternatively, the user could also do aggressive brute force instrumentation for all function execution, which could help locate the problem.
+However, both these approaches can have potentially high overheads, which in turn can lead to a buffer overflow.
+
+In this chapter we introduce a statistical sampling approach which imposes a bounded performance overhead, to ensure maximal live debugging information, without causing a buffer overflow.
+%In our search for more systematic approach towards live debugging, we looked towards two possible techniques.
+%Firstly, we try to implement an automated budget limited instrumentation approach for capturing application logs.
+We are inspired by previous work done in statistical debugging~\cite{cbi}, and delta debugging~\cite{delta} techniques which aim to streamline and automate the process of bug localization.
+This is achieved by having predicate profiles from both successful and failing runs of a program and applying statistical techniques to pinpoint the cause of the failure.
+The core advantage of statistical debugging is that the sampling frequency of the instrumentation can be decreased to reduce the instrumentation overhead.
+
+One of the key criteria for successful statistical debugging is to have higher instrumentation rates, to make the results more statistically significant. 
+There is a clear trade-off between instrumentation vs performance overhead for statistical instrumentation. 
+A key advantage of using this with \parikshan is that we can provide live feedback based buffer size and bounded overheads, hence squeezing the maximum advantage out of statistical debugging without impacting the overhead. 
+We evaluate the slack available in each request for instrumentation without risking a buffer overflow and getting out of sync of the production container.
+Live interactive debugging provided by \parikshan further allows for quick updates to the instrumentation and targeting specific areas of the application code.

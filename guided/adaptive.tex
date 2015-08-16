@@ -1,9 +1,101 @@
 \section{Budget based adaptive debugging}
 \label{sec:adaptive}
 
-Low runtime overheads are critical when programs are deployed in production environments.
-In actual production systems, even marginal slowdown in execution time or increase in resource consumption is unacceptable. 
-\livedebugging allows for significantly larger overheads for debugging applications.
-Previous approaches for statistical debugging have use sparse random sampling of predicate profiles to reduce the overhead of instrumentation.
-Statistical debugging relies on a large number of both failing and successful runs of the program to build a representative profile.
-On the other hand, profile sampling relies on observing path profiles in finding
+Here we use a statistical debugging approach which adheres to our bounded overhead.
+We propose to assign to each predicate a weighted score which is associated with how frequently it should be monitored.
+The sum of these weights will be equal to our bounded overhead.
+
+In this work, we wish to establish a tradeoff between overhead of statistical debugging and the effectiveness of statistical debugging, at the same time maintaining a bounded overhead.
+For instance, we can drop instrumentation of predicates which are executed more frequently to reduce the performance overhead in order to maintain our bounded overhead.
+Program control and data flow inherently creates a hierarchical dependency between predicates, this can be leveraged in instrumentation to control the overhead, while at the same time provide some degree of clues to the debugger.
+
+\subsubsection{Modeling the Target Application}
+
+We define the program as a dynamic control-flow graph G \textless V,E \textgreater where V represent basic block entry points. 
+The instrumentation granularity can be functional entries or conditionals which each should correspond to a basic block.
+We call instrumentation points our predicates, where the predicate set \textless P \textgreater $\in$ \textless V \textgreater, 
+i.e. each predicate can be an entry or exit point in the set of vertices's.
+
+
+\subsubsection{Offline Profiling}
+
+While not necessary, offline profiling of the target application can greatly assist in assigning weights to each predicate. 
+Assuming that we have a representative input, the profile can be taken to show the time generally taken in each request, 
+and every basic-block entry and exit point can be profiled to annotate time taken by each segment of the control path. 
+While the processing time of each path can significantly differ depending on the input, 
+we can get an approximate time taken by each section of the control flow graph for a large enough input set. 
+This offline profiling helps us in assigning initial weights, and measuring the amount of slack available for each control-flow path.
+
+\subsubsection{Assigning weight}
+
+Weights can be defined to each predicate based on the following criteria:
+
+\begin{itemize}
+	
+	\item \textbf{Importance of the predicate itself}: 
+	
+	The score for importance of a predicate can be defined similar to the Cooperative Bug Isolation Project (CBI) as shown in section ~\ref{sec:background-guided}. 
+	
+	\begin{equation}
+	\label{eq:importance}
+	Importance = \frac{2}{\frac{1}{Sensitivity(p)}+\frac{1}{Increase(p)}}
+	\end{equation}
+	
+	
+	\item \textbf{Slack in context of the control flow path}: 
+	
+	Model overall slack available based on offline instrumentation. 
+	
+	\item \textbf{External factors}:
+	
+\end{itemize}
+
+\textit{Amortizing Predicate Calculation}: Predicate scores are updated once every n runs
+
+\subsubsection{Online Engine}
+
+The job of the online engine is to decide whether or not a given predicate should be sampled. 
+Inputs are 
+
+
+\subsubsection{Cause Isolation}
+\label{sec:cause_isolation}
+
+Cause Isolation for bugs can be done in an adaptable manner. 
+
+We assign weight W$_{i}$ to each predicate P$_{i}$ , where the weight denotes the sampling frequency.
+
+\begin{equation}
+W_{i} = Probability\ that\ a\ predicate\ i\ is\ sampled
+\end{equation}
+
+\begin{equation}
+P_{i} = Instrumentation\ Overhead\ for\ Predicate\ i
+\end{equation}
+
+\begin{equation}
+\sum\limits_{i=1}^n W_{i}.P_{i} = Total\ Instrumentation\ Overhead\ Bound
+\end{equation}
+
+We have divided our approach in two halves, the first concentrates on statistical analysis for functional bugs.
+Any application code can be modeled as a control flow graph 
+
+\subsection{Motivating Example}
+\label{sec:example}
+
+We now discuss how live debugging can be used to find the cause of a bug using statistical debugging.
+Take for example the code segment shown below:
+\\
+\par
+\begin{verbbox}[\footnotesize]
+	void foo {
+		if(x > num and f == NULL){
+			x = 0;
+			*f;
+		}.
+	}
+\end{verbbox}
+\fbox{\theverbbox}\\
+
+In this code, the \texttt{*f} is clearly an erroneous call to this pointer, and will lead to an exception.
+The function \texttt{foo}, can be called by various 
