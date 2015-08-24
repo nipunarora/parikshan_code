@@ -20,8 +20,8 @@ Containers were cloned within the machine, with a seperate VM acting as the clie
 We used NAT, and IP namespaces for network access to the VM's.
 (2). We impelemted our system's external mode on the base kernel in identical host nodes. 
 Each of these host nodes have an Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
-(3). We also implemented our system on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}).
-The production and the debug container's were run on different virtual nodes, with 2 VCPU's and 4G RAM. 
+%(3). To verify our implementation in a enterprise level public cloud provider, we also implemented a prototype on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}).
+%The production and the debug container's were run on different virtual nodes, with 2 VCPU's and 4G RAM. 
 %The main advantage of using the Google Compute Engine was to run our cloning scripts on real data-centers, and also to scale out our evaluation. 
 
 The network proxy was implemented in C/C++.

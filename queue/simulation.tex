@@ -1,0 +1,59 @@
+\section{Simulation}
+\label{sec:simulation}
+
+Based on equation~\ref{eq:hitting}, we ran a number of simulations to calculate theoretical debug-window sizes based on various resource constraints. 
+As discussed earlier, the debug-window primarily depends on 3 parameters, firstly the incoming rate of requests, the overhead in the debug container, and the size of the buffer.
+In our simulations shown in Table~\ref{tab:simulation}, we ran multiple iterations with randomized input parameters within pre-defined ranges. 
+We assume, an incoming requests to follow a poisson distribution,  with the rate between 30-40 Mbps, we assume a buffer size between 2GB-8GB, and an overhead between 2x-4x. 
+
+Our results indicate that despite heavy overhead with a decent sized buffer, developers can get debug window sizes of more than an hour. 
+ 
+\begin{table}[]
+\centering
+\begin{tabular}{|r|r|r|r|}
+\hline
+\multicolumn{1}{|c|}{{\bf \begin{tabular}[c]{@{}c@{}}Request \\ Rate(MB/s)\end{tabular}}} & \multicolumn{1}{c|}{{\bf \begin{tabular}[c]{@{}c@{}}Overhead \\ (2-4x)\end{tabular}}} & \multicolumn{1}{c|}{{\bf \begin{tabular}[c]{@{}c@{}}Buffer \\ Size(MB)\end{tabular}}} & \multicolumn{1}{c|}{{\bf \begin{tabular}[c]{@{}c@{}}Debug-\\ Window (mins)\end{tabular}}} \\ \hline
+35 & 3 & 2113 & 17.60869048 \\ \hline
+30 & 2 & 2166 & 36.1 \\ \hline
+34 & 2 & 2641 & 44.01666667 \\ \hline
+33 & 4 & 2728 & 15.15600449 \\ \hline
+36 & 4 & 2911 & 16.17263374 \\ \hline
+36 & 3 & 3042 & 25.35034722 \\ \hline
+31 & 2 & 3201 & 53.35 \\ \hline
+39 & 3 & 3274 & 27.28365385 \\ \hline
+33 & 3 & 3419 & 28.49204545 \\ \hline
+30 & 4 & 3491 & 19.39493827 \\ \hline
+39 & 3 & 3516 & 29.30032051 \\ \hline
+30 & 3 & 3626 & 30.21708333 \\ \hline
+37 & 4 & 4209 & 23.38373373 \\ \hline
+36 & 2 & 4242 & 70.7 \\ \hline
+34 & 4 & 4472 & 24.84488017 \\ \hline
+30 & 4 & 4580 & 25.44493827 \\ \hline
+40 & 2 & 4619 & 76.98333333 \\ \hline
+40 & 4 & 4883 & 27.12814815 \\ \hline
+34 & 3 & 4891 & 40.75870098 \\ \hline
+35 & 4 & 4961 & 27.56153439 \\ \hline
+36 & 4 & 4982 & 27.6781893 \\ \hline
+39 & 4 & 5303 & 29.46149098 \\ \hline
+34 & 3 & 5754 & 47.95036765 \\ \hline
+31 & 2 & 5994 & 99.9 \\ \hline
+35 & 2 & 6060 & 101 \\ \hline
+30 & 4 & 6253 & 34.73938272 \\ \hline
+31 & 2 & 6898 & 114.9666667 \\ \hline
+35 & 4 & 6938 & 38.54486772 \\ \hline
+36 & 4 & 6972 & 38.73374486 \\ \hline
+34 & 4 & 7231 & 40.17265795 \\ \hline
+38 & 2 & 7241 & 120.6833333 \\ \hline
+36 & 4 & 7267 & 40.37263374 \\ \hline
+33 & 2 & 7374 & 122.9 \\ \hline
+36 & 4 & 7404 & 41.13374486 \\ \hline
+35 & 3 & 7664 & 63.86702381 \\ \hline
+33 & 3 & 7748 & 64.56704545 \\ \hline
+35 & 2 & 7770 & 129.5 \\ \hline
+33 & 3 & 7868 & 65.56704545 \\ \hline
+33 & 4 & 7967 & 44.26156004 \\ \hline
+38 & 3 & 7968 & 66.40032895 \\ \hline
+\end{tabular}
+\caption{Simulation Results for Debug-Window}
+\label{tab:simulation}
+\end{table}

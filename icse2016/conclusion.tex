@@ -6,12 +6,14 @@
 
 We presented \parikshan a framework to do live-debugging and analysis of large scale systems.
 \parikshan presents a novel technique to debug systems in real-time allowing for fast bug resolution.
-We show several case-studies to see how our system can be applied on real problems.
+We show several case-studies to see how our system can be applied on real problems. 
+
 
 In the future, we wish to explore \parikshan further in 3 key areas: (1). Application: we aim to apply our system to real-time intrusion detection, and fault tolerance testing.
 (2). Analysis: we wish to define ``real-time'' data analysis techniques for traces and instrumentation done in \parikshan.
 We believe with streaming data analytic techniques, we can do much better than execution tracing/profiling.
 (3). Live Cloning: we plan to reduce the suspend time of ``live cloning'', by applying optimizations suggested in several recent works in live migration.
+To verify our implementation in a enterprise level public cloud provider, we also implemented a prototype of \parikshan on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}), we plan to use this prototype in future publications for scaled out testing. 
 %Running a clone in the same machine as the production container opens several venues such as copy-on-write migration, and asynchronous container syncing etc.
 
 

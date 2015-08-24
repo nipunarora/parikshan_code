@@ -1,0 +1,149 @@
+\section{Problem Formulation}
+\label{sec:model}
+
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{figs/queue.pdf}
+		\caption{An example of a simple queue applied to a SOA application. Here the arrival rate of the requests to the queue is a poisson process with rate $\lambda$, and the service time of each request is a poisson process with rate $\mu$. In the default SOA settings, the client request is being sent into a blocking TCP queue, where the incoming requests are rate limited by $\mu$. Hence, there is never any buffer overflow.}
+		%\caption{\parikshan applied to a mid-tier service: It is comprised of: (1) Clone Manager for Live Cloning, (2) Proxy Duplicator to duplicate network traffic, and (3) Proxy Aggregator to replay network traffic to the cloned debug container.}
+		\label{fig:queueModel}
+	\end{center}
+\end{figure}
+
+In this section we try to model the testing window by using concepts well used in queuing theory (for the sake of brevity we will avoid going into too much detail, readers can find more about queuing theory models in~\cite{Gross:1985:FQT:6778}).
+Queuing theory is commonly used to do capacity planning for service-oriented architectures(SOA).
+Queues in a SOA application can be modeled as a M/M/1/K queue (Kendall's notation~\cite{kendall1953}).
+Kendall's notation is a well known model which allows a compact representation for queues in SOA architectures.
+This is a shorthand notation of the type A/B/C/D/E where A, B, C, D, E describe the queue.
+This notation may be easily applied to cover a large number of simple queuing scenarios.
+The various standard meanings associated with each of these letters are summarized below.\\
+
+\begin{framed}
+	\noindent \textbf{A} represents the \emph{inter-arrival time distribution}\\
+	\textbf{B} represents the \emph{service time distribution}\\
+	\textbf{C} gives the \emph{number of servers} in the queue\\
+	\textbf{D} gives the \emph{maximum number of jobs that can be there in the queue}.
+	If this is not given then the default value of infinity \infinity is assumed implying that the queue has an infinite number of waiting positions\\
+	\textbf{E} represents the Queuing Discipline that is followed. The typical ones are First Come First Served (FCFS), Last Come First Served (LCFS), Service in Random Order (SIRO) etc. If this is not given then the default queuing discipline of FCFS is assumed.
+\end{framed}
+
+\noindent The different possible distributions for \textbf{A} and \textbf{B} above are:
+
+\begin{framed}
+	\noindent \textbf{M} exponential distribution\\
+	\textbf{D} deterministic distribution\\
+	\textbf{E$_{\text{k}}$} Erlangian (order k)\\
+	\textbf{G} General
+\end{framed}
+
+
+
+Figure \ref{fig:queueModel} represents a simple client-server TCP queue in an SOA architecture based on the M/M/1/K queue model.
+An M/M/1/K queue, denotes a queue where requests arrive according to a poisson process with rate $\lambda$, that is the inter-arrival times are independent, exponentially distributed random variables with parameter $\lambda$ .
+The service times are also assumed to be independent and exponentially distributed with parameter $\mu$. 
+Furthermore, all the involved random variables are supposed to be independent of each other.
+In the case of a blocking TCP queue common in most client-server models, the incoming request rate from the client is throttled based on the request processing time of the server. 
+This ensures that there is no buffer-overflows in the system.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{figs/queueCloned.pdf}
+		\caption{This figure shows how the simple queuing model can be extended to \parikshan. Here instead of looking at the TCP buffer, we look at the packet arrival and processing time for the proxy duplicator.}
+		%\caption{\parikshan applied to a mid-tier service: It is comprised of: (1) Clone Manager for Live Cloning, (2) Proxy Duplicator to duplicate network traffic, and (3) Proxy Aggregator to replay network traffic to the cloned debug container.}
+		\label{fig:queueClonedModel}
+	\end{center}
+\end{figure}
+
+In \parikshan, this model can be extended to a cloned model as shown in figure \ref{fig:queueClonedModel}.
+The packets to both the production and the debug cloned containers are routed through a proxy which has internal buffer to account for slowdowns in request processing in the debug container. 
+Here instead of the TCP buffer, we focus on the request arrival and departure rate to and from the proxy duplicators buffer.
+The incoming rate remains the same as $\lambda$, as the requests are asynchronously forwarded to both containers without any slowdown. 
+The request processing rate of the debug container is $\mathrm{\mu_{2}}$, where $\mathrm{\mu_{2}}$ $>$ $\mathrm{\mu_{1}}$ (the processing time for the production container without the debug container) depending on the overhead due to instrumentation in the debug-container.
+
+To simplify the problem, we assume the outgoing requests from the proxy buffer to be $\mathrm{\mu_{2}}$, and the overhead as $\mathrm{\mu_{3}}$ where:\\
+
+\begin{equation}
+\mu_{3} = \mu_{1} - \mu_{2} 
+\end{equation}
+
+The remaining processing time for both the production container and the debug container is going to be the same. 
+Since the TCP buffer in the production container is a blocking queue, we can assume that any buffer overflows in the proxy buffer are only caused because of the instrumentation overhead in the debug-container, which is accounted for by $\mathrm{\mu_{3}}$.
+
+We borrow from previous work done by Ross et Al~\cite{ross1999hitting}, who studied the time taken to fill the buffer for the first time for an M/G/1 queue.
+They summarized that the expected number of cycles necessary to hit or exceed the buffer size x is given by the expectation of a geometrically distributed function G(x).
+This is called the \texttt{hitting time} of the M/M/1 queue.
+
+\begin{equation}
+\label{eq:hitting}
+G(x) = \frac{1- \rho e^{-(\mu_2 - \lambda)x}}{\lambda(1 - \rho)^{2}e^{-(\mu_2 - \lambda)x}} - \frac{ x + \frac{1}{\mu_{2}}}{1-\rho}
+\end{equation}
+
+Here the parameter $\rho$ is ratio of the incoming rate to the outgoing rate.
+
+\begin{equation}
+\rho = \frac{\lambda}{\mu_2}
+\end{equation}
+
+Based on equation~\ref{eq:hitting}, we can model the expected time it would take for a debugging window to collapse in parikshan, given the workload, and the size of the queue. 
+Here $\mathrm{\mu_{3}}$ can be used to formulate the overhead bounds for instrumentation allowed in \texttt{livedebugging}.
+The advantage of such an approach is that in a real live scenario, we can extend the debugging window, by reducing instrumentation sampling rates(see section~\ref{sec:guided}), and avoiding the need to re-clone the system.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{figs/queueBalanced.pdf}
+		\caption{This figure shows how queuing theory can be extended to a load balanced debugging scenario. Here each of the debug container receive the requests at rate $\lambda$, and the total instrumentation is balanced across multiple debug containers.}
+		\label{fig:queueBalanced}
+	\end{center}
+\end{figure}
+
+Our model can be further extended into a load-balanced instrumentation model as shown in figure~\ref{fig:queueBalanced}. 
+This is useful when the debugging needs to be higher, but we have a lower overhead bound through only one clone.
+Here we can balance the instrumentation across more than one clones, each of which receive the same input.
+They can together contribute towards debugging the error.
+
+\iffalse
+The utilization factor for an M/M/1/K queue can be formulated as follows:
+
+\begin{equation}
+\rho = \frac{\lambda}{\mu}
+\end{equation}
+\\ \\
+
+Now based on this notation and the expected number of requests buffered in the queue the blocking probability for the queue can be calculated as follows:
+
+\begin{equation}
+P_{b} = \frac{(1-\rho)\rho^{K}}{1-\rho^{K+1}}
+\end{equation}
+\\ \\
+
+The expected time for the queue to fill up:
+
+\begin{equation}
+E[] =
+\end{equation}
+
+Given the expected time for processing each request in this model
+
+\begin{equation}
+E[] =
+\end{equation}
+
+The overhead bounds for instrumentation in each request can be modeled as follows:
+
+\begin{equation}
+E[] = 
+\end{equation}
+
+This gives us the following relationship between overhead and expected time for the queue to fill up.
+
+\begin{equation}
+E[] = relationship\ with\ request\ overhead
+\end{equation}
+
+
+Next we extend this to our asynchronous load-balanced model, the requests can be forwarded in multiple debug containers.
+This can reduce the waiting time further, for the asynchronous model the equations can be extended as follows\\ \\
+\fi
+
+In the next section we discussion our simulation and evaluation strategy to find instrumentation bounds for well known SOA applications.

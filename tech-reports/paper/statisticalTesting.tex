@@ -1,0 +1,17 @@
+\section{Application: Statistical Debugging}
+\label{statistical}
+
+
+One well known technique for debugging production application is statistical debugging. 
+This is achieved by having predicate profiles from both successful and failing runs of a program and applying statistical techniques to pinpoint the cause of the failure.
+The core advantage of statistical debugging is that the sampling frequency of the instrumentation can be decreased to reduce the instrumentation overhead.
+Despite it's advantages the instrumentation frequency for such debugging to be successful needs to be statistically significant. 
+Furthermore, unlike \parikshan, statistical debugging will impose an overhead on the actual application. 
+
+We believe, that statistical debugging can be successfully applied in the debug-container when an error has been observed. 
+The entire scope of such a live debugging mechanism is out of scope of this paper, however for completeness sakes we have briefly described it's application here. 
+\parikshan can complement statistical debugging in several ways to make it more effective, while at the same time isolating the instrumentation impact on the production container.
+Firstly, using dynamic instrumentation tools \parikshan can instrument as well as modify the predicates that are instrumented.
+Further the instrumentation can be increased or decreased dynamically, by taking the amount of buffer currently utilized. 
+The buffer utilization is an indication of how much the debug-container lags behind the production container, and how long it would take for the buffer to overflow.
+

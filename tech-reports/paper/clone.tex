@@ -127,8 +127,7 @@ A second rsync is run when the container is suspended to bring both production a
 \fi
 
 %\begin{example}
-Algorithm \ref{algCloning}, shows the live cloning process. To further understand it we illustrate the details using a concrete example:
-Let us imagine we are cloning production container C1 on Host H1 as debug-container C2 on Host H2. 
+Let's imagine we are cloning production container C1 on Host H1 as debug-container C2 on Host H2. 
 The initial setup requires certain safety checks and pre-processing to ensure easy cloning. 
 These include: ssh-copy-id operation for password-less rsync, checking pre-existing container ID's, version of OpenVZ etc. 
 This ensures that H1 and H2 are compatible, and ready for live-cloning.

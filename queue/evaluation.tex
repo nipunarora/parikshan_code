@@ -1,0 +1,60 @@
+\section{Evaluation}
+\label{sec:timewindowPerformance}
+
+\begin{table}[ht]
+	\begin{centering}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\begin{tabular}[c]{@{}c@{}}\textbf{Input} \\ \textbf{Rate}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{Debug}\\ \textbf{Window}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{Pipe}\\ \textbf{Size}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{Slow-}\\ \textbf{down}\end{tabular}\\ \hline
+			530 bps, 27 rq/s                                      & $\infinity$                                                    & 4096                                                & 1.8x                      \\ \hline
+			530 bps, 27 rq/s                                      & 8 sec                                                  & 4096                                                & 3x                        \\ \hline
+			530 bps, 27 rq/s                                      & 72 sec                                                 & 16384                                               & 3x                        \\ \hline
+			Poisson, $\lambda$ = 17 rq/s                               & 16 sec                                                 & 4096                                                & 8x                        \\ \hline
+			Poisson, $\lambda$ = 17 rq/s                               & 18 sec                                                 & 4096                                                & 5x                      \\ \hline
+			Poisson, $\lambda$ = 17 rq/s                               & $\infinity$                                                    & 65536                                               & 3.2x \\ \hline
+			Poisson, $\lambda$ = 17 rq/s                               & 376 sec                                                & 16384                                               & 3.2x \\ \hline
+		\end{tabular}
+		\captionsetup{justification=centering}
+		\caption{Approximate debug window sizes for a MySQL request workload}
+		\label{table:timewindow}
+	\end{centering}
+\end{table}
+
+\noindent
+%As explained in section \ref{sec:timewindowPerformance} if the overhead of the test-container is too high, the buffer may overflow.
+%This indirectly means that the test-container and the production-container are potentially out of sync.
+We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
+As explained earlier (see section \ref{sec:timewindowPerformance}), the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
+%In table \ref{table:timewindow}, we first show the ``debug-window'' size for a fixed rate input to a MySQL server. 
+To evaluate the approximate size of the debug-window, we sent requests to a production and debug MySQL container via our network duplicator.
+% with varying input rates, buffer sizes, and instrumentation overhead.
+%As shown in Table \ref{table:timewindow}, in our first set of experiments we send a fixed rate input to a MySQL server.
+Each workload ran for about 7 minutes (10,000 ``select * from table'' queries), with varying request workloads.
+%
+We also profiled the server, and found that is able to process a max of 27 req/s\footnote{Not the same as bandwidth, 27 req/s is the maximum rate of sequential requests MySQL server is able to handle for a user session} in a single user connect session. 
+For each of our experiments we vary the buffer sizes to get an idea of debug-window. 
+Additionally, we generated a slowdown by first modeling the time taken by MySQL to process requests (27 req/s or 17req/s), and then putting an approximate sleep in the request handler.
+
+Initially, we created a connection, and sent requests at the maximum request rate the server was able to handle (27 req/s).
+We found that for overheads up-to 1.8x (approx) we experienced no buffer overflows.
+% most function tracing and profiling tools generally have an overhead of 1-1.5x for lower granularity and 2x for higher granularity tracing.
+For higher overheads the debug window had a linear increase primarily based on buffer-size, request size, and slowdown.
+
+%Requests emanating from a user will most likely be bursty in nature.
+Next, we mimic user behavior, to generate a bursty workload.
+We simulate a poisson process with an average request rate of 17 requests per second. 
+This varies the inter-request arrival time, and let's the cloned debug-container catch up with the production container during idle time-periods in between request bursts.
+We observed, that with the default buffer size (linux default pipe size is 65536), the system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
+
+We believe that with a large enough buffer size, most applications will have a sufficiently long debug-window (several minutes), to allow them to capture bug traces, and find the error.
+Buffer overflow will typically happen only for very large spikes in a connected session from the user.
+
+
+%The buffer size is configurable and for most of our case studies we kept it at 1MB.
+%Hence, this is a configuration parameter that depends on the desired window size and the workload.
+%We also tried a gaussian request distribution with request interarrival time being randomized to exhibhit a bursty behavior with high utilization. 
+%In this section we evaluate the testing window size using varying amounts of instrumentation, and the workload.
+%For the purpose of this evaluation, we keep a fixed buffer size. 
+%First we use a controlled workload rate, and gradually increase the overhead, then we use another scenario, where we keep the try to keep the same overhead, and try to increase the workload.
+%We also use real-world network packet capture data, to simulate a realistic workload and gradually increase the overhead there
+%\texttt{Nipun's note: This section still needs to be completed, I'm finishing up some of the results, before I can generate the charts}

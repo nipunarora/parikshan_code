@@ -1,30 +1,12 @@
-FILES=sandbox.tex
+FILES=sandbox-techreport.tex
 
-all: 	sandbox.pdf
+all: 	sandbox-techreport.pdf
 
-sandbox.pdf: ${FILES}
-	pdflatex sandbox.tex
-	bibtex sandbox
-	pdflatex sandbox.tex
-	pdflatex sandbox.tex
-	#dvips -o sandbox.ps -t Letter -Ppdf -G0 sandbox.dvi
-	#ps2pdf sandbox.ps sandbox.pdf
-
-ps: sandbox.ps.gz
-	@ggv sandbox.pdf &
-
-sandbox.ps.gz: ${FILES}
-	@latex sandbox.tex
-	@bibtex sandbox
-	@latex sandbox.tex
-	@latex sandbox.tex
-	@dvips -o sandbox.ps -t Letter -Pcmz -G0 sandbox.dvi
-	@ps2pdf sandbox.ps sandbox.pdf
-	@gzip -9 -f sandbox.ps
-
-pdf: sandbox.pdf
-	@ggv sandbox.pdf &
-
+sandbox-techreport.pdf: ${FILES}
+	pdflatex sandbox-techreport.tex
+	bibtex sandbox-techreport
+	pdflatex sandbox-techreport.tex
+	pdflatex sandbox-techreport.tex
 clean:
-	@rm -f sandbox.pdf sandbox.bbl *.aux *.blg *.dvi *.log *.ps
-	@rm -f sandbox.ps.gz sandbox.pdf
+	@rm -f sandbox-techreport.pdf sandbox-techreport.bbl *.aux *.blg *.dvi *.log *.ps
+	@rm -f sandbox-techreport.ps.gz sandbox.pdf

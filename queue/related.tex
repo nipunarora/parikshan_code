@@ -1,0 +1,14 @@
+\section{Related Work}
+\label{sec:related}
+
+Queuing theory has been used to solve several real-world problems. 
+In particular queuing theory has found uses in supply chain optimization.
+For example Fedex, and retailers like best-buy have used queuing theory to optimize their delivery schedules.
+In the IT field, it has been used by companies like youtube, to optimize queuing in various transaction oriented service systems.
+Similarly several other transaction based service oriented applications, are often used for optimizing, and providing service level agreement guarantees.
+
+One other area, where queuing theory has been frequently applied is for load balancing service applications.
+For example a common use-case is traffic being routed from a DNS server to numerous webservers. 
+Depending on the traffic load the DNS server acts like a proxy and forwards traffic to the webserver, which is relatively free (round robin scheme, or first in first out etc.).
+Queuing theory can help model such traffic forwarding, by suggesting more scaled out system depending on the workload, and the amount of accepted transaction processing time.
+In this paper we have extended a similar model towards our proxy buffer capacity modeling and instrumentation, in order to extend the time-window to it's maximum.

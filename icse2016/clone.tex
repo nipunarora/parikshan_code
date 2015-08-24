@@ -116,17 +116,17 @@ A second rsync is run when the container is suspended to bring both production a
 \fi
 
 %\begin{example}
-Let's imagine we are cloning production container C1 on Host H1 as debug-container C2 on Host H2. 
+Let's imagine we are cloning production container P1 on Host H1 as debug-container D1 on Host H2. 
 The initial setup requires certain safety checks and pre-processing to ensure easy cloning. 
 These include: ssh-copy-id operation for password-less rsync, checking pre-existing container ID's, version of OpenVZ etc. 
 This ensures that H1 and H2 are compatible, and ready for live-cloning.
-Next, we run an initial rsync of container C1, from Host H1 to Host H2. 
-This step does not require any suspension of C1, and copies the bulk of the container file system to the destination server (H2). 
+Next, we run an initial rsync of container P1, from Host H1 to Host H2. 
+This step does not require any suspension of P1, and copies the bulk of the container file system to the destination server (H2). 
 The next step involves checkpointing, and dumping the process in memory state to a file.
 This is what allows the container to be restarted from the same checkpointed state. 
 Since the first rsync and the memory dump are non-atomic operations, some of the files in the file system may be outdated.
 %However for sanity of the container process, it is important to restart the container from the same file system state as it was when the checkpoint was taken.
-We freeze the processes in the production-container, and take a second rsync of the ploop device of C1, to ensure both containers have the same file-system. 
+We freeze the processes in the production-container, and take a second rsync of the ploop device of P1, to ensure both containers have the same file-system. 
 Simultaneously, we setup the networking proxy and aggregation infrastructure to allow for communication from the downstream and upstream servers.
 %After this the original container can be restarted.
 Next we copy the dump file from step 3, from H1 to H2, and resume both containers.
