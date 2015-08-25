@@ -1,22 +1,4 @@
 #!/bin/sh
-# Copyright (C) 2000-2014, Parallels, Inc. All rights reserved.
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
-# vzmigrate is used for container migration to another node
 
 #PS4='${LINENO}+:${BASH_SOURCE}'
 
@@ -82,7 +64,7 @@ usage() {
 	cat << EOF
 This program is used for container migration to another node.
 Usage:
-  vzmigrate [option ...] destination_address <CTID>
+  vzclone [option ...] destination_address <CTID>
 Options:
 -r, --remove-area yes|no
 	Whether to remove container on source host after successful migration.
@@ -128,9 +110,9 @@ Options:
 
 Examples:
 	Online migration of CT #101 to foo.com:
-		vzmigrate --live foo.com 101
+		vzclone --live foo.com 101
 	Migration of CT #102 to foo.com with downtime:
-		vzmigrate foo.com 102
+		vzclone foo.com 102
 Notes:
 	This program uses ssh as a transport layer. You need to put ssh
 	public key to destination node and be able to connect without
