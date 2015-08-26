@@ -32,10 +32,10 @@ if __name__ == "__main__":
     sim = 1000000
     buf = 32000    
     lam = 0.5
-    mu = 0.1
+    mu = 0.51
     
     for x in range(0,200):
         exec_simulation(sim, lam, mu, buf)
-        #buf = buf +200
-        mu = mu + 0.02
+        buf = buf + 500
+        #mu = mu + 0.02
     

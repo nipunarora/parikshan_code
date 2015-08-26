@@ -1,6 +1,23 @@
 \section{Simulation}
 \label{sec:simulation}
 
+We ran a series of simulation with \textit{poisson} distribution of arrival and service times and modified buffer sizes for each set of runs.
+As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
+
+In the first set of simulations, we kept a constant inter-arrival rate ,service time, and increased the buffer iteratively. 
+The experiment was repeated for several different service time, and each was plotted as a different series.
+The results have been shown in Figure~\ref{fig:sim1}.
+
+In the next set of simulations, we kept a constant inter-arrival rate, buffer, and increased service time with 10~\% overhead.
+The experiment was repeated for several different buffer sizes, and each was plotted as a separate series.
+The results have been shown in Figure~\ref{fig:sim2}
+
+Based on our experiments we were able to verify that as long as the average service processing time is faster or comparable to the arrival rate (even if arrival rate is slightly faster), the buffer is unlikely to overflow, or have an extremely large debug-window (several hours).
+However, this \textit{debug-window} decreases sharply as the service processing time increases, and it is more than the arrival rate. 
+
+
+
+\iffalse
 Based on equation~\ref{eq:hitting}, we ran a number of simulations to calculate theoretical debug-window sizes based on various resource constraints. 
 As discussed earlier, the debug-window primarily depends on 3 parameters, firstly the incoming rate of requests, the overhead in the debug container, and the size of the buffer.
 In our simulations shown in Table~\ref{tab:simulation}, we ran multiple iterations with randomized input parameters within pre-defined ranges. 
@@ -57,3 +74,4 @@ Our results indicate that despite heavy overhead with a decent sized buffer, dev
 \caption{Simulation Results for Debug-Window}
 \label{tab:simulation}
 \end{table}
+\fi	

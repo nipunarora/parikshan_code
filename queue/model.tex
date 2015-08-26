@@ -55,6 +55,12 @@ This ensures that there is no buffer-overflows in the system.
 	\end{center}
 \end{figure}
 
+It is important to note however, that all simulation formulas for Kendall's notation holds true only for cases where the interarrival time is more than the service processing time. 
+Which means that on an average the system processes requests faster than they arrive. 
+Once service processing time is slower than the arrival rate, the rate at which the buffer fills up is almost linear. 
+Typically however, most systems will have service processing times considerably less than the arrival rate of requests, to ensure that the system is able to handle the load of requests coming in.
+We explain our experiments and results further in the next section.
+
 In \parikshan, this model can be extended to a cloned model as shown in figure \ref{fig:queueClonedModel}.
 The packets to both the production and the debug cloned containers are routed through a proxy which has internal buffer to account for slowdowns in request processing in the debug container. 
 Here instead of the TCP buffer, we focus on the request arrival and departure rate to and from the proxy duplicators buffer.
