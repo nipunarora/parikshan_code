@@ -1,3 +1,5 @@
+\subsection{Debug Window Size}
+\label{sec:timewindowPerformance}
 
 \begin{figure}[ht]
 	%{0.45\textwidth}
@@ -149,7 +151,7 @@
 \end{figure}
 
 \noindent
-\textbf{Debug Window Size:} We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
+\textbf{Experimental Results:} We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
 As explained earlier (see section \ref{sec:timewindowPerformance}), the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
 To evaluate the approximate size of the debug-window, we sent requests to a production and debug MySQL container via our network duplicator.
 Each workload ran for about 7 minutes (10,000 ``select * from table'' queries), with varying request workloads.
@@ -163,15 +165,26 @@ We found that for overheads up-to 1.8x (approx) we experienced no buffer overflo
 For higher overheads the debug window had a linear increase primarily based on buffer-size, request size, and slowdown.
 
 Next, we mimic user behavior, to generate a realistic workload.
-We simulate a poisson process with an average request rate of 17 requests per second. 
+We send packets using a poisson process with an average request rate of 17 requests per second to our proxy. 
 This varies the inter-request arrival time, and let's the cloned debug-container catch up with the production container during idle time-periods in between request bursts.
 We observed, that with the default buffer size (linux default pipe size is 65536), the system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
 
+\noindent
+\textbf{Simulation Results:} In our next set of experiments, we used a small simulator, which mimics a queuing SOA system~\cite{kendall,queueSystem}, with packet inter arrival rates and processing times distributed based on a poisson distribution.
+As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
+In our simulations , we kept a constant buffer size of 64GB, and iteratively increased the overhead of instrumentation, thereby decreasing the service processing time.
+Each series(set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
+This means that at 400\% overhead, the system would be running at full capacity.
+Each simulation instance was run for 1000000 seconds or 277.7 hours.
+We gradually increased the instrumentation by 10~\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
+As shown in Figure~\ref{fig:debugSim}, there is no buffer overflow in any of the experiments till the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially.
+We also modeled the debug-window size using queuing theory models to understand the debug-window better, more details can be found in our tech-report~\cite{queue}
 
 
 \noindent\fbox{%
 	\parbox{\columnwidth}{%
-		To answer \textbf{RQ2}, we found that the debug window size depends on the incoming workload, the slowdown caused due to instrumentation overhead, and the size of the buffer. We conclude that with a large enough buffer size, most applications will have a sufficiently long debug-window (several minutes), to allow them to capture bug traces, and find the error.
+		To answer \textbf{RQ2}, we found that the debug window size depends on the incoming workload, the slowdown caused due to instrumentation overhead, and the size of the buffer. 
+		We conclude that with a large enough buffer size, most applications will have a sufficiently long debug-window (several minutes), to allow them to capture bug traces, and find the error.
 		Buffer overflow will typically happen only for very large spikes in a connected session from the user.
 	}%
 }
@@ -216,12 +229,6 @@ Poisson, $\lambda$ = 17 rq/s                               & 376 sec            
 \end{centering}
 \end{table}
 \fi
-	
-
-
-\subsection{Debug Window Size}
-\label{sec:timewindowPerformance}
-
 
 
 %The buffer size is configurable and for most of our case studies we kept it at 1MB.

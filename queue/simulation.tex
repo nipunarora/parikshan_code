@@ -158,7 +158,8 @@ In our simulations , we kept a constant buffer size of 64GB, and iteratively inc
 Each series(set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
 This means that at 400\% overhead, the system would be running at full capacity.
 Each simulation instance was run for 1000000 seconds or 277.7 hours.
-We gradually increased the instrumentation by 10\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
+We gradually increased the instrumentation by 10~\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
+As shown in Figure~\ref{fig:debugSim}, there is no buffer overflow in any of the experiments till the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially
 
 In the first set of simulations, we kept a constant inter-arrival rate ,service time, and increased the buffer iteratively. 
 The experiment was repeated for several different service time, and each was plotted as a different series.
