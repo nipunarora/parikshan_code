@@ -14,8 +14,10 @@ This thread has an internal buffer, where all incoming requests are queued, and 
 The incoming request rate to the buffer is dependent on the user, and is limited by how fast the production container manages the requests (i.e. the production container is the rate-limiter).
 Whereas the outgoing rate from the buffer is dependent on how fast the debug-container processes the requests.
 %Because of instrumentation overhead in the debug-container, the outgoing rate is likely to be less than the production container.
-Instrumentation overhead in the debug-container is likely to cause an increase in the debug-container, 
-The time period till buffer overflow happens is called the \emph{debug-window}.
+Instrumentation overhead in the debug-container is likely to cause an increase in the service processing times in the debug-container.
+Production servers generally handle workloads significantly less than their capacity. 
+However, as the instrumentation overhead increases, the incoming rate of requests may eventually become more than the service processing time of the requests.
+This in turn can lead to a buffer overflow. The time period till buffer overflow happens is called the \emph{debug-window}.
 This depends on the size of the buffer, the incoming request rate, and the overhead induced in the debug-container. 
 For the duration of the debugging-window, we assume that the debug-container faithfully represents the production container. 
 Once the buffer has overflown, the production container may need to be cloned again to ensure it has the same state.
@@ -27,7 +29,7 @@ Hence, buffer overflows happens only if the requests being sent in the same conn
 For webservers, and application servers, the debugging window size is generally not a problem, as each request is a new ``connection'', hence the proxy is able to tolerate significant slowdowns.
 Database servers, and other session based services usually have small request sizes, but multiple requests can be sent in one session which is initiated by a user. 
 In such cases, the amount of calls in a single session can eventually have a cumulative effect to cause overflows.
-Photosharing, file sharing and other datasharing services transfer a lot of data in a single burst over each TCP connection. 
+Photo-sharing, file sharing and other data-sharing services transfer a lot of data in a single burst over each TCP connection. 
 These protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
 
 To further increase the \emph{debug window}, we propose load balancing debugging across multiple debug-containers, which can each get a duplicate copy of the incoming data. 
