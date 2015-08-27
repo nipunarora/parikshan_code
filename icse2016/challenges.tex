@@ -8,9 +8,9 @@ Furthermore, in offline debugging it is often difficult to capture all possible 
 \parikshan's network proxy ensures that all inputs received in the production container are also forwarded to the debug-container.
 However, concurrency based non-determinism can still lead to different execution paths in the production and debug containers.
 While the current prototype version of \parikshan is not currently handling concurrency non-determinism within the system, we believe there are several existing techniques that can be applied to tackle this problem in the context of live debugging. 
-Firstly, as long as the bug is statistically significant, it can still be caught by execution tracing mechanisms as shown in several previous approaches~\cite{statistical}.
-Furthermore, techniques like deterministic scheduling~\cite{deterministicScheduling}, can also be used to counter concurrency based non-deterministic bugs.
-Other techniques such as constraint solvers~\cite{DPOR}, can trace synchronization events in a program trace, and search through all possible execution orderings to trigger the concurrency error.
+Firstly, as long as the bug is statistically significant, it can still be caught by execution tracing mechanisms as shown in several previous approaches~\cite{Liblit:2004:CBI}.
+Furthermore, techniques like deterministic scheduling~\cite{smt:cacm}, can also be used to counter concurrency based non-deterministic bugs.
+Other techniques such as constraint solvers~\cite{dpor, best}, can trace synchronization events in a program trace, and search through all possible execution orderings to trigger the concurrency error.
 
 
 Another threat to \parikshan is that the error once detected, can be 
