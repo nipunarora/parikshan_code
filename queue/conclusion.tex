@@ -1,6 +1,5 @@
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-In this paper we have modeled upper bounds for instrumentation of debug-containers in our live debugging framework.
-The model uses queuing theory to utilize the slack available in these systems to the maximum.
-This allows for the debugger to gain as much context as possible from the program without leading to a buffer overflow.
+In this paper we have modeled relationship between resources, arrival rates, and service processing times of debug-containers, with it's corresponding debug-window in our live debugging framework.
+The model uses queuing theory to compute the slack available in the system, and shows that in a system not running at full capacity, there is significant slack available for instrumentation, which would not lead to a buffer overflow. 

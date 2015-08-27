@@ -9,7 +9,7 @@
 %In contrast with live migration, where a container is copied to a target destination, and then the original container is destroyed, the cloning process requires both containers to be actively running, and be still attached to the original network.
 %This cloning requires modification in both how compute migration is handled, and especially how the network migration is handled. 
 
-Before describing cloning in our context, let us first review some details about live migration~\cite{livemigration}. 
+Before describing cloning in our context, let us first review some details about live migration~\cite{mirkin2008containers,clark2005live, gebhart2009dynamic}. 
 Live migration refers to the process of moving a running virtual machine, or container from one server to another, without disconnecting any client or process running within the machine. 
 %It is supported by most well known Hypervisors (VMware, VirtualBox, Xen, Qemu, KVM).
 % with different amounts of efficiency.

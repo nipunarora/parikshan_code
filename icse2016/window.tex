@@ -8,11 +8,13 @@
 %This would mean that the execution of requests in the test-container will lag behind the production container. 
 %To avoid this slowdown impacting the actual production container, 
 %\noindent
+
 In the asynchronous forwarding mode, an unblocking send forwards traffic to a separate thread which manages communication to the debug-container. 
 This thread has an internal buffer, where all incoming requests are queued, and subsequently forwarded to the debug-container. 
-The incoming request rate to the buffer is dependent on how fast the production container manages the requests (i.e. the production container is the rate-limiter).
+The incoming request rate to the buffer is dependent on the user, and is limited by how fast the production container manages the requests (i.e. the production container is the rate-limiter).
 Whereas the outgoing rate from the buffer is dependent on how fast the debug-container processes the requests.
-Because of instrumentation overhead in the debug-container, the outgoing rate is likely to be less than the production container.
+%Because of instrumentation overhead in the debug-container, the outgoing rate is likely to be less than the production container.
+Instrumentation overhead in the debug-container is likely to cause an increase in the debug-container, 
 The time period till buffer overflow happens is called the \emph{debug-window}.
 This depends on the size of the buffer, the incoming request rate, and the overhead induced in the debug-container. 
 For the duration of the debugging-window, we assume that the debug-container faithfully represents the production container. 

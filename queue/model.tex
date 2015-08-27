@@ -95,6 +95,13 @@ Based on equation~\ref{eq:hitting}, we can model the expected time it would take
 Here $\mathrm{\mu_{3}}$ can be used to formulate the overhead bounds for instrumentation allowed in \texttt{livedebugging}.
 The advantage of such an approach is that in a real live scenario, we can extend the debugging window, by reducing instrumentation sampling rates(see section~\ref{sec:guided}), and avoiding the need to re-clone the system.
 
+\noindent\fbox{
+	\parbox{\columnwidth}{
+	One key point to note here is that when $\lambda$ is less than $\mu$, i.e. $\rho$ is less than 1, and buffer \textgreater \textgreater $\lambda$ the first parameter is going to tend to infinity, or we will have an extremely large hitting time. 
+	The equation does not hold true when $\rho$ is greater than 1, and the hitting time decreases exponentially as shown in the next section. 
+	}
+}
+
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{figs/queueBalanced.pdf}
@@ -148,8 +155,8 @@ E[] = relationship\ with\ request\ overhead
 \end{equation}
 
 
-Next we extend this to our asynchronous load-balanced model, the requests can be forwarded in multiple debug containers.
+We can further extend this to our asynchronous load-balanced model, the requests can be forwarded in multiple debug containers.
 This can reduce the waiting time further, for the asynchronous model the equations can be extended as follows\\ \\
 \fi
 
-In the next section we discussion our simulation and evaluation strategy to find instrumentation bounds for well known SOA applications.
+%In the next section we discussion our simulation and evaluation strategy to find instrumentation bounds for well known SOA applications.
