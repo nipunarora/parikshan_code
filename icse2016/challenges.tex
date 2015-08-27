@@ -1,7 +1,8 @@
-\section{Limitations and Threats to Validity}
+\section{Threats to Validity}
 \label{sec:limitation}
 
-The first key potential threat is \textbf{non-determinism}. 
+\noindent
+One key threat to validity of \parikshan is  \textbf{non-determinism}. 
 Non-determinism can be caused due to three main reasons (1) system configuration, (2) application input, and (3) ordering in concurrent threads.
 Live cloning of the application state ensures that both applications are in the same "system-state" and have the same configuration parameters for itself and all dependencies in it's stack.
 Furthermore, in offline debugging it is often difficult to capture all possible inputs, and hence deal with input non-determinism.
@@ -13,7 +14,7 @@ Furthermore, techniques like deterministic scheduling~\cite{smt:cacm}, can also 
 Other techniques such as constraint solvers~\cite{dpor, best}, can trace synchronization events in a program trace, and search through all possible execution orderings to trigger the concurrency error.
 
 
-Another threat to \parikshan is that the error once detected, can be 
+%Another threat to \parikshan is that the error once detected, can be 
 \iffalse
 %\textbf{Triggering \parikshan:}
 %The live cloning process of \parikshan can be triggered in various scenarios. 
@@ -75,22 +76,18 @@ Unfortunately, the current system design of \parikshan cannot capture concurrenc
 
 %\subsection{Consistency Requirements}
 %\label{sec:consistency}
-\fi
+
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{Distributed Services:}  
-Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup service, controllers and resource managers.
-\parikshan can be used on one or more containers, and can be used to clone more than one communicating service.
-Based on the nature of the service, it may be (a). Cloned, (b). Turned off or (c). allowed without any modification.
-For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propagate changes from the cloned container to the production containers.
-Similarly, services such as NTP service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
-Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
-For instance, instrumentation in a MySQL query handler, will not slowdown file-sharing or NTP services running in the same container.
 
-\textbf{Consistency Requirements}: Not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync.
+
+%\textbf{Consistency Requirements}: 
+
+Another limitation is the buffer overflow because of higher overhead. 
+However, not all debugging may require very high consistency requirements, and not all overflows would mean that the clone is suddenly out of sync. 
 In such cases the time-window can be arbitrarily long. 
-For example in MySQL read transactions, even if there is a transaction failure or an overflow, it will not effect MySQL itself.
-Even with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
-
+For example in MySQL read transactions, even if there is a transaction failure or an overflow, it will not effect MySQL state itself.
+Similarly with an overflow in some write operations, we could get a weakly consistent representation of the production system's execution.
+\fi
 

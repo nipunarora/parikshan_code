@@ -18,7 +18,7 @@ This test-container can be debugged using probes as described in~\ref{sec:trigge
 \fi
     
 %\item 
-\noindent
+
 \textbf{Record and Replay:}  
 Record and Replay systems~\cite{odr,revirt,guo2008r2, geels2007friday} have been an active area of research in the academic community for several years. 
 %Typically these systems record traces to faithfully replay the system offline.
@@ -34,26 +34,27 @@ On the other hand, in \parikshan we do not impact the production container, as w
 %Instead of synchronizing containers, we allow for slight out-of-sync execution, and check the divergence of the containers to gauge it's fidelity.
 Furthermore, unlike replay based systems, \parikshan debug-containers can tolerate some amount of divergence from the original application: i.e., the debug container may continue to run even if the analysis slightly modifies it.
   
-\noindent
-\textbf{Large Scale System Debugging}
-Another approach for production level bug diagnosis~\cite{magpie,clue,vpath} is to use light weight instrumentation to capture traces like system calls, or windows event traces.
-These techniques use end-to-end trace event stitching to capture flows across multiple tiers to infer performance bugs.
+\iffalse
+\textbf{Distributed System Debugging}
+Production systems oftem employ light weight instrumentation tools~\cite{magpie,clue,vpath} to capture traces like system calls, transaction or event traces.
+Some of these like VPath~\cite{vpath} use end-to-end trace event stitching to capture flows across multiple tiers to infer performance bugs.
 While the instrumentation for these tools have a low overhead, the corresponding granularity of the logs is also less.
 This limits the diagnosis capability of these tools, and they are only able to give a hint towards the bug root-cause rather than debug it completely.
 %Since, \parikshan does debugging on cloned containers, it can do intensive instrumentation making the diagnosis much easier.
+\fi
 
-\noindent
 \textbf{Real-Time techniques}
-In recent years, there have been approaches which are similar to \parikshan in applying real-time diagnosis on production systems.
-One of these approaches, Chaos Monkey~\cite{chaosmonkey} from Netflix which uses fault injection in real production systems to do fault tolerance testing.
-ChaosMonkey induces time-outs, resource hogs etc. to inject faults in a running system. 
+This is a category of approaches which attempt to do real-time diagnosis.
+Chaos Monkey~\cite{chaosmonkey} from Netflix uses fault injection in real production systems to do fault tolerance testing.
+It randomly injects time-outs, resource hogs etc. in production systems. 
 This allows Netflix to test the robustness of their system at scale, and avoid large-scale system crashes.  
-Another approach called AB Testing~\cite{abtesting}, probabilistically tests updates or beta releases on some percentage of users, while letting the majority of the application users work on the original system.
+Another approach called AB Testing~\cite{abtesting}, probabilistically tests updates or beta releases on some percentage of users, 
+while letting the majority of the application users work on the original system.
 AB Testing allows the developer to understand user-response to any new additions to the software, while most users get the same software.
 Unlike \parikshan, both these approaches are restricted to software testing, and directly impact the user.
 %We are inspired by the notion of perpetual testing\cite{perpetual} which advocates that software testing should be key part of the deployment phase and not just restricted to the development phase.
 
-\noindent
+
 \textbf{Live Migration \& Cloning}
 Live migration of virtual machines, facilitates fault management, load balancing, and low-level system maintenance for the administrator.
 Most existing approaches use \textit{pre-copy} approach, which copies the memory state over several iterations, and then copies the process state.

@@ -23,12 +23,12 @@ Hence simple port-mirroring and proxy mechanisms will not work for us.
 Our solution is a customized TCP level proxy, which also duplicates network traffic to the debug container, while maintaining the TCP session and state with the production container. 
 Since it works at the TCP/IP layer, the applications are completely oblivious of it.
 % and essentially works as a socket reader/writer which reads incoming TCP streams and writes these streams to two different socket connections for the production and test containers.
-In this section, we discuss two strategies (we call \textit{duplication modes}) to duplicate and forward network traffic to the debug and production containers.
+In this section, we discuss two strategies, we call \textit{duplication modes} to forward network traffic to the debug and production containers:
 % we then explain a network aggregation mechanism which handles communication of the cloned debug-containers with upstream servers.  
 %\input{algorithm}
 
-\subsubsection{Duplication Modes}
-\label{sec:dupMode}
+%\subsubsection{Duplication Modes}
+%\label{sec:dupMode}
 
 %\begin{enumerate}[leftmargin=*]
 %\begin{enumerate}[leftmargin=*]
@@ -69,7 +69,7 @@ Next we discuss an asynchronous packet forwarding scheme, which avoids any slowd
 %since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
 
 %\item 
-\textbf{Asynchronous Packet Forwarding Model}: 
+\textbf{Asynchronous Packet Forwarding Mode}: 
 %In the synchronized mode the debug container, can impact the speed of the production container as well. 
 %The main reason for this is because of blocking sends being used to forward packets from the client to the debug-container and production container by the same sequential process.
 In the asynchronous packet forwarding mode (see Figure \ref{fig:duplicator}): we use 4 threads T1, T2, T3, T4 to manage each incoming connection to the proxy.

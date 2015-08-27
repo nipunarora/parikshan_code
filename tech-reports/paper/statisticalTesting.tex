@@ -1,17 +1,43 @@
-\section{Application: Statistical Debugging}
+\section{Applications of Live Debugging}
 \label{statistical}
+The concept of debugging often encompasses more than just localizing the bug, but also includes attempted fixes, tests of those fixes, and patching.
+Owing to space constraints, we briefly discuss here how existing techniques can be directly applied in \parikshan. 
+Further details about this can be found in our tech-report~\cite{parikshanTR}
 
-
+\noindent
+\textbf{Statistical Testing:}
 One well known technique for debugging production application is statistical debugging. 
 This is achieved by having predicate profiles from both successful and failing runs of a program and applying statistical techniques to pinpoint the cause of the failure.
 The core advantage of statistical debugging is that the sampling frequency of the instrumentation can be decreased to reduce the instrumentation overhead.
 Despite it's advantages the instrumentation frequency for such debugging to be successful needs to be statistically significant. 
 Furthermore, unlike \parikshan, statistical debugging will impose an overhead on the actual application. 
-
 We believe, that statistical debugging can be successfully applied in the debug-container when an error has been observed. 
-The entire scope of such a live debugging mechanism is out of scope of this paper, however for completeness sakes we have briefly described it's application here. 
+%The entire scope of such a live debugging mechanism is out of scope of this paper, however for completeness sakes we have briefly described it's application here. 
 \parikshan can complement statistical debugging in several ways to make it more effective, while at the same time isolating the instrumentation impact on the production container.
-Firstly, using dynamic instrumentation tools \parikshan can instrument as well as modify the predicates that are instrumented.
-Further the instrumentation can be increased or decreased dynamically, by taking the amount of buffer currently utilized. 
-The buffer utilization is an indication of how much the debug-container lags behind the production container, and how long it would take for the buffer to overflow.
+%Firstly, using dynamic instrumentation tools \parikshan can instrument as well as modify the predicates that are instrumented.
+%Further the instrumentation can be increased or decreased dynamically, by taking the amount of buffer currently utilized. 
+%The buffer utilization is an indication of how much the debug-container lags behind the production container, and how long it would take for the buffer to overflow.
 
+\noindent
+\textbf{Record and Replay:}
+%Error logs in applications, or monitoring tools~\cite{clue,magpie,dtrace}, can be used to do light-weight anomaly detection in production systems.
+%However, these techniques are usually insufficient to capture the context of the bug.
+Record and Replay techniques have been proposed to replay production site bugs. 
+However, they are not yet used in practice as the overhead they can impose unacceptable overheads in the service processing times.
+\parikshan debug containers can be used to do recording as long as the overhead does not lead to buffer overflows
+
+\noindent
+\textbf{Distributed Debugging:}  
+Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup service, controllers and resource managers.
+\parikshan can be used on one or more containers, and can be used to clone more than one communicating service.
+Based on the nature of the service, it may be (a). Cloned, (b). Turned off or (c). allowed without any modification.
+For example, storage services supporting a ``debug-container'' need to be cloned or turned off(depending on debugging environment) as they would propagate changes from the cloned container to the production containers.
+Similarly, services such as NTP service can be allowed, as they are publish\/subscribe systems and the debug container cannot impact it in anyway.
+Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
+For instance, instrumentation in a MySQL query handler, will not slowdown file-sharing or NTP services running in the same container.
+
+\noindent
+\textbf{Patch Testing}
+Bug Fixes and patches to resolve errors, often need to undergo testing in the offline environment, and are not guaranteed to perform correctly.
+Patches can be made to the debug-container instead. 
+The fix can be traced and observed if it is correctly working, before moving it to the production container.

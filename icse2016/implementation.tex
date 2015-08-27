@@ -12,14 +12,17 @@
 %Users using \parikshan may put resource restriction as required.
 %\parikshan also requires a number of commonly available linux modules to allow for network connectivity and 
 %\noindent
-\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32.
-We implemented the system in 3 different configurations: 
-(1). We applied \parikshan 's internal mode configuration by installing it in a single host OS VM with Intel i7 CPU, with 4 Cores, and 16GB RAM. 
+\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32, and leverage OpenVZ tools~\cite{vzctl}~\cite{mirkin2008containers} to support cloning.
+To make \textbf{live cloning} easier and faster, we used OpenVZ's \textit{ploop} devices~\cite{ploop} as the container disk layout. 
+\textit{Ploop} devices are a variant of disk loopback devices where the entire file system of the container is stored as a single file. 
+This allows for easier snapshots/checkpoints, as \textit{ploop} ensures separation of inodes of each container file system.
+
+We applied \parikshan 's \textbf{internal mode} configuration by installing it in a single host OS VM with Intel i7 CPU, with 4 Cores, and 16GB RAM. 
 %\parikshan was installed on multiple VM's running on the host OS using KVM based virtualization. 
 Containers were cloned within the machine, with a separate VM acting as the client.
 We used NAT, and IP namespaces for network access to the VM's.
-(2). We implemented our system's external mode on the base kernel in identical host nodes. 
-Each of these host nodes have an Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
+The \textbf{external mode} was built on the base kernel in identical host nodes with Intel Core 2 Duo Processor, 8GB of RAM, and ran Centos 6.5 with Linux Kernel 2.6.32.
+
 While the current virtualization is based on containers, we believe that \parikshan can easily be applied to traditional virtualization softwares where live migration has been further optimized.
 The reason for choosing a container based implementation was that containers take much less resources in comparison to traditional VM's.
 %(3). To verify our implementation in a enterprise level public cloud provider, we also implemented a prototype on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}).

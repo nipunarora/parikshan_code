@@ -17,6 +17,7 @@
 \usepackage{xspace}
 \usepackage{enumitem}
 \usepackage{adjustbox}
+\usepackage[most]{tcolorbox}
 
 \title{\Large \bf Parikshan\xspace: Live Debugging of Production Systems in Isolation}
 \input{usenix_authors}
@@ -27,15 +28,27 @@
 \pagestyle{plain}
 \pagenumbering{roman}
 
-\maketitle
-\input{abstract}
-
 \newcommand{\iprobe}{\texttt{iProbe}\xspace}
 \newcommand{\parikshan}{\texttt{Parikshan}\xspace}
-\newcommand{\comment}[1]{}
+\newcommand{\livedebugging}{\textit{live debugging}\xspace}
+\newcommand{\debugcontainer}{\textit{debug container}\xspace}
+%\newcommand{\comment}[1]{}
 \newtheorem{example}{Example}
 \def\infinity{\rotatebox{90}{8}}
 
+\maketitle
+\input{abstract}
+
+\input{abstract}
+
+% A category with the (minimum) three required fields
+%\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+%\category{D.2.5}{Testing and Debugging}[distributed debugging, tracing, monitoring]
+
+%\terms{Theory}
+
+%\keywords{software debugging, live cloning, network duplication}
 
 \input{introduction}
 %\input{introduction_alternate}

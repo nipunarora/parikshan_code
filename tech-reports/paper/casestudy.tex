@@ -1,6 +1,25 @@
 \section{Case Studies}
 \label{sec:casestudy}
+\begin{table*}[ht!]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|r|r|c|}
+			\hline
+			{\bf \begin{tabular}[c]{@{}c@{}}Bug \\ Type\end{tabular}} & {\bf \begin{tabular}[c]{@{}c@{}}Bug \\ Desc\end{tabular}} & {\bf Application} & {\bf \begin{tabular}[c]{@{}c@{}}Tool \\ Used\end{tabular}} & {\bf \begin{tabular}[c]{@{}c@{}}Debug \\ Mechanism\end{tabular}} & \multicolumn{1}{c|}{{\bf \begin{tabular}[c]{@{}c@{}}Slow-\\ down\end{tabular}}} & \multicolumn{1}{c|}{{\bf \begin{tabular}[c]{@{}c@{}}Nodes \\ Cloned\end{tabular}}} & {\bf \begin{tabular}[c]{@{}c@{}}Comments/ \\ Bug Caught\end{tabular}} \\ \hline
+			\multirow{3}{*}{{\bf \begin{tabular}[c]{@{}c@{}}Performance \\ Bug\end{tabular}}} & \#15811 & MySQL & iProbe & Exec. Trace & 1.5x & 1 & Yes \\ \cline{2-8} 
+			& \#45464 & Apache & iProbe & Exec. Trace & 1.4x & 1 & Yes \\ \cline{2-8} 
+			& \#49491 & MySQL & iProbe & Exec. Trace & 1.8x & 1 & Yes \\ \hline
+			\multirow{2}{*}{{\bf \begin{tabular}[c]{@{}c@{}}Memory \\ Leak\end{tabular}}} & Injected & Glassfish & \begin{tabular}[c]{@{}c@{}}VisualVM/ \\ mTrace\end{tabular} & \begin{tabular}[c]{@{}c@{}}Memory \\ Profiling\end{tabular} & 3x & 1 & Yes \\ \cline{2-8} 
+			& Injected & MySQL & Valgrind & memcheck & N.A & 1 & \begin{tabular}[c]{@{}c@{}}Yes, with \\ overflows\end{tabular} \\ \hline
+			\multirow{2}{*}{{\bf \begin{tabular}[c]{@{}c@{}}Config. \\ Errors\end{tabular}}} & DNS & JBOSS & DTrace & Tracing & 1.3-4x & 2 & Yes \\ \cline{2-8} 
+			& Max no. of threads & MySQL & DTrace & Tracing & 1.5x & 2 & Yes \\ \hline
+		\end{tabular}
+	}
+	\caption{Case-Study of production system bugs, with approximate slowdowns, debug mechanisms, and tools used.}
+	\label{table:casestudy}
+\end{table*}
 
+\iffalse
 \begin{table*}[ht!]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
@@ -20,7 +39,7 @@
 \end{tabular}\caption{Case-Study of production system bugs, with approximate slowdowns, debug mechanisms, and tools used.}
 \label{table:casestudy}
 \end{table*}
-
+\fi
 %Here we show how \parikshan can be applied to some real-life bugs.
 %Table \ref{table:casestudy} shows several bugs which we debugged using \parikshan, and the various techniques we used to localize the bug.
 %Parikshan enables the users to freely run any test-case in the test-container while not effecting the production container. 

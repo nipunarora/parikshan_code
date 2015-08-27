@@ -1,6 +1,6 @@
 \begin{figure}[ht]
   \centering
-\begin{adjustbox}{max size={.65\textwidth}}
+\begin{adjustbox}{max size={.45\textwidth}}
     \begin{tikzpicture}
       \begin{axis}[
         ybar stacked,
@@ -26,7 +26,7 @@
       \end{axis}
     \end{tikzpicture}
   \end{adjustbox}
-  \captionsetup{justification=centering}
+  %\captionsetup{justification=centering}
   \caption{Suspend time for live cloning, when running a representative benchmark}
   \label{fig:stats}
 \end{figure}
@@ -61,3 +61,4 @@ We found that we did not experience any timeouts or errors for the requests in t
 However, this did slowdown requests in the workload. 
 This confirmed our hypothesis that short suspend times are largely not visible/have minimal performance impact to the user, as they are within the time out range of most applications.
 Further a clean network migration process ensures that connections are not dropped, and the workload is executed successfully.
+
