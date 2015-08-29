@@ -24,17 +24,17 @@ Once the buffer has overflown, the production container may need to be cloned ag
 
 %\noindent
 The debug window size also depends on the application behavior, in particular how it launches TCP connections. 
-\parikshan generates a pipe for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in the application.
+\parikshan generates a pipe buffer for each TCP connect call, and the number of pipes are limited to the maximum number of connections allowed in the application.
 Hence, buffer overflows happens only if the requests being sent in the same connection overflow the queue.
 For webservers, and application servers, the debugging window size is generally not a problem, as each request is a new ``connection'', hence the proxy is able to tolerate significant slowdowns.
 Database servers, and other session based services usually have small request sizes, but multiple requests can be sent in one session which is initiated by a user. 
-In such cases, the amount of calls in a single session can eventually have a cumulative effect to cause overflows.
-Photo-sharing, file sharing and other data-sharing services transfer a lot of data in a single burst over each TCP connection. 
-These protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
+In such cases, the amount of calls in a single session running at capacity may eventually have a cumulative effect to cause overflows.
+%Photo-sharing, file sharing and other data-sharing services transfer a lot of data in a single burst over each TCP connection. 
+%These protocols will have an overflow relatively sooner, and will be able to tolerate only small amounts of slowdown. 
 
 To further increase the \emph{debug window}, we propose load balancing debugging across multiple debug-containers, which can each get a duplicate copy of the incoming data. 
-This would mean that there are multiple threads handling the incoming connection, one for the production container, and one for each of the debug containers.
-We believe that such a strategy would significantly reduce the chance of a buffer overflow in cases where the debug-container is significantly slower.
+For instance, debug-container 1 could have 50\% of the instrumentation, and the rest to debug-container 2.
+We believe such a strategy would significantly reduce the chance of a buffer overflow in cases where heavy instrumentation is needed.
 We evaluate debug-window overflows in section~\ref{sec:timewindowPerformance}.
 
 %\iffalse

@@ -45,9 +45,9 @@
 \noindent
 \textbf{Real-World application, and workloads:}
 %To evaluate the suspend time in real-world scenarios, we tested our cloning operation on real-world applications, running a realistic workload.
-In figure~\ref{fig:stats}, we show the suspend times for five well known applications - Apache, Thttpd, TradeBeans, TradeSoap, PetStore. 
+In figure~\ref{fig:stats}, we show the suspend times for five well known applications. 
 %both internal and external mode while comparing it with a production container, that is idle vs. a container which is running an apache hog benchmark \cite{httperf} on it. 
-For Apache, and thttpd which are web-servers, we ran the httperf~\cite{httperf} hog benchmark. 
+For Apache and thttpd, which are web-servers, we ran the httperf~\cite{httperf} hog benchmark. 
 The hog benchmark tries to compute max throughput of the web-server, by sending a large number of concurrent requests.
 Tradebeans and Tradesoap are both part of the dacapo~\cite{dacapo} benchmark ``DayTrader'' application.
 These are realistic workloads, which run on a multi-tier trading application provided by IBM. 
@@ -60,5 +60,5 @@ However, for heavy workloads in more memory intensive application servers such a
 We found that we did not experience any timeouts or errors for the requests in the workload\footnote{In case of packet drops, requests are resent both at the TCP layer, and the application layer. This slows down the requests for the user, but does not drop them}.
 However, this did slowdown requests in the workload. 
 This confirmed our hypothesis that short suspend times are largely not visible/have minimal performance impact to the user, as they are within the time out range of most applications.
-Further a clean network migration process ensures that connections are not dropped, and the workload is executed successfully.
+Further a clean network migration process ensures that connections are not dropped, and are executed successfully.
 

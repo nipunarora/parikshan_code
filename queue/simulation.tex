@@ -151,27 +151,27 @@
 \end{figure*}
 
 
-
-We ran a series of simulation with \textit{poisson} distribution of arrival and service times and modified buffer sizes for each set of runs.
-As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
-In our simulations , we kept a constant buffer size of 64GB, and iteratively increased the overhead of instrumentation, thereby decreasing the service processing time.
+Overall it was difficult to observe systematic behavior in a live system to understand the decay rate of the debug-window. 
+In our next set of experiments, we use a discrete event simulation of the M\/M\/1 queue that can easily be modified for different arrival and service distributions of SOA applications, with a finite capacity.
+The M\/M\/1 is the classic queuing model based on kendall's notation~\cite{kendall1953}, and is often used to model SOA applications, with single buffer based queues.
+Essentially in our simulator, we are sending and processing requests, based on a poisson distribution, with a finite buffer capacity.
+%As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
+In our simulations (see Figure~\ref{fig:debugSim}), we kept a constant buffer size of 64GB, and iteratively increased the overhead of instrumentation, thereby decreasing the service processing time.
 Each series(set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
-This means that at 400\% overhead, the system would be running at full capacity.
+This means that at 400\% overhead, the system would be running at full capacity(for stable systems,  SOA applications generally use much less of the system than full capacity).
 Each simulation instance was run for 1000000 seconds or 277.7 hours.
 We gradually increased the instrumentation by 10~\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
-As shown in Figure~\ref{fig:debugSim}, there is no buffer overflow in any of the experiments till the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially
+As shown there is no buffer overflow in any of the simulations till the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially.
+Since beyond 400\% overhead, the system is over-capacity, the queue will start filling up fairly quickly. 
+This clarifies the behavior we observed in our experiments, where for lower overheads (1.8-3.2x) we did not observe any overflow, but beyond a certain point we observed that the buffer would overflow fairly quickly.
+Also as shown in the system, since the buffer size is significantly larger than the packet arrival rate, it takes some time for the buffer to overflow (several hours).
+We also believe that while most systems will run significantly under capacity, large buffer sizes can ensure that our debug-container may be able to handle short bursts in the workload.
+However,  a system running continuously at capacity is unlikely to tolerate significant instrumentation overhead.
+For more details regarding queuing theory models, our detailed simulations, please have a look at our extended tech-report tech-report~\cite{parikshanQueue}.
 
-In the first set of simulations, we kept a constant inter-arrival rate ,service time, and increased the buffer iteratively. 
-The experiment was repeated for several different service time, and each was plotted as a different series.
-The results have been shown in Figure~\ref{fig:sim1}.
-
-In the next set of simulations, we kept a constant inter-arrival rate, buffer, and increased service time with 10~\% overhead.
-The experiment was repeated for several different buffer sizes, and each was plotted as a separate series.
-The results have been shown in Figure~\ref{fig:sim2}
-
-Based on our experiments we were able to verify that as long as the average service processing time is faster or comparable to the arrival rate (even if arrival rate is slightly faster), the buffer is unlikely to overflow, or have an extremely large debug-window (several hours).
-However, this \textit{debug-window} decreases sharply as the service processing time increases, and it is more than the arrival rate. 
-
+\begin{tcolorbox}[breakable, enhanced]
+		To answer \textbf{RQ2}, we found that the debug-container can stay in a stable state without any buffer overflows, as long as the instrumentation in the cloned system does not cause the service times to become less than the request arrival rate . Furthermore, a large buffer size will allow us to handle short bursts in the workload until the system returns back to stable state. 
+\end{tcolorbox}
 
 
 \iffalse

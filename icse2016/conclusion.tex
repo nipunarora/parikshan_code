@@ -1,3 +1,5 @@
+
+\vspace{-2mm}
 \section{Conclusion \& Future Work}
 \label{sec:conclusion}
 
@@ -8,15 +10,15 @@
 \parikshan is a novel framework to debug systems in real-time allowing for fast bug resolution.
 We have shown the applicability of \parikshan in  7 real-world case studies, and shown how it can be used to quickly localize the error.
 
-In the future, we wish to explore \parikshan further in 3 key areas: (1). Application: we aim to apply our system to real-time intrusion detection, and statistical debugging.
+In the future, we wish to explore \parikshan further in 3 key areas: (1). Application: we aim to apply our system to real-time intrusion detection and statistical debugging.
 (2). Analysis: we wish to define ``real-time'' data analysis techniques for traces and instrumentation done in \parikshan.
 %We believe with streaming data analytic techniques, we can do much better than execution tracing/profiling.
-(3). Optimize Live Cloning: we plan to reduce the suspend time of ``live cloning'', by applying optimizations suggested in several recent works in live migration.
-We also implemented a prototype of \parikshan on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}), we plan to use this prototype in future publications for scaled out testing. 
+(3). We plan to reduce the suspend time of live cloning, by utilizing several recent works in live migration.
+We also tested \parikshan on Google's Cloud Infrastructure (Google Compute~\cite{gcompute}) and plan to use this for future work. 
 %Running a clone in the same machine as the production container opens several venues such as copy-on-write migration, and asynchronous container syncing etc.
 
-An extended version of the paper is present in CUCS Tech Reports~\cite{parikshanTR,parikshan}, and all source code is available on github~\cite{github} 
-Kaiser is funded in part by NSF CCF-1302269 and CCF-1161079
+An extended version of the paper is present in CUCS Tech Reports~\cite{parikshanTR,parikshanQueue}, details about the project, and source code is available on github~\cite{github}. 
+Kaiser is funded in part by NSF CCF-1302269 and CCF-1161079.
 %comment{
 %We would like to acknowledge Qiang Xu, Abhishek Sharma, and Pallavi Joshi for their insight and feedback in designing \parikshan, and in the evaluation of this technology.
 %The authors are affiliated with NEC Labs, Princeton, Google Inc, and Columbia University. 

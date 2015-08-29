@@ -1,4 +1,5 @@
 
+
 \section{Implementation}
 \label{sec:implementation}
 
@@ -12,7 +13,8 @@
 %Users using \parikshan may put resource restriction as required.
 %\parikshan also requires a number of commonly available linux modules to allow for network connectivity and 
 %\noindent
-\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}, with Centos 6.5 with Linux Kernel 2.6.32, and leverage OpenVZ tools~\cite{vzctl}~\cite{mirkin2008containers} to support cloning.
+\parikshan is built on top of user-space container virtualization software, OpenVZ~\cite{openvz}. 
+The base Linux Kernel is 2.6.32(Centos 6.5), and leverages OpenVZ tools~\cite{vzctl}~\cite{mirkin2008containers} to support cloning.
 To make \textbf{live cloning} easier and faster, we used OpenVZ's \textit{ploop} devices~\cite{ploop} as the container disk layout. 
 \textit{Ploop} devices are a variant of disk loopback devices where the entire file system of the container is stored as a single file. 
 This allows for easier snapshots/checkpoints, as \textit{ploop} ensures separation of inodes of each container file system.

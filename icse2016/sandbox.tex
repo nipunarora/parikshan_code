@@ -26,8 +26,10 @@
 \usepackage{adjustbox}
 \usepackage[most]{tcolorbox}
 
+\pgfplotsset{compat=1.10}
 
-\addtolength{\columnsep}{-1mm}
+
+\addtolength{\columnsep}{-1.5mm}
 \addtolength{\belowcaptionskip}{-1pt}
 \setlength{\parskip}{3pt}
 \setlength{\textfloatsep}{5pt}
@@ -59,10 +61,11 @@
 % A category with the (minimum) three required fields
 %\category{H.4}{Information Systems Applications}{Miscellaneous}
 %A category including the fourth, optional field follows...
-\category{D.2.5}{Testing and Debugging}[distributed debugging, tracing, monitoring]
+\vspace{-2pt}
+\category{D.2.5}{Testing \& Debugging}[debugging, tracing, monitoring]
 
 %\terms{Theory}
-
+\vspace{-4pt}
 \keywords{software debugging, live cloning, network duplication}
 
 \input{introduction}
@@ -74,13 +77,13 @@
 %\input{network-issues}
 \input{casestudy}
 \input{evaluation}
-\input{statisticalTesting}
+\input{applications}
 \input{related}
 \input{challenges}
 %\input{futurework}
 \input{conclusion}
 
-
+\pagebreak
 %SIGMETRICS - ACM
 %
 % The following two commands are all you need in the
@@ -93,10 +96,10 @@
 % latex bibtex latex latex
 % to resolve all references
 
-\footnotesize{
+
 \bibliographystyle{acm}
 \bibliography{sandbox}
-}
+
 
 %\theendnotes
 

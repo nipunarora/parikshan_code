@@ -9,9 +9,8 @@ To evaluate the performance of \parikshan, we pose and answer the following rese
 \subsection{Live Cloning Performance}
 \label{sec:performance}
 
-As explained in section \ref{sec:design}, live cloning requires a small suspend time, which has minimal impact on users.
-Suspending is necessary to ensure that both containers are in the exact same system state.
-Broadly, suspend time during live cloning can be divided in 4 parts: 
+As explained in section \ref{sec:design}, a short suspend time during live cloning is necessary to ensure that both containers are in the exact same system state.
+The suspend time during live cloning can be divided in 4 parts: 
 (1) Suspend \& Dump: time taken to pause and dump the container, 
 (2) Pcopy after suspend: time required to complete rsync operation 
 (3) Copy Dump File: time taken to copy an initial dump file.
@@ -26,7 +25,7 @@ To evaluate ``live cloning'', we ran a micro-benchmark of I/O operations, and ev
 \iffalse
 \noindent\fbox{%
 	\parbox{\columnwidth}{%
-		To answer \textbf{RQ1}, live cloning introduces a short suspend time in the production container, the duration of the suspend time depends on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take very less. Additionally, we ran live cloning on some real world applications and found suspend time to vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads. Live cloning can be viewed as an amortized cost paid upfront, instead of recording overhead throughout the execution. For our future work, we aim to reduce suspend time, rate-limiting of incoming requests in the proxy, or copy-on-write mechanisms between the production container and the clone.
+		To answer \textbf{RQ1}, live cloning introduces a short suspend time in the production container, the duration of the suspend time depends on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take very less. Additionally, we ran live cloning on some real world applications and found suspend time to vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads. Live cloning can be viewed as an amortized cost paid upfront, instead of recording overhead throughout the execution. A production-quality implementation could reduce suspend time further by rate-limiting requests, or employing faster shared file systems.
 	}%
 }
 To answer {RQ1}, live cloning introduces a short suspend time in the production container dependent on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take very less. Suspend times in real workload on real-world systems vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads. For our future work, we aim to reduce suspend time, rate-limiting of incoming requests in the proxy, or copy-on-write mechanisms already available in several existing live migration solutions.
@@ -35,7 +34,7 @@ To answer {RQ1}, live cloning introduces a short suspend time in the production 
 
 \noindent
 \begin{tcolorbox}[breakable, enhanced]
-	To answer {RQ1}, live cloning introduces a short suspend time in the production container dependent on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take very less. Suspend times in real workload on real-world systems vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads. For our future work, we aim to reduce suspend time, rate-limiting of incoming requests in the proxy, or copy-on-write mechanisms already available in several existing live migration solutions.
+	To answer {RQ1}, live cloning introduces a short suspend time in the production container dependent on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take much less. Suspend times in real workload on real-world systems vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads.  A production-quality implementation could reduce suspend time further by rate-limiting incoming requests in the proxy, or copy-on-write mechanisms, and faster shared file system/storage devices already available in several existing live migration solutions.
 \end{tcolorbox}
 
 %Other approaches include triggering page fault for the dirty bits which were not copied over.

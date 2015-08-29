@@ -1,11 +1,4 @@
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{figs/aggregator.pdf}
-%    \captionsetup{justification=centering}
-    \caption{Description of the Network Aggregator. Thread 1 executes step [1,3], Thread 2 step [2,4], and Thread 3 step [5], and Thread 4 step [6]}
-    \label{fig:aggregator}
-  \end{center}
-\end{figure}
+
 
 \subsection{Proxy Network Aggregator \& Replay }
 \label{sec:proxyAggregator}
@@ -32,3 +25,12 @@ We use a fuzzy checking mechanism using the hash value of the data being sent to
 Each queue has a short wait time to check against incoming connections, this allows us to match slightly out of order connections.
 In case a connection cannot be correlated, we send a TCP\_FIN, to close the connection, and inform the debugger.
 %In case a connection cannot be correlated, we allow the connection to time out and send a TCP\_FIN.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.4\textwidth]{figs/aggregator.pdf}
+		%    \captionsetup{justification=centering}
+		\caption{Description of the Network Aggregator. Thread 1 executes step [1,3], Thread 2 step [2,4], and Thread 3 step [5], and Thread 4 step [6]}
+		\label{fig:aggregator}
+	\end{center}
+\end{figure}

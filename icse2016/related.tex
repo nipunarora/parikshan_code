@@ -1,3 +1,4 @@
+
 \section{Related Work}
 \label{sec:related}
 
@@ -7,20 +8,20 @@
 %\begin{itemize}[leftmargin=*]
 \iffalse  
 %\item 
-\textbf{Software Debugging}  
+\textbf{Software Debugging:}  
 In the development phase, it is common to employ debugging tools such as gnu debugger \cite{gdb}, valgrind \cite{valgrind} or just using print statements etc.
 Several development suites\cite{eclipse, visual_studio, intel_suite} often come with inbuilt debugging capabilities, to assist developers to understand their code, and debug it as they develop new applications.
 In most cases these tools allow developers to look at the execution traces, and to insert watchpoints or breakpoints.
 In addition they allow developers to understand the context of the application by looking at variable values at different points.
-Unfortunately, this practice cannot be followed in production environments, as these tools have a high overhead.  
-\parikshan focuses on this problem by allowing users to do live debugging of the application by cloning the production state, to produce a test-container.
-This test-container can be debugged using probes as described in~\ref{sec:trigger} to give valuable insight to the developer.
+Unlike \parikshan, this practice cannot be followed in production environments, as these tools have a high overhead.  
+%\parikshan focuses on this problem by allowing users to do live debugging of the application by cloning the production state, to produce a test-container.
+%This test-container can be debugged using probes as described in~\ref{sec:trigger} to give valuable insight to the developer.
 \fi
     
 %\item 
 
-\textbf{Record and Replay:}  
-Record and Replay systems~\cite{odr,revirt,guo2008r2, geels2007friday} have been an active area of research in the academic community for several years. 
+\textbf{Record and Replay Systems:}  
+Record and Replay~\cite{odr,revirt,guo2008r2, geels2007friday} have been an active area of research in the academic community for several years. 
 %Typically these systems record traces to faithfully replay the system offline.
 These systems offer highly faithful re-execution in lieu of performance overhead. 
 For instance ODR~\cite{odr} reports 1.6x, and ~\cite{aftersight} reports 1.35x overhead, with much higher worst-case overheads.
@@ -28,14 +29,14 @@ For instance ODR~\cite{odr} reports 1.6x, and ~\cite{aftersight} reports 1.35x o
 
 Among record and replay systems, the work most closely related to ours is aftersight~\cite{aftersight}. 
 Aftersight records a production system, and replays it concurrently in a parallel VM.
-While both Aftersight and \parikshan allow debuggers an almost real-time diagnosis facility, aftersight suffers from recording overhead in the production VM .
-Additionally, it needs diagnosis VM to catch up with the production VM, which further slows down the application.
+While both Aftersight and \parikshan allow debuggers an almost real-time diagnosis facility, Aftersight suffers from recording overhead in the production VM .
+Additionally, it needs the diagnosis VM to catch up with the production VM, which further slows down the application.
 On the other hand, in \parikshan we do not impact the production container, as we only duplicate the incoming traffic instead of recording.
 %Instead of synchronizing containers, we allow for slight out-of-sync execution, and check the divergence of the containers to gauge it's fidelity.
 Furthermore, unlike replay based systems, \parikshan debug-containers can tolerate some amount of divergence from the original application: i.e., the debug container may continue to run even if the analysis slightly modifies it.
   
 \iffalse
-\textbf{Distributed System Debugging}
+\textbf{Distributed System Debugging:}
 Production systems oftem employ light weight instrumentation tools~\cite{magpie,clue,vpath} to capture traces like system calls, transaction or event traces.
 Some of these like VPath~\cite{vpath} use end-to-end trace event stitching to capture flows across multiple tiers to infer performance bugs.
 While the instrumentation for these tools have a low overhead, the corresponding granularity of the logs is also less.
@@ -43,12 +44,12 @@ This limits the diagnosis capability of these tools, and they are only able to g
 %Since, \parikshan does debugging on cloned containers, it can do intensive instrumentation making the diagnosis much easier.
 \fi
 
-\textbf{Real-Time techniques}
+\textbf{Real-Time techniques:}
 This is a category of approaches which attempt to do real-time diagnosis.
 Chaos Monkey~\cite{chaosmonkey} from Netflix uses fault injection in real production systems to do fault tolerance testing.
 It randomly injects time-outs, resource hogs etc. in production systems. 
 This allows Netflix to test the robustness of their system at scale, and avoid large-scale system crashes.  
-Another approach called AB Testing~\cite{abtesting}, probabilistically tests updates or beta releases on some percentage of users, 
+Another approach called AB Testing~\cite{abtesting} probabilistically tests updates or beta releases on some percentage of users, 
 while letting the majority of the application users work on the original system.
 AB Testing allows the developer to understand user-response to any new additions to the software, while most users get the same software.
 Unlike \parikshan, both these approaches are restricted to software testing, and directly impact the user.
@@ -56,13 +57,13 @@ Unlike \parikshan, both these approaches are restricted to software testing, and
 
 
 \textbf{Live Migration \& Cloning}
-Live migration of virtual machines, facilitates fault management, load balancing, and low-level system maintenance for the administrator.
-Most existing approaches use \textit{pre-copy} approach, which copies the memory state over several iterations, and then copies the process state.
+Live migration of virtual machines facilitates fault management, load balancing, and low-level system maintenance for the administrator.
+Most existing approaches use a \textit{pre-copy} approach, which copies the memory state over several iterations, and then copies the process state.
 This includes hypervisors such as VMWare~\cite{nelson2005fast}, Xen~\cite{clark2005live}, and KVM~\cite{kivity2007kvm}.
-VM Cloning, on the other hand, is usually done offline by taking a snapshot of a suspended/ shutdown VM, and restarting it in another machine.
+VM Cloning, on the other hand, is usually done offline by taking a snapshot of a suspended/ shutdown VM, and restarting it on another machine.
 Cloning is helpful for scaling out applications, which use multiple instances of the same server.
 There has also been limited work towards live cloning. 
-For example Sun et al.~\cite{Sun:2009:FLC:1581383.1582148} use copy-on-write mechanism, to create a duplicate of the target VM without shutting it down.
+For example Sun et al.~\cite{Sun:2009:FLC:1581383.1582148} use copy-on-write mechanisms, to create a duplicate of the target VM without shutting it down.
 Similarly, another approach ~\cite{gebhart2009dynamic} uses live-cloning to do cluster-expansion of their system.
 However, unlike \parikshan, both these approaches, start a VM with a new network identity, and may require re-configuration of the duplicate node.
  % \item \textbf{A-B Testing}

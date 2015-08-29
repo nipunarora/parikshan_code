@@ -1,4 +1,14 @@
- \subsection{Clone Manager} 
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[width=0.45\textwidth]{figs/ModesCloning.pdf}
+		\caption{External and Internal Mode for live cloning: P1 is the production, and D1 is the debug container, the clone manager interacts with an agent which has drivers to implement live cloning.}
+		\label{fig:modesCloning}
+	\end{center}
+\end{figure}
+
+
+\subsection{Clone Manager} 
 \label{sec:CloneManager}
 
 %\subsubsection{How does cloning work?}
@@ -11,7 +21,7 @@
 
 \iffalse
 Before describing cloning in our context, let us first review some details about live migration~\cite{mirkin2008containers,clark2005live, gebhart2009dynamic}. 
-Live migration refers to the process of moving a running virtual machine, or container from one server to another, without disconnecting any client or process running within the machine. 
+Live migration refers to the process of moving a running virtual machine, or container, from one server to another, without disconnecting any client or process running within the machine. 
 %It is supported by most well known Hypervisors (VMware, VirtualBox, Xen, Qemu, KVM).
 % with different amounts of efficiency.
 %There are several different mechanisms for migration, some of which require a short suspend time, while others are able to seamlessly transfer without any noticeable down-time by the user.
@@ -35,14 +45,6 @@ Hence, the same network identifier should map to two separate addresses, and hav
 
 We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning has been applied, followed by the algorithm for live cloning:
 
-\begin{figure}[t]
-  \begin{center}
-    \includegraphics[width=0.45\textwidth]{figs/ModesCloning.pdf}
-    \caption{External and Internal Mode for live cloning: P1 is the production, and D1 is the debug container, the clone manager interacts with an agent which has drivers to implement live cloning.}
-    \label{fig:modesCloning}
-  \end{center}
-\end{figure}
-
 %\begin{itemize}[leftmargin=*,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 
 %\item 
@@ -51,7 +53,7 @@ We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning h
 This would mean less suspend time, as the production container can be locally cloned (instead of streaming over the network). 
 Additionally, it is more cost-effective since the number of servers remain the same.
 On the other hand, co-hosting the debug and production containers could potentially have an adverse effect on the performance of the production container because of resource contention.
-To manage network identities, we encapsulate each container in separate network namespaces.
+To manage network identities, we encapsulate each container in separate network namespaces~\cite{netns}.
 This allows both the containers, to have the same IP address, although in separate interfaces.
 %In the internal mode, network identity of the containers is encapsulated within different network namespaces.
 %As we can see in Figure~\ref{fig:modesCloning}, the production container P1 and debug container T1 are both hosted within the same physical host, and with the same IP address.

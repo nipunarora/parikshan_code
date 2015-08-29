@@ -1,5 +1,3 @@
-\section{Case Studies}
-\label{sec:casestudy}
 \begin{table*}[ht!]
 	\centering
 	\resizebox{\textwidth}{!}{%
@@ -19,6 +17,8 @@
 	\label{table:casestudy}
 \end{table*}
 
+\section{Case Studies}
+\label{sec:casestudy}
 
 %Here we show how \parikshan can be applied to some real-life bugs.
 %Table \ref{table:casestudy} shows several bugs which we debugged using \parikshan, and the various techniques we used to localize the bug.
@@ -30,7 +30,7 @@
 %\subsection{Debug Tools and Mechanisms}
 %\label{sec:debugMechanisms}
 
-Production applications are usually deployed with transaction logs, and error logs that alert the operator of any anomalous behavior.
+Production applications are usually deployed with transaction logs and error logs that alert the operator of any anomalous behavior.
 %Often the information in such logs is insufficient to find the root-cause, and can give false-positives or skip errors altogether.
 Debuggers use these logs, to run offline test-cases in order to find the root-cause of any bugs. 
 This process may need multiple iterations between the operator and developer, as more information may be required from the production system. This eventually increases the time to debug the error.
@@ -74,10 +74,10 @@ The tracing caused a 1.5x - 2x slowdown in the targeted session of the applicati
 For one of the bugs in  MySQL (Bug 15811), it was reported that some of the user requests which were dealing with complex scripts (Chinese, Japanese), were running significantly slower than others.
 To evaluate \parikshan, we re-created a two-tier client-server setup with the server (container) running a buggy MySQL server. 
 We generated a random workload of user-requests, including queries that triggered the bug.
-Now the slow queries may be reported by either a user, or a transaction latency monitoring available in several production systems. 
+Here slow queries may be reported by either the user, or transaction latency monitoring available in several production systems. 
 Based on this trigger, we created a live clone of the MySQL container. 
 We then inserted function level instrumentation in MySQL for higher level functions, object constructors, and destructors belonging to each module in the code.
-Finally, we used the query handler to trigger instrumentation for queries containing complex scripts(this ensures no slow-down for other queries).
+Finally, we used the query handler to trigger instrumentation for queries containing complex scripts (this ensures no slow-down for other queries).
 %For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
 We then compared the profile (time taken in each function) of the queries for complex scripts, with the queries for Latin scripts.
 Using trial-and-error, and iteratively digging into deeper functions, we were able to localize the bug to string compare functions in MySQL.
@@ -94,16 +94,16 @@ Using trial-and-error, and iteratively digging into deeper functions, we were ab
 Memory leaks are a common error in service oriented systems, especially in C/C++ based applications which allows low-level memory management by users.
 These leaks build up over time, and can cause slowdowns because of resource shortage, or crash the system.
 Debugging leaks can be done either using systematic debugging tools like Valgrind, which use shadow memory to track all objects, or memory profiling tools like VisualVM, mTrace, or PIN, which track allocations, de-allocations, and heap size.
-Although valgrind is more complete, it has a very high overhead, and needs to capture the execution from the beginning to the end (i.e., needs application restart).
+Although Valgrind is more complete, it has a very high overhead, and needs to capture the execution from the beginning to the end (i.e., needs application restart).
 On the other hand, profiling tools are much lighter, and can be dynamically patched to a running process.
 
 For our empirical evaluation, we injected repetitive memory allocations to an object in a glassfish app-server, and sent requests to app-server to trigger these allocations.
-We then, used \parikshan to clone \& create a debug-container, where we used VisualVM to track the increase of heap-size, and object allocations.
+We then used \parikshan to clone \& create a debug-container, where we used VisualVM to track the increase of heap-size, and object allocations.
 Tracking memory allocation allowed us to localize the class file causing the memory leak, which greatly simplifies finding the root-cause.
 We experienced a slowdown of 3x, but did not observe any overflow in the buffer.
 
 We also used memory leak detection using Valgrind in MySQL for an injected memory leak in the request handler for MySQL.
-We wish to stress here, that while tools like valgrind, need application restart, and will most likely cause extremely high slow-downs in the debug-container, \parikshan can still be helpful, as it can debug a small part of the target system in isolation, thereby quickly resolving errors.
+We wish to stress here, that while tools like Valgrind, need application restart, and will most likely cause extremely high slow-downs in the debug-container, \parikshan can still be helpful, as it can debug a small part of the target system in isolation, thereby quickly resolving errors.
 Application service restart may not lose context in all applications, especially a database application has a persistent database, and may exhibit errors even after the restart.
 With Valgrind, we saw requests being dropped in the proxy because of the high overhead, but we were able to capture and trace memory leaks for several requests.
 
@@ -135,7 +135,7 @@ We inserted a configuration error by setting an arbitrarily low number for the m
 We then triggered requests to PetStore, and found some of them timing out.
 Using \parikshan, we cloned both JBoss and MySQL servers, to captured the flow of queries across distributed machines.
 We traced higher object constructors, and library calls to track the execution.
-This allowed us to see that the MySQL server was not creating worker threads for the incoming requests(no calls to libc fork events).
+This allowed us to see that the MySQL server was not creating worker threads for the incoming requests (no calls to libc fork events).
 Debug logs had been turned off for optimization, hence the error could not be easily reported. 
 \parikshan was able to successfully localize the error to mis-configuration in the ``maximum no. of worker thread'' allowed parameter.
 While the error may seem simple, without \parikshan an offline testbed would be required with a large enough test workload.

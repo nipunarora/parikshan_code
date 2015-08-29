@@ -22,8 +22,8 @@
 
 \noindent
 \textbf{Experimental Results:} We call the time taken to reach a buffer overflow the ``debug-window'' for the debug-container.
-As explained earlier (see section \ref{sec:timewindowPerformance}), the size of this debug-window, depends both on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
-To evaluate the approximate size of the debug-window, we sent requests to a production and debug MySQL container via our network duplicator.
+As explained earlier (see section \ref{sec:window}), the size of this debug-window depends on the overhead of the ``instrumentation'', the incoming workload distribution, and the size of the buffer.
+To evaluate the approximate size of the debug-window, we sent requests to both a production and debug MySQL container via our network duplicator.
 Each workload ran for about 7 minutes (10,000 ``select * from table'' queries), with varying request workloads.
 We also profiled the server, and found that is able to process a max of 27 req/s\footnote{Not the same as bandwidth, 27 req/s is the maximum rate of sequential requests MySQL server is able to handle for a user session} in a single user connect session. 
 For each of our experiments we vary the buffer sizes to get an idea of debug-window. 
@@ -32,12 +32,12 @@ Additionally, we generated a slowdown by first modeling the time taken by MySQL 
 Initially, we created a connection, and sent requests at the maximum request rate the server was able to handle (27 req/s).
 We found that for overheads up-to 1.8x (approx) we experienced no buffer overflows.
 % most function tracing and profiling tools generally have an overhead of 1-1.5x for lower granularity and 2x for higher granularity tracing.
-For higher overheads the debug window rapidly decreased, with buffer sizes primarily dependent on buffer-size, request size, and slowdown.
+For higher overheads the debug window rapidly decreased, primarily dependent on buffer-size, request size, and slowdown.
 
 Next, we mimic user behavior, to generate a realistic workload.
 We send packets using a poisson process with an average request rate of 17 requests per second to our proxy. 
 This varies the inter-request arrival time, and let's the cloned debug-container catch up with the production container during idle time-periods in between request bursts.
-We observed, that compared to earlier experiments, there was more slack in the system with slightly lesser amount of requests, this meant that our system was able to tolerate much with the default buffer size (linux default pipe size is 65536), the system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
+We observed, that compared to earlier experiments, there was more slack in the system with slightly lesser amount of requests, this meant that our system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
 
 
 \begin{figure}[ht]
@@ -194,14 +194,14 @@ We observed, that compared to earlier experiments, there was more slack in the s
 Overall it was difficult to observe systematic behavior in a live system to understand the decay rate of the debug-window. 
 In our next set of experiments, we use a discrete event simulation of the M\/M\/1 queue that can easily be modified for different arrival and service distributions of SOA applications, with a finite capacity.
 The M\/M\/1 is the classic queuing model based on kendall's notation~\cite{kendall1953}, and is often used to model SOA applications, with single buffer based queues.
-Essentially in our simulator, we are sending and processing requests, based on a poisson distribution, with a finite buffer capacity.
+Essentially, we are sending and processing requests, based on a poisson distribution, with a finite buffer capacity.
 %As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
 In our simulations (see Figure~\ref{fig:debugSim}), we kept a constant buffer size of 64GB, and iteratively increased the overhead of instrumentation, thereby decreasing the service processing time.
-Each series(set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
-This means that at 400\% overhead, the system would be running at full capacity(for stable systems,  SOA applications generally use much less of the system than full capacity).
+Each series (set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
+This means that at 400\% overhead, the system would be running at full capacity (for stable systems,  SOA applications generally use much less of the system than full capacity).
 Each simulation instance was run for 1000000 seconds or 277.7 hours.
-We gradually increased the instrumentation by 10~\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
-As shown there is no buffer overflow in any of the simulations till the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially.
+We gradually increased the instrumentation by 10\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
+As shown there is no buffer overflow in any of the simulations until the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially.
 Since beyond 400\% overhead, the system is over-capacity, the queue will start filling up fairly quickly. 
 This clarifies the behavior we observed in our experiments, where for lower overheads (1.8-3.2x) we did not observe any overflow, but beyond a certain point we observed that the buffer would overflow fairly quickly.
 Also as shown in the system, since the buffer size is significantly larger than the packet arrival rate, it takes some time for the buffer to overflow (several hours).
@@ -210,7 +210,7 @@ However,  a system running continuously at capacity is unlikely to tolerate sign
 For more details regarding queuing theory models, our detailed simulations, please have a look at our extended tech-report tech-report~\cite{parikshanQueue}.
 
 \begin{tcolorbox}[breakable, enhanced]
-		To answer \textbf{RQ2}, we found that the debug-container can stay in a stable state without any buffer overflows, as long as the instrumentation in the cloned system does not cause the service times to become less than the request arrival rate . Furthermore, a large buffer size will allow us to handle short bursts in the workload until the system returns back to stable state. 
+		To answer \textbf{RQ2}, we found that the debug-container can stay in a stable state without any buffer overflows as long as the instrumentation does not cause the service times to become less than the request arrival rate . Furthermore, a large buffer will allow handling of short bursts in the workload until the system returns back to a stable state. 
 \end{tcolorbox}
 
 %The initial ratio between the arrival rate to the service processing rate is kept as 1:5. Hence, at 400\% overhead, the debug-container's arrival rate will be the same as the service processing rate.
