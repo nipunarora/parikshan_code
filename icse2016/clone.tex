@@ -35,12 +35,12 @@ The second step can be done in multiple iterations to avoid a long suspend time,
 %To reduce the down-time memory pages are transferred probabiliticly based on priority, and incase a page is not found a network fault is generated which executes a fetch from the original VM.
 \fi
 
-Live migration~\cite{mirkin2008containers,clark2005live, gebhart2009dynamic} refers to the process of moving a running virtual machine, or container from one server to another, without disconnecting any client or process running within the machine. 
+Live migration~\cite{mirkin2008containers,clark2005live, gebhart2009dynamic} refers to the process of moving a running virtual machine, or container from one server to another, without disconnecting any client or process running within the machine (this usually incurs a short or negligible suspend time). 
 In contrast to live migration where the original container is destroyed, the ``Live Cloning'' process used in \parikshan requires both containers to be actively running, and be still attached to the original network.
 %Instead of Live Migration, in Live Cloning, we do not delete the source container, rather we allow the container to keep executing in both production and test locations.
 The challenge here is to manage two containers with the same identities in the network and application domain. 
-This is important, as the operating system and the application processes running in it may be configured with the IP address, which cannot be changed on the fly.
-Hence, the same network identifier should map to two separate addresses, and have communication with no problems or slowdowns.
+This is important, as the operating system and the application processes running in it may be configured with IP addresses, which cannot be changed on the fly.
+Hence, the same network identifier should map to two separate addresses, and enable communication with no problems or slowdowns.
 %Test and production containers can be allocated in various schemes: we call these schemes \textit{modes}. 
 
 We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning has been applied, followed by the algorithm for live cloning:
@@ -53,8 +53,9 @@ We now describe two modes (see Figure~\ref{fig:modesCloning}) in which cloning h
 This would mean less suspend time, as the production container can be locally cloned (instead of streaming over the network). 
 Additionally, it is more cost-effective since the number of servers remain the same.
 On the other hand, co-hosting the debug and production containers could potentially have an adverse effect on the performance of the production container because of resource contention.
-To manage network identities, we encapsulate each container in separate network namespaces~\cite{netns}.
-This allows both the containers, to have the same IP address, although in separate interfaces.
+Network identities in this mode are managed by encapsulating each container in separate network namespaces~\cite{netns}.
+%To manage network identities, we encapsulate each container in separate network namespaces~\cite{netns}.
+This allows both the containers, to have the same IP address with different interfaces.
 %In the internal mode, network identity of the containers is encapsulated within different network namespaces.
 %As we can see in Figure~\ref{fig:modesCloning}, the production container P1 and debug container T1 are both hosted within the same physical host, and with the same IP address.
 %However, their network is encapsulated within different network namespaces to sandbox them.
@@ -140,7 +141,9 @@ Next we copy the dump file from step 3, from H1 to H2, and resume both container
 %\end{example}
 \fi
 The suspend time of cloning depends on the operations happening within the container between step 2 and step 4 (the first and the second rsync), as this will increase the number of dirty pages in the memory, which in turn will impact the amount of memory that needs to be copied during the suspend phase.
-In section \ref{sec:performance}, we evaluate the performance of live cloning on some real-world examples and a micro-benchmark of I/O operations. 
+This suspend time can be viewed as an amortized cost in lieu of instrumentation overhead.
+We evaluate the performance of live cloning in Section~\ref{sec:performance}.
+%In section \ref{sec:performance}, we evaluate the performance of live cloning on some real-world examples and a micro-benchmark of I/O operations. 
 %(as mostly the dirty bits at suspend time are those which were not committed to memory and hence need to be transferred).  
 %A few iteration of cloning a container back and forth between two OpenVZ instances (on KVM's within the same physical machine), resulted in an average suspend time of 1.8 seconds for the production container.
 %( see table \ref{table:clonePerf}).

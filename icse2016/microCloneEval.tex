@@ -69,10 +69,10 @@
 %As explained earlier, the cloning process can be divided into two parts: an rsync operation which does an ``pre-copy'' of the VM, and a follow-up rsync operation while the target container is suspended, to make sure that both the production and test containers have the exact same state.
 %The idea is to reduce the time taken to suspend the production container, so that it has minimal impact on the user.
 The main factor that impacts suspend time is the number of ``dirty pages'' in the suspend phase, which have not been copied over in the pre-copy rsync operation (see section~\ref{sec:CloneManager}).
-To understand this better, we use fio (flexible I/O tool for Linux)~\cite{fio}, to gradually increase the number of I/O operations while doing live cloning.
-Fio reads or writes random values in a file with a rate controlled I/O bandwidth as specified by the user. 
+To understand this better, we use FIO (flexible I/O tool for Linux)~\cite{fio}, to gradually increase the number of I/O operations while doing live cloning.
+The FIO tool reads or writes random values in a file with a rate controlled I/O bandwidth as specified by the user. 
 The suspend time is observed by instrumentation within the cloning script, which reports time taken by each of the suspend processes.
-Additionally, we ensure that the I/O job being processed by fio is long enough to last through the entire cloning process.
+Additionally, we ensure that the I/O job being processed by FIO is long enough to last through the cloning process.
 
 We found that in comparison to write, read operations have a much smaller impact on suspend time of live cloning.
 This can be attributed to the increase of ``dirty pages'' in write operations, whereas for read, the disk image remains largely the same.

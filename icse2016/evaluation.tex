@@ -34,7 +34,7 @@ To answer {RQ1}, live cloning introduces a short suspend time in the production 
 
 \noindent
 \begin{tcolorbox}[breakable, enhanced]
-	To answer {RQ1}, live cloning introduces a short suspend time in the production container dependent on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take much less. Suspend times in real workload on real-world systems vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads.  A production-quality implementation could reduce suspend time further by rate-limiting incoming requests in the proxy, or copy-on-write mechanisms, and faster shared file system/storage devices already available in several existing live migration solutions.
+	To answer {RQ1}, live cloning introduces a short suspend time in the production container dependent on the workload. Write intensive workloads will lead to longer suspend times, while read intensive workloads will take much less. Suspend times in real workload on real-world systems vary from 2-3 seconds for webserver workloads to 10-11 seconds for application/database server workloads. Compared to external mode, internal mode was found to have a much shorter suspend time. A production-quality implementation could reduce suspend time further by rate-limiting incoming requests in the proxy, or copy-on-write mechanisms, and faster shared file system/storage devices already available in several existing live migration solutions.
 \end{tcolorbox}
 
 %Other approaches include triggering page fault for the dirty bits which were not copied over.

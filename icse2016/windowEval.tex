@@ -37,7 +37,8 @@ For higher overheads the debug window rapidly decreased, primarily dependent on 
 Next, we mimic user behavior, to generate a realistic workload.
 We send packets using a poisson process with an average request rate of 17 requests per second to our proxy. 
 This varies the inter-request arrival time, and let's the cloned debug-container catch up with the production container during idle time-periods in between request bursts.
-We observed, that compared to earlier experiments, there was more slack in the system with slightly lesser amount of requests, this meant that our system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
+We observed, that compared to earlier experiments, there was more slack in the system. 
+This meant that our system was able to tolerate a much higher overhead (3.2x) with no buffer overflows.
 
 
 \begin{figure}[ht]
@@ -191,23 +192,23 @@ We observed, that compared to earlier experiments, there was more slack in the s
 
 \noindent
 \textbf{Simulation Results:} 
-Overall it was difficult to observe systematic behavior in a live system to understand the decay rate of the debug-window. 
-In our next set of experiments, we use a discrete event simulation of the M\/M\/1 queue that can easily be modified for different arrival and service distributions of SOA applications, with a finite capacity.
-The M\/M\/1 is the classic queuing model based on kendall's notation~\cite{kendall1953}, and is often used to model SOA applications, with single buffer based queues.
-Essentially, we are sending and processing requests, based on a poisson distribution, with a finite buffer capacity.
+Overall it was difficult to observe systematic behavior in a live system to understand the decay rate of the debug-window.
+In our next set of experiments, we simulate packet arrival and service processing for a buffered queue in SOA applications. 
+We use a discrete event simulation based on an M\/M\/1 queue, which is a  classic queuing model based on kendall's notation~\cite{kendall1953}, and is often used to model SOA applications with a single buffer based queue.
+Essentially, we are sending and processing requests based on a poisson distribution with a finite buffer capacity.
 %As discussed earlier, there are three parameters which can impact the time period of the debug-window: (1) arrival rate ($\lambda$), (2) service processing time ($\mu$), and (3) Buffer Size.
 In our simulations (see Figure~\ref{fig:debugSim}), we kept a constant buffer size of 64GB, and iteratively increased the overhead of instrumentation, thereby decreasing the service processing time.
 Each series (set of experiment), starts with an arrival rate approximately 5 times less than the service processing time. 
-This means that at 400\% overhead, the system would be running at full capacity (for stable systems,  SOA applications generally use much less of the system than full capacity).
+This means that at 400\% overhead, the system would be running at full capacity (for stable systems SOA applications generally operate at much less than system capacity).
 Each simulation instance was run for 1000000 seconds or 277.7 hours.
 We gradually increased the instrumentation by 10\% each time, and observed the \textit{hitting-time} of the buffer (time it takes for the buffer to overflow for the first time).
 As shown there is no buffer overflow in any of the simulations until the overhead reaches around 420-470\%, beyond this the debug-window decreases exponentially.
 Since beyond 400\% overhead, the system is over-capacity, the queue will start filling up fairly quickly. 
 This clarifies the behavior we observed in our experiments, where for lower overheads (1.8-3.2x) we did not observe any overflow, but beyond a certain point we observed that the buffer would overflow fairly quickly.
 Also as shown in the system, since the buffer size is significantly larger than the packet arrival rate, it takes some time for the buffer to overflow (several hours).
-We also believe that while most systems will run significantly under capacity, large buffer sizes can ensure that our debug-container may be able to handle short bursts in the workload.
-However,  a system running continuously at capacity is unlikely to tolerate significant instrumentation overhead.
-For more details regarding queuing theory models, our detailed simulations, please have a look at our extended tech-report tech-report~\cite{parikshanQueue}.
+We believe that while most systems will run significantly under capacity, large buffer sizes can ensure that our debug-container may be able to handle short bursts in the workload.
+However, a system running continuously at capacity is unlikely to tolerate significant instrumentation overhead.
+For more details regarding queuing theory models and our detailed simulations, please have a look at our extended tech-report tech-report~\cite{parikshanQueue}.
 
 \begin{tcolorbox}[breakable, enhanced]
 		To answer \textbf{RQ2}, we found that the debug-container can stay in a stable state without any buffer overflows as long as the instrumentation does not cause the service times to become less than the request arrival rate . Furthermore, a large buffer will allow handling of short bursts in the workload until the system returns back to a stable state. 

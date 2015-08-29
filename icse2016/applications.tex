@@ -1,7 +1,8 @@
-\vspace{-2mm}
+\vspace{-1mm}
 \section{Applications of Live Debugging}
 \label{sec:application}
-The concept of debugging typically encompasses more than just localizing the bug, but also includes attempted fixes, tests of those fixes, and patching. Here, we briefly discuss here how existing techniques can be directly applied in \parikshan. 
+The concept of debugging typically encompasses more than just localizing the bug, but also includes attempted fixes, tests of those fixes, and patching. 
+Here, we briefly discuss here how existing techniques can be directly applied in \parikshan. 
 Further details about this can be found in our tech-report~\cite{parikshanTR}
 
 \noindent
@@ -9,8 +10,8 @@ Further details about this can be found in our tech-report~\cite{parikshanTR}
 One well known technique for debugging production applications is statistical testing. 
 This is achieved by having predicate profiles from both successful and failing runs of a program and applying statistical techniques to pinpoint the cause of the failure.
 The core advantage of statistical testing is that the sampling frequency of the instrumentation can be decreased to reduce the instrumentation overhead.
-Despite it's advantages the instrumentation frequency for such testing to be successful needs to be statistically significant. 
-However overhead concerns in the production environment limit the frequency of instrumentation.
+However, the instrumentation frequency for such testing to be successful needs to be statistically significant. 
+Unfortunately, overhead concerns in the production environment limit the frequency of instrumentation.
 In \parikshan, the buffer utilization can be used to control the frequency of such statistical instrumentation in the debug-container. 
 This would allow the user to utilize the slack available in the debug-container for instrumentation to it's maximum, without leading to an overflow. 
 Thereby improving the efficiency of statistical testing.
@@ -20,9 +21,11 @@ Thereby improving the efficiency of statistical testing.
 %Error logs in applications, or monitoring tools~\cite{clue,magpie,dtrace}, can be used to do light-weight anomaly detection in production systems.
 %However, these techniques are usually insufficient to capture the context of the bug.
 Record and Replay techniques have been proposed to replay production site bugs. 
-However, they are not yet used in practice as the overhead they can impose unacceptable overheads in the service processing times.
-\parikshan debug containers can be used to do recording as long as the overhead does not lead to buffer overflows.
+However, they are not yet used in practice as they can impose unacceptable overheads in the service processing time.
+\parikshan debug containers can be used to do recording as long as the overhead does not lead to buffer overflows, causing the debugging window to collapse.
 
+
+\iffalse
 \noindent
 \textbf{Distributed Debugging:}  
 Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup services, controllers and resource managers.
@@ -32,9 +35,11 @@ For example, storage services supporting a ``debug-container'' need to be cloned
 Similarly, services such as NTP service can be allowed to continue without any cloning as they are publish\/subscribe broadcast based systems and the debug container cannot impact it in anyway.
 Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
 For instance, instrumentation in a MySQL query handler will not slowdown file-sharing or NTP services running in the same container.
+\fi
 
 \noindent
 \textbf{Patch Testing:}
 Bug fixes and patches to resolve errors, often need to undergo testing in the offline environment, and are not guaranteed to perform correctly.
 Patches can be made to the debug-container instead. 
 The fix can be traced and observed if it is correctly working, before moving it to the production container.
+%Performance bug fixes or optimizations, which do not impact the logical functionality of the system, can easily be verified in the debug container, similar to AB Testing.

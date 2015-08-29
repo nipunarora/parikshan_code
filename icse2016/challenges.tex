@@ -1,19 +1,28 @@
 \vspace{-2mm}
-\section{Threats to Validity}
+\section{Discussion}
 \label{sec:threats}
+\noindent
+Here are some challenges which may impact \parikshan:
 
 \noindent
-One key threat to validity of \parikshan is \textbf{non-determinism}. 
-Non-determinism can be caused due to three main reasons (1) system configuration, (2) application input, and (3) ordering in concurrent threads.
-Live cloning of the application state ensures that both applications are in the same "system-state" and have the same configuration parameters for itself and all dependencies in it's stack.
-Furthermore, in offline debugging it is often difficult to capture all possible inputs, and hence deal with input non-determinism.
-\parikshan's network proxy ensures that all inputs received in the production container are also forwarded to the debug-container.
+\textbf{Non-determinism:} This can be caused due to three main reasons (1) system configuration, (2) application input, and (3) ordering in concurrent threads.
+Live cloning of the application state ensures that both applications are in the same ``system-state'' and have the same configuration parameters for itself and all dependencies in it's stack.
+Furthermore, in offline debugging it is often difficult to capture all possible inputs, and hence deal with input non determinism.
+\parikshan's network proxy ensures that all inputs received in the production container are also forwarded to the debug container.
 However, concurrency based non-determinism can still lead to different execution paths in the production and debug containers.
-While the current prototype version of \parikshan is not currently handling concurrency non-determinism within the system, we believe there are several existing techniques that can be applied to tackle this problem in the context of live debugging. 
+While our current prototype version does not handle this, we believe there are several existing techniques that can be applied to tackle this problem in the context of live debugging. 
 Firstly, as long as the bug is statistically significant, it can still be caught by execution tracing mechanisms as shown in several previous approaches~\cite{Liblit:2004:CBI}.
-Furthermore, techniques like deterministic scheduling~\cite{smt:cacm}, can also be used to counter concurrency based non-deterministic bugs.
-Other techniques such as constraint solvers~\cite{dpor, best}, can trace synchronization events in a program trace, and search through all possible execution orderings to trigger the concurrency error.
+Furthermore, techniques like deterministic scheduling~\cite{smt:cacm}, can also be used to counter concurrency based bugs.
+Other techniques such as constraint solvers~\cite{dpor, best}, can trace synchronization events in a program and search through all possible execution orderings to trigger the concurrency error.
+We have also tried to alleviate this problem using our divergence checker (section~\ref{sec:divergenceChecking})
 
+\textbf{Distributed Services:} Large scale distributed systems are often comprised of several interacting services such as storage, NTP, backup services, controllers and resource managers.
+\parikshan can be used on one or more containers, and can be used to clone more than one communicating service.
+Based on the nature of the service, it may be (a). Cloned, (b). Turned off or (c). Allowed without any modification.
+For example, storage services supporting a ``debug-container'' need to be cloned or turned off (depending on debugging environment) as they would propagate changes from the debug container to the production containers.
+Similarly, services such as NTP service can be allowed to continue without any cloning as they are publish\/subscribe broadcast based systems and the debug container cannot impact it in anyway.
+Furthermore, instrumentation inserted in the debug-container, will not necessarily slowdown all services.
+For instance, instrumentation in a MySQL query handler will not slowdown file-sharing or NTP services running in the same container.
 
 %Another threat to \parikshan is that the error once detected, can be 
 \iffalse

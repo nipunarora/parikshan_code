@@ -7,7 +7,7 @@
   \end{centering}
 \end{figure}
 
-\vspace{-0.5cm}
+\vspace{-0.25cm}
 \subsection{Proxy Network Duplicator} 
 \label{sec:proxyDuplicator}
 
@@ -35,7 +35,7 @@ In this section, we discuss two strategies, we call \textit{duplication modes} t
 %\begin{enumerate}[leftmargin=*]
 
 %\item 
-\textbf{Synchronized Packet Forwarding Mode}: 
+\textbf{Synchronized Mode}: 
 A naive strategy is to have a single worker thread to send and receive TCP stream to the production container as well as the debug container.
 %This is the simplest strategy and is quite robust as far as sending proxy data is concerned. 
 To understand this better let us look at figure~\ref{fig:duplicator}: Here each incoming connection would be handled by 2 parallel threads T1, and T2 in the proxy. 
@@ -43,7 +43,7 @@ Where T1 sends data from the client to the proxy (link 1), then sends data from 
 Whereas, T2 sends replies from production to proxy(link 4), then receives replies from debug container to proxy (link 6), which are then dropped. 
 Thread T2 then forwards packets received on link 4 to the client on link 2.
 
-By design TCP is a connection oriented protocol and is designed for stateful delivery and acknowledgment that each packet has been delivered.
+TCP is a connection oriented protocol and is designed for stateful delivery and acknowledgment that each packet has been delivered.
 Packet sending and receiving are blocking operations, and if either the sender or the receiver is faster than the other the send/receive operations are automatically blocked or throttled.
 
 This can be viewed as follows: Let us assume that the client was sending packets at $X Mbps$ (link 1), and the production container was receiving/processing packets at $Y Mbps$ (link 3), where $Y<X$. 
@@ -55,9 +55,9 @@ However, we also send packets to the debug-container (link 5) in the same sequen
 Hence, if the speed of link 5 is $Z$ $Mbps$, where $Z < Y$, and $Z < X$, then the speed of link 1, and link 3 would also be throttled to $Z$ $Mbps$.
 
 %Such a communication model effects the user-experienced delay for the targeted SOA application, and is against the guiding principal of \parikshan.
-The speed of the debug container is likely to be less than the production container, hence this would definitely impact the performance of the production container.
+Since the speed of the debug container is likely to be less than production, it may impact the performance of the production container.
 Clearly, this is a non-optimal solution. 
-Next we discuss an asynchronous packet forwarding scheme, which avoids any slowdown to the production container.
+Next we discuss an asynchronous scheme, which avoids any slowdown to the production container.
 
 %It especially works well with standard SOA architectures with small incoming packet flows, 
 %as it means that the delay caused in the test and production container would be minimal.
@@ -70,17 +70,17 @@ Next we discuss an asynchronous packet forwarding scheme, which avoids any slowd
 %since our target is a service oriented architecture there should be frequent small connections from multiple users, hence a threading model is important.
 
 %\item 
-\textbf{Asynchronous Packet Forwarding Mode}: 
+\textbf{Asynchronous Mode}: 
 %In the synchronized mode the debug container, can impact the speed of the production container as well. 
 %The main reason for this is because of blocking sends being used to forward packets from the client to the debug-container and production container by the same sequential process.
-In the asynchronous packet forwarding mode (see Figure \ref{fig:duplicator}): we use 4 threads T1, T2, T3, T4 to manage each incoming connection to the proxy.
+In this mode (see Figure \ref{fig:duplicator}): we use 4 threads T1, T2, T3, T4 to manage each incoming connection to the proxy.
 Thread T1 forwards packets from client to proxy (link 1), and from proxy to production container (link 2). 
 It then uses a non-blocking send to forward packets to an internal pipe buffer shared between thread T1, and thread T3. 
 Thread T3, then reads from this piped buffer and sends traffic forward to the debug-container. 
 Similarly Thread T2, receives packets from production container, and forwards them to the client, while Thread T4, receives packets from the debug-container and drops them.
 
 The advantage of this strategy is that any slowdown in the debug-container will not impact the production container's communication as a non-blocking send is used to forward traffic to the production container. 
-A side-effect of this strategy is that if the speed of the debug-container is too slow compared to the production container, it may eventually lead to a buffer overflow. 
+A side-effect of this strategy is that if the speed of the debug-container is too slow compared to the packet arrival rate in the buffer, it may eventually lead to an overflow. 
 We call the time taken by a connection before which the buffer overflows it's \emph{debug-window}.
 We discuss the implications of the \emph{debug window} in section \ref{sec:window}.  
 %In this strategy we have two worker threads which simultaneously handle sending and receiving tcp streams for the production container as well as the test container.

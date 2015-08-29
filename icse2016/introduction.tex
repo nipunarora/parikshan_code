@@ -13,10 +13,10 @@
 Rapid resolution of incidence~(error/alert) management~\cite{sasase2013} in online service oriented systems is extremely important.
 However, the complexities of virtualized environments coupled with large distributed systems have made bug localization harder. 
 %The large scale of such systems means that any downtime has significant financial penalties for all parties involved.
-On the other hand, there is a trend in the software engineering industry towards closer coupling between software developers and operators~(DevOps~\cite{devops}), in order to have shorter release and debug cycles 
+On the other hand, there is a trend in the software engineering industry towards closer coupling between software developers and operators~(DevOps~\cite{devops}) in order to have shorter release and debug cycles 
 (Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}). 
 %This re-emphasizes the need to have a very short time to diagnose and fix a bug.
-Hence, debugging is hard not only because of difficulty to capture the root-cause, it is also increasingly important to localize and fix bugs in a short period of time.
+Hence, debugging is hard not only because of difficulty to capture the root-cause, there is also an increased emphasis on the need to localize and fix bugs in a short period of time.
 
 %Furthermore, whether to repair flaws or add features, software patches are released all the time.
 %For instance, Facebook mobile has 2 releases a day, and Flickr has 10 deployment cycles per day~\cite{10DevOps}).
@@ -114,8 +114,9 @@ In Figure~\ref{fig:workflow}, the webserver is downstream, and the backend is up
 %We avoid recording overhead in the production container, while providing a facility for deeper bug diagnosis, and instrumentation.
 %We have deployed \parikshan in  cloud infrastructure using user-space containers.
 
-\parikshan is composed of three modules:
-(a) a \textit{clone manager}, which manages cloning of production containers to debug-containers.
+\parikshan leverages an abundance of resources available in the cloud environments to launch servers (debug containers) for the express purpose of debugging cloned from a running production system (production container). 
+It is composed of three modules:
+(a) a \textit{clone manager}, which manages cloning of production containers to debug containers.
 (b) a \textit{network duplicator} module, which duplicates all incoming traffic from downstream servers to both production and debug containers.
 (c) a \textit{network aggregator} module, which manages all communication from upstream servers to the debug-container.
 The cloning operation is ``live'', hence there is no suspension of the services of the production server.
@@ -135,12 +136,13 @@ The cloning operation is ``live'', hence there is no suspension of the services 
 \fi
 
 \parikshan primarily focuses on non-crashing bugs~\cite{Zhang:2013:ADS:2486788.2486830, liu2005mining, kremenek2007factor}.
-These bugs lead to either an inconsistent output, or impact the performance of the application, without crashing the system.
-Examples of such bugs are slow memory leaks, or configuration or performance bugs, which do not crash the application, but need to be fixed quickly to avoid degradation in service quality. 
-Although many interesting methods have been developed to trace crashing bugs (memory violation, core dumps etc.), it is still difficult to analyze non-crashing bugs, as they often happen in scaled out systems, or because of difficult to reproduce edge-case scenarios, that are hard to replicate in unit tests or integration tests. 
+These bugs lead to either an inconsistent output or impact the performance of the application, without crashing the system.
+Examples of such bugs are slow memory leaks, configuration errors, and performance bugs, which do not crash the application, but need to be fixed quickly to avoid degradation in service quality. 
+Although many interesting methods have been developed to trace crashing bugs (memory violation, core dumps etc.), it is still difficult to analyze non-crashing bugs as they often happen in scaled out systems or because of difficult to reproduce edge-case scenarios.
+%that are hard to replicate in unit tests or integration tests. 
 
 We have deployed \parikshan in the context of cloud platform using user-space container virtualization technologies (OpenVZ/LXC~\cite{openvz,lxc}).
-A key insight of our design is that redundant resources often available in cloud infrastructures can be used for debugging purposes, while making the debugging process more efficient and reliable.
+%A key insight of our design is that redundant resources often available in cloud infrastructures can be used for debugging purposes, while making the debugging process more efficient and reliable.
 We assume that our target systems utilizes micro-service architectures (\texttt{Docker}~\cite{docker}), where each service (application, DNS, indexing, storage) is sandboxed in separate containers.
 This allows us to launch debug-containers, which can target one application at a time.
 Our techniques can also be applied to traditional VM's. 
@@ -186,7 +188,7 @@ In section~\ref{sec:motivation}, we describe a motivating scenario.
 Section~\ref{sec:design} and \ref{sec:implementation} describe the design and implementation.
 Next we discuss several real-world bugs(Section~\ref{sec:casestudy}), followed by the evaluation (Section~\ref{sec:evaluation}).
 In Section~\ref{sec:application}, we discuss potential applications of \parikshan. 
-Finally, we discuss some related work(Section~\ref{sec:related}), and threats to validity(Section~\ref{sec:threats}), and conclude.
+Finally, we discuss some challenges(Section~\ref{sec:threats}), give some related work(Section~\ref{sec:related}) and conclude (Section~\ref{sec:conclusion}).
 
 %\textbf{Virtual Machines vs Containers:} 
 %Frequent synchronization is necessary because the test container can potentially go out of sync with the production because of non-determinism or because a test-case changes the state of the container, and effects future problems. 

@@ -1,5 +1,5 @@
 
-\vspace{-2mm}
+\vspace{-1mm}
 \section{Conclusion \& Future Work}
 \label{sec:conclusion}
 
@@ -7,10 +7,11 @@
 %Existing techniques either add substantial overhead making them impractical in real-world systems, or are unable to capture enough trace information to localize the bug offline. 
 
 %We presented \parikshan a framework to do live-debugging and analysis of large scale systems.
-\parikshan is a novel framework to debug systems in real-time allowing for fast bug resolution.
-We have shown the applicability of \parikshan in  7 real-world case studies, and shown how it can be used to quickly localize the error.
+\parikshan is a novel framework that uses redundant cloud resources to debug production SOA applications in real-time.
+It allows the user to diagnose and localize errors, without impacting production services.
+We have shown it's applicability in  7 real-world case studies, and shown how it can be used to quickly localize the error.
 
-In the future, we wish to explore \parikshan further in 3 key areas: (1). Application: we aim to apply our system to real-time intrusion detection and statistical debugging.
+In the future, we will explore: (1). Application: we aim to apply our system to real-time intrusion detection and statistical debugging.
 (2). Analysis: we wish to define ``real-time'' data analysis techniques for traces and instrumentation done in \parikshan.
 %We believe with streaming data analytic techniques, we can do much better than execution tracing/profiling.
 (3). We plan to reduce the suspend time of live cloning, by utilizing several recent works in live migration.

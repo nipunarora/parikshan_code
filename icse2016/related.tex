@@ -25,8 +25,7 @@ Record and Replay~\cite{odr,revirt,guo2008r2, geels2007friday} have been an acti
 %Typically these systems record traces to faithfully replay the system offline.
 These systems offer highly faithful re-execution in lieu of performance overhead. 
 For instance ODR~\cite{odr} reports 1.6x, and ~\cite{aftersight} reports 1.35x overhead, with much higher worst-case overheads.
-\parikshan avoids run-time overhead, but its cloning suspend time be viewed as an amortized cost in comparison to the overhead in record-replay systems.
-
+\parikshan avoids run-time overhead, but its cloning suspend time may be viewed as an amortized cost in comparison to the overhead in record-replay systems.
 Among record and replay systems, the work most closely related to ours is aftersight~\cite{aftersight}. 
 Aftersight records a production system, and replays it concurrently in a parallel VM.
 While both Aftersight and \parikshan allow debuggers an almost real-time diagnosis facility, Aftersight suffers from recording overhead in the production VM .

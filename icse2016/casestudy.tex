@@ -51,7 +51,7 @@ Similarly, tools like dyninst~\cite{dyninst} allow users to track data-flow of v
 %On the other hand, profiling tools like VisualVM~\cite{visualvm}, and PIN~\cite{pin} can be dynamically attached to track memory usage. 
 %The downside to this is that it halts progress in the application, unlike execution trace which imposes a slowdown. 
 %Other mechanisms such as \textbf{delta-debugging}, and \textbf{heap-dump} allow users to modify variables to check if that resolves problems hence changing it's behavior.
-Next, we discuss how these techniques can be applied to different categories of real-life bugs with the help of \parikshan:
+Next, we discuss how these techniques can be applied to \parikshan:
 
 %\subsection{Bug Categories}
 %\label{sec:bugCategories}
@@ -69,18 +69,18 @@ Another key insight provided in~\cite{shanluPerf} was that two-thirds of the bug
 Hence, it is difficult to capture these bugs with traditional offline white-box testing mechanisms.
 
 %\noindent
-In an empirical evaluation of three such real-world bugs, we used \parikshan and iProbe~\cite{iProbe} (a dynamic instrumentation tool) to capture a representative function trace.
+In an empirical evaluation of three such performance bugs, we used \parikshan and iProbe~\cite{iProbe} (a dynamic instrumentation tool) to capture a representative function trace.
 The tracing caused a 1.5x - 2x slowdown in the targeted session of the application,  with no impact on the production system.
 For one of the bugs in  MySQL (Bug 15811), it was reported that some of the user requests which were dealing with complex scripts (Chinese, Japanese), were running significantly slower than others.
 To evaluate \parikshan, we re-created a two-tier client-server setup with the server (container) running a buggy MySQL server. 
 We generated a random workload of user-requests, including queries that triggered the bug.
 Here slow queries may be reported by either the user, or transaction latency monitoring available in several production systems. 
 Based on this trigger, we created a live clone of the MySQL container. 
-We then inserted function level instrumentation in MySQL for higher level functions, object constructors, and destructors belonging to each module in the code.
+We then inserted function level instrumentation in MySQL for level functions, object constructors, and destructors belonging to each module in the code.
 Finally, we used the query handler to trigger instrumentation for queries containing complex scripts (this ensures no slow-down for other queries).
 %For all transactions with insert queries with a complex character set, we triggered instrumentation to track execution in high granularity functions in insert and character\/string module.
 We then compared the profile (time taken in each function) of the queries for complex scripts, with the queries for Latin scripts.
-Using trial-and-error, and iteratively digging into deeper functions, we were able to localize the bug to string compare functions in MySQL.
+Using trial-and-error, and iteratively digging into deeper functions, we were able to localize the bug to string compare functions in MySQL, while simultaneously allowing the production container to continue processing incoming requests.
 %Using the profile for regular latin charactersets, and comparing it to complex charactersets (chinese, japenese) we were easily able to localize the bug to the compare functions in the string module.
 %Using a trial and error method we profiled high granularity functions in MySQL and gradually looked at finer granularity modules to isolate the performance problem.
 %This allowed us to successfully isolate the function with the performance problem.
@@ -127,14 +127,14 @@ Using memory profiling in \parikshan will allow users to capture the ``long-runn
 
 \noindent
 \textbf{Configuration Errors}:
-Configuration errors are usually caused by wrongly configured configuration parameters, i.e., they are not a bugs in the application, but bugs in the input (configuration).
-Configuration bugs usually get triggered at scale, or for certain edge cases, making them extremely difficult to catch.
+Configuration errors are usually caused by wrongly configured parameters, i.e., they are not bugs in the application, but bugs in the input (configuration).
+These bugs usually get triggered at scale or for certain edge cases, making them extremely difficult to catch.
 
 For our empirical evaluation, we created a 3 tier (Apache, JBoss, MySQL) service using Java PetStore~\cite{petstore} a J2EE example application.
 We inserted a configuration error by setting an arbitrarily low number for the max. number of requests MySQL can handle.
 We then triggered requests to PetStore, and found some of them timing out.
 Using \parikshan, we cloned both JBoss and MySQL servers, to captured the flow of queries across distributed machines.
-We traced higher object constructors, and library calls to track the execution.
+We traced object constructors, and library calls to track the execution.
 This allowed us to see that the MySQL server was not creating worker threads for the incoming requests (no calls to libc fork events).
 Debug logs had been turned off for optimization, hence the error could not be easily reported. 
 \parikshan was able to successfully localize the error to mis-configuration in the ``maximum no. of worker thread'' allowed parameter.
