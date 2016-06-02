@@ -1,0 +1,8 @@
+flushall
+set a c
+set t c
+set e c
+set s c
+set foo b
+expire s 5
+keys *
