@@ -136,6 +136,12 @@ int main(int argc, char *argv[]){
 
   //    fclose(log_file);
   //    fclose(stats_file);
+
+  while (pid = waitpid(-1, NULL, 0)) {
+    if (errno == ECHILD) {
+      break;
+    }
+  }
     
   return 0;
 }
