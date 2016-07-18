@@ -1,0 +1,23 @@
+<ivy-module version="2.0">
+  <info organisation="apache-cassandra" module="cassandra"/>
+
+  <configurations>
+    <conf name="compile" description="Required to compile application"/>
+    <conf name="runtime" description="Additional run-time dependencies" extends="compile"/>
+    <conf name="test"    description="Required for test only" extends="runtime"/>
+  </configurations>
+
+  <dependencies>
+    <!-- FIXME: paranamer can be dropped after we're depending on avro                                                        
+    (since it depends on them). -->
+    <dependency org="com.thoughtworks.paranamer" name="paranamer-ant" rev="2.1" conf="compile->default"/>
+    <dependency org="junit" name="junit" rev="4.6"  conf="compile->default"/>
+    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="compile->default"/>
+    <dependency org="org.apache.rat" name="apache-rat" rev="0.6"  conf="compile->default"/>
+    <dependency org="net.sf.jopt-simple" name="jopt-simple" rev="3.2" conf="compile->default"/>
+    <dependency org="net.java.dev.jna" name="jna" rev="3.2.7" conf="compile->default"/>
+
+    <dependency org="com.cloudera.hadoop" name="hadoop-core" rev="0.20.2-320" conf="compile->default"/>
+    <dependency org="org.apache.hadoop" name="hadoop-streaming" rev="2.7.2" conf="compile->default"/>
+  </dependencies>
+</ivy-module>

@@ -1,0 +1,10 @@
+<ivysettings>
+  <settings defaultResolver="central"/>
+  <resolvers>
+    <ibiblio name="central" m2compatible="true" />
+    <ibiblio name="cloudera" root="https://repository.cloudera.com/cloudera/repo" m2compatible="true" />
+  </resolvers>
+  <modules>
+    <module organisation="com.cloudera.hadoop" resolver="cloudera" />
+  </modules>
+</ivysettings>
