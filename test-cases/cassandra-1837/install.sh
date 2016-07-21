@@ -14,10 +14,11 @@ then
     cd cassandra
     git checkout c9e6991b2d46b9c224a56f06355c88fb5d996997
     cd ..
+    rm -rf .git
 fi
-#cp ivy.xml cassandra/.
-#cp ivysettings.xml cassandra/.
-#cd cassandra
-#ant
+cp ivy.xml cassandra/.
+cp ivysettings.xml cassandra/.
+cd cassandra
+ant
  
 # install.sh ends here
