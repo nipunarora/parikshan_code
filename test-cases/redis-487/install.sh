@@ -13,9 +13,8 @@ then
     git clone https://github.com/antirez/redis.git
     cd redis
     git checkout 2ac546e00cd4000506558e23d11acafb4ce654b7
-    cd ..
 fi
-cd redis
 make
+rm -rf .git
  
 # install.sh ends here

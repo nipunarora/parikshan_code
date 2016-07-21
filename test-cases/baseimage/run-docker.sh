@@ -1,1 +1,1 @@
-docker run -d --hostname parikshan.base --name parikshan.base -it parikshan/baseimage
+docker run -d --hostname parikshanBase --name parikshan.base -it parikshan/baseimage

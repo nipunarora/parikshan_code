@@ -16,6 +16,7 @@ then
     cd ..
     rm -rf .git
 fi
+
 cp ivy.xml cassandra/.
 cp ivysettings.xml cassandra/.
 cd cassandra
