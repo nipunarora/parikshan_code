@@ -26,6 +26,8 @@ COPY screenrc /root/.screenrc
 #CMD ssh-keygen -q -t rsa -N '' -f /root/.ssh/id_rsa
 #COPY authorized_keys /root/.ssh/authorized_keys
 
+COPY ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+
 EXPOSE 22
 #ENTRYPOINT [ "service", "ssh", "start"]
 ENTRYPOINT service ssh restart && /bin/bash
