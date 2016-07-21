@@ -1,0 +1,19 @@
+#Modify escape key
+escape ^Bb
+
+#autodetach on hang
+autodetach on
+
+#Turn of that annoying startup message
+startup_message off
+
+#Turn the even more annoying whole-screen-flash-on-tab-complete "feature"
+vbell off
+
+terminfo xterm-color hs@:cs=\E[%i%p1%d;%p2%dr:im=\E[4h:ei=\E[4l
+term xterm-color
+
+#Last Line HardStatus
+hardstatus alwayslastline '%{= G}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= R}%n*%f %t%?%{= R}(%u)%?%{= w}%+Lw%?%= %{= g}][ %{y}Load: %l %{g}][%{B}%Y-%m-%d %{W}%c:%s %{g}]'
+defscrollback 50000
+termcapinfo xterm ti@:te@
