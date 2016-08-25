@@ -1,0 +1,108 @@
+This readme contains following information
+1. program description
+2. bug explanation
+3. source code info
+4. How to trigger the bug
+5. bug detection preliminary result
+Adx. info about mysql
+
+*MySQL version 4.1 
+program description:
+-----------------------
+MySQL is an open source Database Server
+
+NOTE: The root cause of this bug (the `bug explanation' as follows) was 
+confirmed by Min Xu before. However, Shan recently had some doubt about the 
+root cause of this bug. Shan hasn't had time to go back and check this bug 
+again. If you have new finding about this bug, please feel free to contact 
+Shan Lu (shanlu@cs.uiuc.edu or shanlu.uiuc@gmail.com). Thanks a lot!
+
+bug explanation:
+----------------------
+datarace (atomicity violation) bug 
+
+This bug is recorded in MySQL bugzilla as bug#644
+The related bugzilla description can be found at 
+		http://bugs.mysql.com/bug.php?id=644
+Related description can also be found in Min Xu's SVD paper
+
+This bug is caused by one thread's write-read access pair interleaved by 
+another thread's write access. As a result, the read access mistakenly gets 
+an wrong value and leads to program misbehavior. 
+
+Specifically, the bug is in sql/item.cc and sql/sql_select.cc. 
+The first thread sets the field->query_id and will uses this value
+in a later for-loop termination condition. However, field->queriy_id
+is not well protected and may be overwritten by a second thread in the
+middle. This will lead to program crash finally.
+
+one thread:
+sql/item.cc line 951
+bool Item_field::fix_fields(..){
+  ...
+  field->query_id=thd->query_id;
+  ...
+}
+----------
+the other thread:
+sql/sql_select.cc  line 7590
+for (f_ptr=tables[i].table->field,used_fields=tables[i].used_fields ;
+          used_fields ;
+          f_ptr++)
+{
+        field= *f_ptr;
+	if (field->query_id == thd->query_id)
+	{
+	  used_fields--;
+	  length+=field->fill_cache_field(copy);
+	  if (copy->blob_field)
+	     (*blob_ptr++)=copy;
+	  if (field->maybe_null())
+	     null_fields++;
+	  copy++;
+        }
+}
+
+Source code:
+---------------
+MySQL 4.1
+You can download it from mysql website
+or you can get it from this folder: mysql-4.1.1-alpha.tar.gz
+An installed version can be found at xxx 
+
+How to trigger the bug:
+---------------------
+You can use Min's sqlreplay to replay the bug: refer to the sqlreplay.tar.gz
+(Note: there are quite a lot files in that sqlreplay directory;
+ only a couple of them are related.
+ please refer to the readme file in that directory first!)
+
+1. start mysql server
+2. execute the runtran binary in the sqlreplay directory;
+    the parameter to use is exemplified in run.txt in the same directory.
+
+    <The runtran is compiled from runtran.cc; 
+     runtran.cc is a c++ file to automatically issue mysql requests;
+     You can modify some of runtran.cc 's parameter to change howmany clients
+     	and how many requests you want to send from per client.
+     How to compile it is specified in runtran.cc (you can find a line start
+	 	with g++ ...)
+     Pay attention: runtran needs several advanced g++ compilor option!
+     You have to follow the comile option specified in the file>
+3. After a while, the mysql server would crash
+	in run.txt, the 'thread' is set to 9, which means how many concurrent
+	clients are there. The higher it is, the easier to trigger the bug.
+	If the thread number is just 3 or 4, you may need to run a very long
+	time to finally trigger the bug.
+
+bug detection preliminary results:
+---------------------
+lockset, happen-before and avio can all detect this bug.
+This does not belong to the serializability pattern that can be dynamically 
+detected by SVD, but SVD will log it and provide programmers for post-mortum
+analysis.
+
+----------------------------------------
+---------infor about mysql--------------
+----------------------------------------
+REfer to the bug_README Adx. in mysql_1

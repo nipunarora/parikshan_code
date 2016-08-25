@@ -1,0 +1,143 @@
+This readme contains following information
+1. program description
+2. bug explanation
+3. source code info
+4. How to trigger the bug
+5. bug detection preliminary result
+Adx. info about apache-httpd
+
+*Apache httpd version around 2.0.46 (maybe fixed in 2.0.49)
+
+program description:
+-----------------------
+Httpd is an open source Web Server
+
+bug explanation:
+----------------------
+Atomicity violation causes dangling pointer access
+
+We use this bug slightly modified from Apache httpd #21287
+http://issues.apache.org/bugzilla/show_bug.cgi?id=21287
+
+
+
+Bug explanation:
+
+(Note: depending on different atomic_dec macro implementation, this bug has 
+different ways to manifest. In the following, we will talk explain two
+scenarios)
+
+Case 1: 
+=========
+in some platform, atomic_dec is implemented in a `bad' way:
+atomic_dec(x) is executed as
+  {
+     x--; [this is executed atomically]
+     return x; //x is read for the 2nd time, not atomic with above x--
+  }
+
+An read-write interleaved by write bug.
+in modules/experiments/mod_mem_cache.c
+unprotected reference counter modification and check cause
+ dangling pointer.
+
+Look at following code, when the interelaving is like:
+thread1: atomic_dec
+thread2: atomic_dec
+thread1(2): if(!obj->refcount)
+Then, thread1 and 2 may both get obj->refcount==0
+As a result, the program goes into dangling pointer problem.
+
+bug code:
+thread 1:
+static apr_status_t decrement_refcount(){
+  ...
+  apr_atomic_dec(&obj->refcount);
+  if(!obj->refcount){
+    if(obj->cleanup){
+       cleanup_cache_object(obj);
+  }
+  ...
+}
+--------------
+thread 2:
+either in open_entity(){..apr_atomic_inc(&obj->refcout);..}
+or also in decrement_refcount()..
+-------------
+
+Case 2:
+=============
+Case 1 only showed an easy-to-understand situation.
+On most platforms, atomic_dec is implemented correctly (what returned is
+from a local variable, no 2nd-read on the shared variable).
+However, above dangling pointer will still occur at the same place.
+Essentially, this is a sort-of multi-variable concurrency bug.
+
+Try to sleep before `if(obj->cleanup)' would help trigger the bug.
+
+
+Source code:
+-----------------
+2.0.46, 2.0.48, 2.0.5 are both ok for this bug
+You can download it from apache website
+http://archive.apache.org/dist/httpd/httpd-2.0.48.tar.gz
+or you can use the 2.0.5 or 2.0.48 in folder ..../apache_1
+I believe they also have the same bug
+(let me know, if they do not) 
+
+How to trigger the bug:
+-------------------------
+Installation (apache httpd + php):
+
+ apache httpd-2.0.48: 
+1. 	./configure prefix=<your-httpd-directory>   --with-mpm=worker  --enable-cache  --enable-mem-cache CFLAGS="-g"
+
+2.       if you want to trigger bug in case 1 scenario, you need to modify 
+	function decrement_refcount( ) in 
+	file: modules/experimental/mod_mem_cache.c
+	[on most platform the macro is implemented following case 2]
+
+3. 	make && make install 
+
+4.	modify http configuration file as the httpd.conf in this folder
+	(you can search the word 'fengqin' in the httpd.conf in this directory
+	and you can copy the <IfModule mod_cache.c> .... </IfModule>
+	into your httpd.conf
+ 
+
+ php-4.4.1: 
+1. 	./configure  --prefix=<your-httpd-directory>/php --with-config-file-path=<your-httpd-directory>/php --with-mysql --with-apxs2=<your-httpd-directory>/bin/apxs 
+  	(ahh, you definitely need to change paths for your usage)
+
+2. 	make && make install 
+
+3. 	copy php.ini-dist <your-httpd-directory>/php (refer to the INSTALL in the php-4.4.1 source directory) 
+  
+4.  	copy the file pippo.php in this folder into /var/www/htdocs (www doc root directory) 
+
+5. 	change apache configuration file to support php
+  (please change above direcotry accordingly based on your situation)
+
+ Test:
+   run two httperf processes using one machine or two machines using the same command: 
+   ./httperf --server=<your-httpd-server-name> --uri=/pippo.php?variable=1111 --num-conns=1000 --num-calls=1000
+
+   stop the processes after around 10 seconds. 
+    
+   (Of course, you can also just use a script with GET to do the test)
+
+    Result:
+    You will see the apache crash when the bug manifests.
+
+  Enforce the manifest:
+  You can help expose the bug by adding a sleep between 
+    apr_atomic_dec(&obj->refcount);
+	and
+    if(!obj->refcount)	[in case 1]
+
+    or before if(...cleanup) [in case 2]
+
+Bug Detection Priliminary Results:
+--------------------------------
+lockset, happen-before and avio can all detect this bug
+this is not the serializability paptern that can be auto. detected by svd
