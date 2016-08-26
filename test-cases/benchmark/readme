@@ -1,0 +1,35 @@
+
+5 examples used in the ASPLOS-avio paper
+(You can refer to our ASPLOS paper
+``AVIO: Detecting Atomicity Violations via Access Interleaving Invariants''
+  for more explanation)
+
+1. Apache #1
+Unprotected buffer length read and write corrupt log file (could crash)
+Pls read the bug_README in apache_1
+
+2. Apache #2
+Unprotected reference counter write-read  causes dangling pointer, crash
+Pls read the bug_README in apache_2
+
+3. MySQL #1
+Unprotected database bin log close and open cause some actions not logged
+Pls read the bug_README in mysql_1
+
+4. MySQL #2
+Unprotected query-id set and read crashes database server
+Pls read the bug_README in mysql_2
+
+5. MySQL #3
+Unprotected `delete table' query and logging causes database log disorder.
+(This bug is hard to detect)
+
+===========================
+NOTE: 
+There are slight code modification in some bug examples for configuration
+issue and simulation issue. All the modifications were documented in the
+bug_README files.
+
+NOTE:
+Please feel free to contact Shan Lu (shanlu@cs.wisc.edu) for more 
+information and more discussion :). Have fun with these bugs :)! 

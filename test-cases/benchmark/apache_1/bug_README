@@ -1,0 +1,110 @@
+This readme contains following information
+1. program description
+2. bug explanation
+3. source code info
+4. How to trigger the bug
+5. bug detection preliminary result
+Adx. info about apache-httpd
+
+*Apache httpd version around 2.0.4? (2.0.45, 2.0.48 both buggy)
+
+program description:
+-----------------------
+Httpd is an open source Web Server
+
+bug explanation:
+----------------------
+datarace (atomicity violation) bug 
+
+This is reported in apache bugzilla as #25520
+
+This code region includes more than one atomicity violation (datarace) bugs.
+One thread's read-write sequence may falsely mingle with another thread's
+read-write sequence to the same shared variable, leading to program's misbehavior. 
+
+Specifically, the bug is in modules/loggers/mod_log_config.c
+The bug is very obvious. In the ap_buffered_log_writer function,
+buf->outcnt is the indx to the end of the log buffer. In the fuction,
+it is read, checked, and then used to help append the log buffer,
+  after the log buffer update (memcpy line), the buf->outcnt is increased.
+The whole process is not protected by lock. As a result, the other thread
+may be doing the same operation and the buf->outcnt and consequently the
+buffer is totally mess, if bug triggered.
+
+For more details about the function, please refer to figure 2 of Min's SVD 
+paper@PLDI'05.
+Or Figure 4 in avio paper @ASPLOS'06 (apache2.eps).
+
+Source code:
+-----------------
+I used httpd-2.0.48 and httpd-2.0.45 before
+You can download it from apache website
+http://archive.apache.org/dist/httpd/httpd-2.0.48.tar.gz
+or you can use the one in this folder:
+ httpd-2.0.45.tar.gz
+ httpd-2.0.48.tar.gz
+
+How to trigger the bug:
+------------------------
+1.Configure the httpd-2.0.48 as follows: 
+ ./configure --prefix = ... --with-mpm=worker
+(--with-mpm will set the apache in multi-thread instead of multi-process mode;
+ you may also want to add CPPFLAGS="-g" CXXFLAGS="-g" CFLAGS="-g" to give gdb
+ debugging information)
+
+2. add one line to the configuration file conf/httpd.conf: 
+BufferedLogs on
+
+3. Install httpd following its direction
+
+4. Then you just need to send httpd request for two (different) files 
+Please keep sending them concurrently
+
+You can either use tools like httperf
+./httperf  --server=<your-httpd-server-name>  --uri=/index.html.cz.iso8859-2 --num-conns=100 --num-calls=100
+./httperf  --server=<your-httpd-server-name>  --uri=/index.html.en --num-conns=100 --num-calls=100
+
+Or just use
+> wget <file name>
+
+5. If the bug is triggered, you'll see the garbage in the access log file 
+logs/access_log
+
+6. How the bug would manifest depends on how the code region would be falsely
+interleaved.
+
+One way:
+If the interleaving is like:
+thread1--memcpy (s, strs[i], strl[i]); (the memcpy in else)
+thread2--memcpy (s, strs[i], strl[i]);  (the memcpy in else)
+thread2--buf->outcnt += len;
+thread1--buf->outcnt += len;
+--At this point, buffer is inconsistent with buf->outcnt
+  Next buffer write would make log looks strange
+
+Another way:
+If the interleaving is like:
+thread1--if (len + buf->outcnt > LOG_BUFSIZE);
+thread2--if (len + buf->outcnt > LOG_BUFSIZE);
+thread1--memcpy...; buf->outcnt +=len;
+thread2--memcpy... (buffer overflow may happen at this time)
+  (If you change the macro LOG_BUFSIZE value (make it smaller),
+   the buffer overflow may be easier to happen)
+
+You can try to add some code to enforce above interleavings to expose the bug.
+
+bug detection preliminary results:
+---------------------
+lockset, happen-before, SVD and avio can all detect this bug.
+
+----------------------------------------
+---------info. about httpd--------------
+----------------------------------------
+httpd is releatively easy to install, but you need root priviledge
+to run it and write the /etc/*.cnf file.
+
+configuration file is at conf/httpd.conf
+
+wget and GET are the easy ways to exercise httpd 
+
+By default, the files are in htdocs
