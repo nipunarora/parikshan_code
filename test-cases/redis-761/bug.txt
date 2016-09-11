@@ -1,0 +1,1 @@
+zinterstore out 9223372036854775807 zset zset2

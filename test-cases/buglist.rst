@@ -49,9 +49,10 @@
 |              |             |                    |                  |                 |        |client commands     |         |         |         |         |
 |              |             |                    |                  |                 |        |(feature start)     |         |         |         |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
-|Redis-957     |Configuration|Slave cannot sync   |Non Deterministic |2 nodes          |        |Upload a large db   |bug#957  |         |         |Redis    |
-|              |Bugs         |with Master on large|                  |                 |        |(file write)        |         |         |         |         |
-|              |             |DB (no replications)|                  |                 |        |                    |         |         |         |         |
+|Redis-957     |Configuration|Slave cannot sync   |Non Deterministic |2 nodes          |        |Upload a large db   |bug#957  |         |N (Could |Redis    |
+|              |Bugs         |with Master on large|                  |                 |        |(file write)        |         |         |not find |         |
+|              |             |DB (no replications)|                  |                 |        |                    |         |         |bug      |         |
+|              |             |                    |                  |                 |        |                    |         |         |trigger) |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
 |mysql-49491   |Performance  |MD5 and SHA1 hashes |                  |2 nodes - client,|        |Just generate a lot |         |         |    Y    |mysql    |
 |              |Bugs         |take longer than    |                  |server           |        |of MD5 or SHA1      |         |         |         |         |
