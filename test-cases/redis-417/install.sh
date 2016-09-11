@@ -16,5 +16,4 @@ then
 fi
 make
 rm -rf .git
- 
 # install.sh ends here
