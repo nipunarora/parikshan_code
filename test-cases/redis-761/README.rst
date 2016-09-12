@@ -36,6 +36,5 @@ Instructions on how to run proxy for redis-487
 
 4. Start redis client:
 
-   
-
-cat bug.txt| ./redis/src/redis-cli -p 5555
+   ./redis/src/redis-cli -p 5555
+   zinterstore out 9223372036854775807 zset zset2

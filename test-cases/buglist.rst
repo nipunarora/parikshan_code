@@ -68,7 +68,7 @@
 |              |             |string              |                  |                 |        |execution script has|         |         |         |         |
 |              |             |                    |                  |                 |        |been provided       |         |         |         |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
-|Redis-761     |Crash Bugs   |Redis server crashes|                  |1 node           |        | zinterstore out    |bug#761  |         |         |Redis    |
+|Redis-761     |Crash Bugs   |Redis server crashes|                  |1 node           |        | zinterstore out    |bug#761  |         |   Y     |Redis    |
 |              |             |on a large integer  |                  |                 |        |9223372036854775807 |         |         |         |         |
 |              |             |input to            |                  |                 |        |zset zset2 (feature |         |         |         |         |
 |              |             |                    |                  |                 |        |start)              |         |         |         |         |
