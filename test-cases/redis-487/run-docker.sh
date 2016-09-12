@@ -1,1 +1,1 @@
-docker run -d --hostname parikshan.redis487 --name parikshan.redis487 -it parikshan/redis487
+docker run -d --hostname parikshan-redis-487 --name parikshan.redis.487 -it parikshan/redis:487

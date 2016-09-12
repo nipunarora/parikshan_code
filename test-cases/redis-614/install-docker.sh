@@ -1,1 +1,1 @@
-docker build -t parikshan/redis614 .
+docker build -t parikshan/redis:614 .

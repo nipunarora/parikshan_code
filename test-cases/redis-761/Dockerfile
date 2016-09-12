@@ -9,8 +9,8 @@ MAINTAINER nipun
 
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
-
-RUN cd /root/ && install.sh
+COPY install.sh /root/install.sh
+RUN cd /root/ && sh install.sh
 
 EXPOSE 22
 #ENTRYPOINT [ "service", "ssh", "start"]
