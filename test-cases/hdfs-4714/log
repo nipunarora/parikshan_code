@@ -1,0 +1,1219 @@
+commit be948480affb8c91c413751cdee09686485de37d
+Author: Nipun <nipun@nec-labs.com>
+Date:   Thu Sep 1 19:08:18 2016 -0400
+
+    added bug information
+
+commit 7434764115d97d9c44d599b59529d2a440a37916
+Author: Nipun <nipun@nec-labs.com>
+Date:   Fri Aug 26 00:48:45 2016 -0400
+
+    updated
+
+commit 3f0d8f1d9a487d3955c9c6abd907cdc43fb375fd
+Author: Nipun <nipun@nec-labs.com>
+Date:   Fri Aug 26 00:19:38 2016 -0400
+
+    updated buglist
+
+commit 4a81dc17a2168a8dd35af2d1b9a10ed83db98911
+Author: Nipun <nipun@nec-labs.com>
+Date:   Thu Aug 25 20:20:02 2016 -0400
+
+    added buglist
+
+commit 29d38d946ac88df182dd839cb2cec2a3ebbf323f
+Author: Nipun <nipun@nec-labs.com>
+Date:   Wed Aug 24 23:45:21 2016 -0400
+
+    added buglist
+
+commit 3e4ab83eca36ce2729539319f7a611a19eabc1ab
+Author: Nipun <nipun@nec-labs.com>
+Date:   Wed Aug 24 23:33:36 2016 -0400
+
+    added buglist
+
+commit e1099ef1984dc9300450021fc275578844c3c680
+Author: Nipun <nipun@nec-labs.com>
+Date:   Wed Aug 24 23:23:53 2016 -0400
+
+    added concurrency test-cases
+
+commit a2fa3a04bef3fd7304e26f8bdce8cfc06d020a1f
+Author: Nipun <nipun@nec-labs.com>
+Date:   Sun Aug 21 23:10:28 2016 -0400
+
+    added 49491
+
+commit 7e7f6dcf12f046ea8750cb671dde9c031effff26
+Author: Nipun <nipun@nec-labs.com>
+Date:   Sun Jul 31 09:22:29 2016 -0400
+
+    added bug information about mysql -49491
+
+commit ca18c342f49a1abac57945cdc6094584cba04ccd
+Author: Nipun <nipun@nec-labs.com>
+Date:   Tue Jul 26 10:43:27 2016 -0400
+
+    adding mysql 15811 case
+
+commit 7330274a200f4986b446c78f1fd509964998731b
+Author: Nipun <nipun@nec-labs.com>
+Date:   Tue Jul 26 10:43:06 2016 -0400
+
+    adding hbase 6868 case
+
+commit 8ebb704c96f8a7c9ff595c8c9cc18eb2f3adda90
+Author: Nipun <nipun@nec-labs.com>
+Date:   Thu Jul 21 16:26:17 2016 -0400
+
+    updated dockerfile
+
+commit 70387009d83e764ef6f67b375f8b186b50094ceb
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Thu Jul 21 15:22:26 2016 -0400
+
+    add redis docker
+
+commit e8ee5cf39e236b20734866548f19eb1a93d8589b
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Thu Jul 21 14:36:05 2016 -0400
+
+    adding docker baseimage
+
+commit 1a9dfc346ad96945686a912467540b34549c108e
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Thu Jul 21 14:35:17 2016 -0400
+
+    adding docker file and install script for cassandra
+
+commit 099b7894a2b2672091eee28bdc62193a79e6de56
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Jul 17 22:08:53 2016 -0400
+
+    added cassandra
+
+commit 3271c5cc62cf8b0fe5c6721768c3fe4589c8d5d7
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 12 00:17:13 2016 +0000
+
+    updated redis install file
+
+commit cdb446e3c02cfafe090b48bde93e49396e468e28
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 12 00:16:50 2016 +0000
+
+    removing apache-cassandra
+
+commit bb959b472d8e6c6941bd40ddb8f728126e453501
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Jul 11 00:27:21 2016 +0000
+
+    adding install and run script
+
+commit 55eee4b6988f16670103e127285dc716f0ef08ed
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 29 20:52:30 2016 -0400
+
+    Revert "removing apache-cassandra"
+    
+    This reverts commit aff5372c31e720d78c3279e69591eed064833662.
+
+commit 0ba4b5c1966b270cf34e3e86b5317ee345bb63e5
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 29 20:51:48 2016 -0400
+
+    Revert "added cassandra and redis"
+    
+    This reverts commit 9eed598ead838a9e980560ab7c0befa7b215777b.
+
+commit 09179aa87e83c985a101d62756a392f539b2dc8e
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 29 20:41:22 2016 -0400
+
+    modified proxyClone
+
+commit aff5372c31e720d78c3279e69591eed064833662
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 29 20:22:56 2016 -0400
+
+    removing apache-cassandra
+
+commit 9eed598ead838a9e980560ab7c0befa7b215777b
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 29 20:14:53 2016 -0400
+
+    added cassandra and redis
+
+commit 4a5c57f3f0ce36d46fae739220c684a9c23ebfbd
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jun 1 21:55:03 2016 -0400
+
+    adding redis-487 test case
+
+commit d9f1dbc8d87b214857ed3803697df1011761f50d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Aug 29 04:08:42 2015 -0400
+
+    minor fix in techreport bib entry
+
+commit b7b60e9e203a2fdcc6f2c2dd9acada412fc20c88
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Aug 29 03:12:12 2015 -0400
+
+    committing the final version
+
+commit b4be0754c4d7645c0f403092133dc7ca64846dc6
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Aug 28 23:52:04 2015 -0400
+
+    committing latest updates, trying for a final round of reading
+
+commit f3451e04a15631921a5370a301c02d4c24a71338
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 16:47:22 2015 -0400
+
+    still slightly over 10 pages
+
+commit 501570d76b2166c42098a0068b449595ff0f782c
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 11:59:42 2015 -0400
+
+    commiting more details, corrected bib errors
+
+commit af439a50a6b9920cda99d1700b8100ef0674bf0c
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 11:34:57 2015 -0400
+
+    committing changes in debug-window
+
+commit d9d8a84f11df7a48d4215346ccc83a2e8801d096
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 10:08:03 2015 -0400
+
+    commiting pdf files
+
+commit 6ec370c6ffcab0485ea746c69756ece32431b632
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 09:59:05 2015 -0400
+
+    adding sandbox.pdf
+
+commit e7d9fd89a14e3435132a5f7771ade38c2aa35f41
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 09:58:30 2015 -0400
+
+    commiting latest in windowEval.tex
+
+commit 9a29da22e5fe5238fb9f34dba50cf9a5683b196c
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Aug 27 09:41:53 2015 -0400
+
+    committing current status of icse2016 paper
+
+commit 02cd7fcedbb5c658e855432d331e694dbb02169f
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Aug 26 10:55:15 2015 -0400
+
+    committing sandbox
+
+commit e4a7ede2666205e6b4a5a5d69a5001047892cd5d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Aug 24 22:40:00 2015 -0400
+
+    committing paper
+
+commit f9441fc3e8fcff070ec0d1475968e7861873367c
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Aug 24 16:57:52 2015 -0400
+
+    committing updates
+
+commit e06d86a9312bb0de5c26e0db413179b10388a6ca
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Aug 16 15:33:39 2015 -0400
+
+    commiting queue
+
+commit 92a503bd68ad519f192673563fcc9c5be445704f
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Aug 15 14:59:56 2015 -0400
+
+    adding icse papers
+
+commit ffd613b63e5e9a96f05946a33cafd67e878c6bb4
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Aug 5 12:31:31 2015 -0400
+
+    adding icse2016 first draft
+
+commit ab8ca00f96e8a08fcd278181130b39c6501c0db8
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat May 9 23:20:23 2015 -0400
+
+    committing statistical.md
+
+commit 194f8fe6ca49a8214d45c0b1c422fa8f3f679464
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Apr 14 13:16:45 2015 -0400
+
+    checking in status as of April 14
+
+commit 3e51d7660832b415b6d976932dfe40189ffe5089
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Jan 31 18:50:58 2015 -0500
+
+    finished first pass on case study
+
+commit 754ea3bd2216b5809e4a4ae235bc48bd529ba24d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Jan 31 12:55:21 2015 -0500
+
+    Fixed Motivation
+
+commit 88d7b98223668b3c6cdfb26e953ce42ed44fce97
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jan 27 12:37:46 2015 -0500
+
+    added some of Gail's feedback and a new aggregator figure
+
+commit 8a3a8498f414fc101c073c4c416fc4ee5367ef3e
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Jan 23 13:58:18 2015 -0500
+
+    added gail's comments and converted all test to debug containers
+
+commit 52a02fc3fe7f3bcb459bb5b3963588997539686a
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Jan 23 07:15:50 2015 -0500
+
+    merged with Frano's changes
+
+commit 7d4614e2d329528b3b735735583ec3165459b4c3
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jan 21 14:57:01 2015 -0500
+
+    some minor additions to the README for mySQL
+
+commit 41fbe3631992b90735c63694da890d9d39e9f331
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Jan 19 18:13:20 2015 -0500
+
+    modified evaluation
+
+commit a4e668a037b0eea4c98f94a21c9a3978765b9da3
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Jan 19 00:31:56 2015 -0500
+
+    modified eval
+
+commit 5698aeb99baa06e893fe445d340e1d801b811f8f
+Author: root <root@OVZ481.(none)>
+Date:   Sat Jan 17 18:19:48 2015 -0500
+
+    mysqlclient
+
+commit 87571637a82a8e2f9994ae40489de82773f27482
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jan 17 15:36:41 2015 -0500
+
+    git ignore files
+
+commit 6c836081ffa75932dce43ae435c69b919f307ed6
+Merge: 3568058 15abc7f
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Jan 17 08:23:47 2015 -0500
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit 3568058c5b9d1f62fddc86729d49a45ce8494d7f
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Jan 17 08:23:41 2015 -0500
+
+    commiting tex files
+
+commit 15abc7fd04bdb5c8d6291134af193c38b5c50678
+Merge: 3aa78df fa93252
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jan 17 01:35:25 2015 -0500
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit 3aa78dfe78dc18cad9e8b4660ed89d7f3027a025
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jan 17 01:35:20 2015 -0500
+
+    adding mysql clients
+
+commit fa93252b0f3a965d0dfea598061623e2afff5d53
+Author: root <root@OVZ482.(none)>
+Date:   Mon Jan 12 14:38:07 2015 -0500
+
+    kklis/proxy added
+
+commit fffe55cd97b5c797b45d03b9d9fc238bfe8364df
+Merge: f8aa62a 9a0f344
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jan 11 19:24:39 2015 -0500
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit f8aa62a877e6ffa0d8329351437f65c313ea7ee9
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jan 11 19:24:33 2015 -0500
+
+    proxy module added
+
+commit 9a0f344312a2b6f8d46246d137df9e184f2fef76
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Jan 4 22:13:17 2015 -0500
+
+    modified tex files
+
+commit a4cf952b880598b82317cf4ae0b8a62debd9601b
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Jan 2 13:20:38 2015 -0500
+
+    modified and added new files for each of design subsections
+
+commit b15d3ef193fb98f4f2e31d0261c674a4da90b447
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Jan 1 19:13:21 2015 -0500
+
+    reduced size of abstract.tex
+
+commit f0ebf88f653554b5deb4f022389caccab506050b
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Jan 1 16:39:22 2015 -0500
+
+    modified several tex files shifted to usenix style
+
+commit c3fbc44ab0a9bb77ae3f0e09a9aec41bc832bb2a
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Jan 1 16:35:36 2015 -0500
+
+    removing input.c temp file
+
+commit 4ec10e13b210e0ae1d80b5c22c5e85095f12806a
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Dec 31 15:33:58 2014 -0500
+
+    proxyAgg working and tested
+
+commit ce38d854ec6e04a56d807ee25446fc6995516a87
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Dec 31 14:22:31 2014 -0500
+
+    proxyAgg
+
+commit c33566afc46e433da0898931e8ba87d63cacddaa
+Author: nipun <nipun@nec-labs.com>
+Date:   Mon Dec 29 20:31:01 2014 -0500
+
+    committing updates to various files including test and proxyAgg
+
+commit 9016187bcc912bf2c2822eb17b97d1886ff54ac6
+Author: nipun <nipun@nec-labs.com>
+Date:   Mon Dec 29 17:23:39 2014 -0500
+
+    committed proxyClone
+
+commit 3b831985ca5eb27dc3c60f14c2f9753c8818e247
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Dec 28 16:03:26 2014 -0500
+
+    added shm_test
+
+commit 9f70aa53c435e908a4986df8ee50a6e89331705d
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Dec 28 16:02:35 2014 -0500
+
+    proxyAgg updates
+
+commit 3d97b65e6dfb184cddbfc2d47e7e9ec93a9dcee0
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Dec 28 15:16:10 2014 -0500
+
+    proxy Agg updates
+
+commit c42283e344b1b1949ebc111a56f77643cd498470
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Dec 26 16:25:32 2014 -0500
+
+    modifying proxyAgg
+
+commit 2372d90ca80d4e04cba84137a31c26849057e43f
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Dec 26 15:43:36 2014 -0500
+
+    proxy modificaions
+
+commit f40d12cac834f1c975e63d0234f207b40b910279
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Dec 14 15:03:10 2014 -0500
+
+    modules
+
+commit fd33864aaec28ca1a369d2d83a8e6eb98ad16303
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Dec 14 02:14:26 2014 -0500
+
+    committing current paper status
+
+commit 1f3f2ab9247d7df300912f721f7584bba9497cf9
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Thu Dec 11 11:55:47 2014 -0500
+
+    adding vzclone_vz48, and updates to the paper
+
+commit 5d155c232b2496d7c898fbf46a3df463c1448508
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Nov 30 13:17:54 2014 -0500
+
+    pthread example added
+
+commit d7623f6733b7dee2b855e14ba564058da36d68b3
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Nov 30 13:17:30 2014 -0500
+
+    proxytemp.c
+
+commit b14c240e8bc20c138cb4d28a5e4ec70ecc9313c5
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Nov 29 17:31:17 2014 -0500
+
+    proxytemp building
+
+commit c5b6ef6d36b2d060ebabf72e1933c1e8f0c46ffe
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Nov 29 11:32:24 2014 -0500
+
+    proxy temp
+
+commit c1c9e61a4b283d2b7413a55149343e9cf05cb6d6
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Nov 28 19:24:33 2014 -0500
+
+    added futurework.tex
+
+commit bf205f641f788383b1686bce5e2acc7cd8f82204
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Nov 28 19:23:37 2014 -0500
+
+    adding modules/proxy/proxyAgg
+
+commit f63b4e4b7536fb0c86d64b0bde3052a7a976d054
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Nov 28 14:02:54 2014 -0500
+
+    small fix in proxy recv asynchronous
+
+commit 1cb7f3291b5c75d8cd43bb8aee349ca198028d3d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Fri Nov 28 12:22:20 2014 -0500
+
+    adding vzmigrate
+
+commit 5d24e118a9e86c4f030e8a528cf0d95d22a074cf
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Nov 28 11:40:00 2014 -0500
+
+    adding vzswap_conver.sh
+
+commit d110c0984cdb309325cf047140ef8fbba48d52ad
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Nov 26 10:25:38 2014 -0500
+
+    nier files added
+
+commit 985e0ad736aa7c70b6d5a39f8a052be926a119ea
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Fri Nov 21 17:45:15 2014 -0500
+
+    nier ready
+
+commit 27d258cd86b0a3d57fa874bec7935d07bc73c31d
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Thu Nov 13 18:26:13 2014 -0500
+
+    adding .gitignore
+
+commit b44cdc91c38eb46e2a3f5d8c1a6430afa555d0a6
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Tue Nov 11 18:02:51 2014 -0500
+
+    sandbox updates
+
+commit e2406380ceff86cd57e81c384fe03434f7423ffe
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sat Nov 8 12:57:32 2014 -0500
+
+    added many more details
+
+commit ba57f9d00c8d2b0eb89114e308e3e51618ca3df2
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Oct 20 17:14:32 2014 -0400
+
+    added hidden files
+
+commit 5b0b5b6422f5fd0ca0e5deb132aa8e1a72ad260c
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Oct 20 17:12:42 2014 -0400
+
+    added motivation.eps
+
+commit dada178bf0a28be81e40389dfdc0d679be8725fe
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Oct 20 17:12:17 2014 -0400
+
+    Added info about testing window
+
+commit 260a07b1854b426db43270b534803e39696c61eb
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Oct 20 17:03:19 2014 -0400
+
+    Added info about testing window
+
+commit 673710fce29358f875e830d68b386d5b9e1bb935
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sat Oct 18 10:41:30 2014 -0400
+
+    commit changed files
+
+commit 1b132d3d5b94fe352ec5159074055e10c6581be0
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 12 15:25:35 2014 -0400
+
+    finished test-conversion pass 1 on introduction.tex
+
+commit 43acd25db161917a4e41fc617533dd5de8217bae
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 12 13:04:12 2014 -0400
+
+    Adding sandbox.pdf paper
+
+commit fc496a1ae9fbbfefdb6e7606f5471bb170283a13
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 12 13:03:09 2014 -0400
+
+    modified paper with case studies complete overhaul of sections, removing ephasis on testing moving to debugging instead
+
+commit b2f43944c57ff93f978c3bf9fb87ef11ff2aa74a
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 20:00:53 2014 -0400
+
+    fix fclose
+
+commit 1b6178f6d3a9b91d8814cdfb6246f3a0a25f610d
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 20:00:07 2014 -0400
+
+    fix fclose
+
+commit 7be7e2bacc5e2f8806b8aab8173911a0d0f1ac09
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 19:57:43 2014 -0400
+
+    fix gettimeofday
+
+commit 7b143588b987d7ee0a7848d006c99dfa0f22ba6f
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 19:56:00 2014 -0400
+
+    adding makefile
+
+commit 40e053b7b516f61716302fa4dec78946b4ea47e3
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 19:52:31 2014 -0400
+
+    fixing proxy errors
+
+commit f9568d19a1843044bf0900ec6b511f4d1bdcf454
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Oct 5 19:38:10 2014 -0400
+
+    added paper details
+
+commit e59cd206681e750d7e81b307ddeef4d55afe5f96
+Merge: ea202c2 873fb80
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Oct 5 18:55:26 2014 -0400
+
+    fixing
+
+commit ea202c250bade754b662dea37554db938926b0e2
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Oct 5 17:04:24 2014 -0400
+
+    removing *.o files
+
+commit b128257b2057cd986f42da4810aa4758ac826d4f
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Oct 5 17:02:16 2014 -0400
+
+    fixing git
+
+commit 873fb80579f79c6b7f05f269a91359aa06aa3f81
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Oct 5 16:48:51 2014 -0400
+
+     fixed errors
+
+commit e27a5728386e58c853da1d984c6d46698a9a889b
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Sun Oct 5 02:34:59 2014 -0400
+
+    added config simple self
+
+commit 91ed446b025b43d96b0516658abb612a5013ab0f
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Sun Oct 5 02:30:19 2014 -0400
+
+    modified proxy etc
+
+commit dc411a1db086f36a4f4308e732fd475225521491
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Sat Oct 4 23:12:20 2014 -0400
+
+    fixed all files
+
+commit 4154243e125dc89cfc212d371e807d9fe3cdda2b
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Sat Oct 4 23:09:36 2014 -0400
+
+    fixed statistics
+
+commit ebf2984555b3c837ce1ab942c66f8498b1b14151
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Oct 4 22:57:17 2014 -0400
+
+    added ntools-1.5
+
+commit 9591eb17d003d500cf9503c9afd303a12879bc1b
+Merge: 462c017 7cbb2f1
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Oct 4 22:55:12 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit 7cbb2f1d9653d73e7e354cd52cbc01bb0840c1a5
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Sat Oct 4 13:52:14 2014 -0400
+
+    proxyc works with sleep
+
+commit 4c431613e77fb118fa9d268f9ad13a6302da45b4
+Author: Nipun Arora <nipun@cs.columbia.edu>
+Date:   Thu Oct 2 13:52:34 2014 -0400
+
+    proxy
+
+commit 47766dda71df9d0eebcd414e73a8be0e471357a9
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Oct 1 20:25:03 2014 -0400
+
+    added DEBUGGING MACROS
+
+commit 718158612d427d302df4be7a9c63ee129746d754
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Oct 1 20:03:00 2014 -0400
+
+    added pipes for asynchronous mode, still need to add buffer size
+
+commit da4d24ea769fc43dc9466be4c18dc760fdd02e3e
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Oct 1 18:10:55 2014 -0400
+
+    small debug statement
+
+commit da3998691c41d9973d17a21d047d3432be67c499
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Oct 1 18:00:36 2014 -0400
+
+    updated proxy
+
+commit 462c017d92abeee4da0e7d18b003e64b73b5b227
+Merge: 7ad786e 8932e87
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Oct 1 17:30:19 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit 7ad786eb68869d59e50599f389d2cc0758857697
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Oct 1 17:30:14 2014 -0400
+
+    adding modlist.sh
+
+commit 8932e8787070ddab121cc661f29a2b4ab3e618bd
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Oct 1 17:29:05 2014 -0400
+
+    added synchronous mode for c proxy
+
+commit 32815b3291a34420fdaa9eac343e98de8a150fa8
+Author: nipun <nipun@nec-labs.com>
+Date:   Tue Sep 30 23:30:34 2014 -0400
+
+    proxy update
+
+commit b036eb1ac1378e69798936bcf2a176a089edcbf3
+Author: nipunarora <nipun2512@gmail.com>
+Date:   Sun Sep 28 00:39:29 2014 -0400
+
+    Update README.md
+
+commit b6eee97b7ae8d9479e12863947c51d857ecaba2b
+Author: root <root@shadow.(none)>
+Date:   Sat Sep 27 20:26:09 2014 -0400
+
+    fixing modlist for updates on any comp
+
+commit 4b6abb21f5b1a436f8b86022c6526352ac7c280d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Sep 27 19:11:11 2014 -0400
+
+    modlist.sh
+
+commit dcd2d11b9d86999665b3e2b399d391cc423c9d2f
+Author: root <root@shadow.(none)>
+Date:   Sat Sep 27 15:36:12 2014 -0400
+
+    modlist
+
+commit 843d818a43a25a05a23bc9c7c0375cd531f30515
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Fri Sep 26 01:54:50 2014 -0400
+
+     added network_dup.eps
+
+commit 34f8a6a60a148e80795a98216002942b02f61ccb
+Merge: a9b6588 ba0c236
+Author: root <root@centSand2.(none)>
+Date:   Wed Sep 24 00:10:00 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit a9b6588e140cb4c7634cea1d156ef8b5662f0ae5
+Author: root <root@centSand2.(none)>
+Date:   Wed Sep 24 00:05:50 2014 -0400
+
+    Adding httperf
+
+commit ba0c2368dcf298b8eb5a429f518c6e598d47581c
+Author: nipunarora <nipun2512@gmail.com>
+Date:   Tue Sep 23 14:44:39 2014 -0400
+
+    Update README.md
+
+commit 2dc6878864a491f64f4a51138bc7632bbaacf979
+Author: nipunarora <nipun2512@gmail.com>
+Date:   Tue Sep 23 14:29:55 2014 -0400
+
+    Update README.md
+
+commit a9b9cb9ac3b767054e64cf0dab18b4c1d771fd64
+Author: root <root@sandbox1.c.sandbox-testing-01.internal>
+Date:   Tue Sep 23 16:59:43 2014 +0000
+
+    added createvz.sh
+
+commit c8bcf7d5981de48c8616e960e5335dff67c54174
+Author: nipunarora <nipun2512@gmail.com>
+Date:   Sun Sep 21 18:03:51 2014 -0400
+
+    Update README.md
+    
+    added vaurien
+
+commit cbaee5d224781cb06d052f2e38af17fef757a12f
+Author: root <root@centSand1.(none)>
+Date:   Sun Sep 7 00:55:35 2014 -0400
+
+    added new vzclone scripts
+
+commit 27ead40bd45c8ba26df406e70bcbd60333056dc2
+Merge: ad8718a 157418f
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Sep 1 21:00:43 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit ad8718af948bf9170e2849339d9bec22c6f702ed
+Merge: 0e30c98 21b3c96
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Sep 1 20:59:54 2014 -0400
+
+    vzmigrate
+
+commit 157418f179289b49427e9bd3f884fa16e29656f4
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Aug 2 15:58:58 2014 -0400
+
+    proxy
+
+commit 368d08cb33f4632c47f2a9a26de19e8570ac4f40
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Aug 2 15:51:14 2014 -0400
+
+     python proxy
+
+commit 2d285eecafeedd9cbdfd701334e9b0f157843dc7
+Merge: 7f51c3c 21b3c96
+Author: root <root@debTestEval.localhost>
+Date:   Sat Aug 2 15:34:10 2014 -0400
+
+    updating a few changes
+
+commit 7f51c3c54a5d63aeb54da9484b59df958addc38a
+Author: root <root@debTestEval.localhost>
+Date:   Wed Jul 30 11:25:21 2014 -0400
+
+    merging
+
+commit 0e30c98edaf655cd2f7cc137374b450c48366016
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Jul 30 11:24:07 2014 -0400
+
+    commiting and merging
+
+commit 21b3c96b699d0a4594fa9746791620843c899e01
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Wed Jul 30 11:23:41 2014 -0400
+
+    Added git ignore fixed small bug in tcp-ucsb client server
+
+commit 7302732681fc5523bc7dc90ae4a0ebb444a34099
+Author: nipun <nipun@nec-labs.com>
+Date:   Wed Jul 30 10:53:58 2014 -0400
+
+    added cprrected ucsb which take port number as argument
+
+commit 05c9c10a23bdb065ab54f193f29b8753e10eff53
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 29 17:00:57 2014 -0400
+
+    added a few other tcp client servers in simple test
+
+commit 47f4fb3aa14884b151662ecfeba8401473294cae
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 29 16:24:47 2014 -0400
+
+    Added simpleTest
+
+commit 52389a3a32d0db41ede39c0bbf352f1bbd55c27e
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 29 15:24:04 2014 -0400
+
+    updating gitignore
+
+commit 49eec5286f20a4873018effce5e8c358b3f05259
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 29 00:51:06 2014 -0400
+
+    removed duplicator
+
+commit 7548f387a045d3d6537d8e4a41f040649ac1f49d
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Tue Jul 29 00:50:30 2014 -0400
+
+    added nodejs info in readme
+
+commit a33f0b8541b02b42f4bd9144b1de9c8da69ce5cc
+Merge: fa8b97a 0bd3800
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Jul 28 20:27:07 2014 -0400
+
+    updating vzclone
+
+commit fa8b97a5d3a733ed635bc859845729549d445354
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Mon Jul 28 20:24:16 2014 -0400
+
+    changed vzclone and createVZ.sh
+
+commit 0bd3800b320c5c459603ea65faf5f08cac997bbd
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Jul 28 15:39:08 2014 -0400
+
+    Added a gitignore file
+
+commit f18d8dcd904452c8a1b7f4ba821767a6e1d86300
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Jul 28 15:27:14 2014 -0400
+
+    Added paper updates
+
+commit 73e748c231dbeef0e5494973dc69cd332d50710c
+Merge: c3f1eba 9fec6f0
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Jul 23 18:04:28 2014 -0400
+
+    removing sandbox binary files
+
+commit c3f1eba3d9ae985a7d10d78640969e9154373218
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Tue Jul 22 17:33:22 2014 -0400
+
+    updated paper
+
+commit 9fec6f041dfa8fe34fb79e0851ba2aed9ba622eb
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jul 13 02:03:46 2014 -0400
+
+     update README
+
+commit 4236a42cfe1ac3fb9c13b5dcc66da7b2b5e48ea0
+Author: root <root@debSand1.localhost>
+Date:   Tue Jul 8 18:20:10 2014 -0400
+
+    cleaned out vzmigrate output with only the steps
+
+commit bd9abd243782854008af8a0e418cd506771cb70f
+Author: root <root@debSand1.localhost>
+Date:   Tue Jul 8 15:38:23 2014 -0400
+
+     moving some files around, added how to do port_forwarding modified vzclone
+
+commit fcc24f5c031655aad831a0f357b972dd8bb39cab
+Author: root <root@debSand1.localhost>
+Date:   Tue Jul 8 01:05:07 2014 -0400
+
+     vzclone else error removed
+
+commit 74dfa0b20704b13d24afba949241f75a6e5e5c50
+Author: nipun <nipun@nec-labs.com>
+Date:   Mon Jul 7 00:13:13 2014 -0400
+
+     LAMP Install eval case
+
+commit f100b15b27223b174bac221199c53a6c84c53001
+Merge: 68232c7 329a7d8
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jul 6 20:51:44 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit 68232c7d17ab99cad20bbba77e2a72151de91d97
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jul 6 20:51:35 2014 -0400
+
+    Added fixNetwork.sh which allows for Masquerade so that containers can ping external ip's
+
+commit 329a7d87b52ee02dd13f584a77e958a7de6faac4
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Jul 6 01:33:25 2014 -0400
+
+     adding vzclone
+
+commit 8ec95553d3554790131b9b1793a1cc26aa9270d5
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sun Jul 6 00:10:51 2014 -0400
+
+     VZ Migrate Output
+
+commit 4748b1ee96ef7b64021161ff57e61ee1b4b8de4c
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 23:31:30 2014 -0400
+
+     adding vzcloning
+
+commit ecece47dd9d4b124e04deeece2a987075607d5ef
+Author: Nipun Arora <nipun2512@gmail.com>
+Date:   Sat Jul 5 23:03:45 2014 -0400
+
+    add vzmigrate
+
+commit 390d70a4e74be94a1ebc58e436199d3afe61a912
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:39:14 2014 -0400
+
+    OpenVZ install scripts
+
+commit ab4edebd96f755e441401c989e8ca27cea9220cf
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:32:49 2014 -0400
+
+    update script
+
+commit 512e961335f476ff1e4cf3dd1f44c34367ae4273
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:31:04 2014 -0400
+
+    script to create openvz
+
+commit 67f54057ac327e5989d58d6bfc496f0f0fd5c653
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:14:12 2014 -0400
+
+    remove python single threaded
+
+commit 8ae80e2b2859cb5018bbff86f082d5e4f9c54a2a
+Merge: fb150cc 52eab5f
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:10:19 2014 -0400
+
+    Merge branch 'master' of github.com:nipunarora/sandbox-testing
+
+commit fb150cc399606d0398967f08b0f674be98721172
+Author: nipun <nipun@nec-labs.com>
+Date:   Sat Jul 5 22:09:07 2014 -0400
+
+    adding new stuff
+
+commit 52eab5f3efce491c11ea358103b630496c86deeb
+Author: root <root@debSandbox1.debSandbox1.nipunarora.net>
+Date:   Fri Jul 4 20:32:37 2014 -0400
+
+    changed name of modules
+
+commit 7558b61be3adc755a05165ee19650c58a12cb916
+Author: root <root@debSandbox1.debSandbox1.nipunarora.net>
+Date:   Fri Jul 4 20:32:15 2014 -0400
+
+    removed duplicator
+
+commit 4d97598a23af57eeda355e4c6159d55cfa8f5e93
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 18:46:11 2014 -0400
+
+    Added README
+
+commit 7020ffef124eb5811c5fbff012e9e40fb38ff768
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 18:39:18 2014 -0400
+
+    update README
+
+commit fcf5d3b929ea985be319a59b10bf6c1577dbec8d
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 18:34:31 2014 -0400
+
+    Remove older README
+
+commit 9e87981051eeb8c927902fe30bdeadda3bc05e36
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 18:33:48 2014 -0400
+
+    Added Readme and twsited proxy
+
+commit c65faaa053a516975ff5f08300bfb0029e794df8
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 14:47:56 2014 -0400
+
+    Adding a few proxies
+
+commit b1d5d7247c9503c728bdf8dfabf9a67cc641f575
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 13:00:46 2014 -0400
+
+    Adding a few example tcp servers
+
+commit f55c1f9018b1686ba4517695484ac8865c27b9c9
+Author: nipun <nipun@nec-labs.com>
+Date:   Fri Jul 4 12:54:08 2014 -0400
+
+    committing all changes
+
+commit ff9f7c3ff02ccb5da2db1d3035664549933c7c84
+Author: nipun <nipun@nec-labs.com>
+Date:   Mon Jun 23 10:55:13 2014 -0400
+
+    Adding various servers and clients
+
+commit 5dd68c0fdf6d98c4abd19a57d0531d64b54f68f8
+Author: nipun <nipun@nec-labs.com>
+Date:   Sun Jun 22 18:10:58 2014 -0400
+
+    Adding selectserver.c
+
+commit d8eed026802b868125f5e41ffdfdd10c752814e3
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Apr 30 12:09:18 2014 -0400
+
+    Adding duplicator image and challanges.tex
+
+commit 9ea37f4b1622adea7aa52789344220bcfe6ce6e6
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Apr 30 12:08:28 2014 -0400
+
+    Correction and changes
+
+commit f1523fcd6cb9101ae81aee1922236038039f52f2
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Wed Apr 30 10:30:58 2014 -0400
+
+    Added some more details to duplicator
+
+commit 0f8aab940c1d65acf6e3d3b041fceb78d6a25e4a
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Tue Apr 29 15:16:08 2014 -0400
+
+    changed intro to have devops motivation instead
+
+commit 9a97015519206cda4459c14064c0331eda262b30
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Apr 28 11:45:15 2014 -0400
+
+    Adding missing dependencies
+
+commit b888dcd8e692abfcae6f3232b7400a44bffd0571
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Apr 28 10:39:47 2014 -0400
+
+    Adding further details in intro and design
+
+commit 7c6297f717571602cddaf0386de3197afa67c9e3
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sun Apr 27 23:56:46 2014 -0400
+
+    adding a few contributions
+
+commit 4b9c6822e6ce1057d0d5638fcb9f97a628f74899
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Fri Apr 25 17:29:32 2014 -0400
+
+    Adding Trigger Test Cases
+
+commit 9da06cfef4298aeebd5e2efaa01ba22cd9a7d502
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Tue Apr 22 18:27:09 2014 -0400
+
+    Added motivation scenario
+
+commit 7cb947d86d7060282fb2be746336301c264b3c72
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Apr 21 16:16:40 2014 -0400
+
+    Updated sandbox introduction
+
+commit f2f27a6e49735f32b087ff0bfeafaf86d2125c14
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Apr 21 10:09:18 2014 -0400
+
+    Added motivation.tex
+
+commit 8d7bb62939159cf38070eff34b004e159cf56741
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Mon Apr 21 10:08:42 2014 -0400
+
+    Committing motivation and changes to icse style
+
+commit d4582610d3c8831826507177997e07231f0452d2
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sat Apr 5 20:12:34 2014 -0400
+
+    adding paper
+
+commit fb2d4930f365155151179a6193d1bf57a0b20e6e
+Author: Nipun Arora <nipun@nec-labs.com>
+Date:   Sat Apr 5 20:04:40 2014 -0400
+
+    adding openvz-boot
+
+commit 3114c67209cad070447bf194a53fc8d2bbef95ee
+Author: nipunarora <nipun2512@gmail.com>
+Date:   Tue Apr 1 12:35:24 2014 -0700
+
+    Initial commit
