@@ -10,9 +10,8 @@ MAINTAINER nipun
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
-#RUN cd /root/ && git clone https://github.com/antirez/redis.git && cd redis && git checkout 2ac546e00cd4000506558e23d11acafb4ce654b7 && make
-RUN cd /root/ && install.sh
+COPY install.sh /root/install.sh
+RUN cd /root/ && sh install.sh
 
 EXPOSE 22
-#ENTRYPOINT [ "service", "ssh", "start"]
 ENTRYPOINT service ssh restart && /bin/bash
