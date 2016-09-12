@@ -4,7 +4,7 @@ require 'redis'
 class Producer
   def initialize(redis_url)
     @redis = Redis.new(:url => redis_url)
-        @script = <<EOS
+    @script = <<EOS
     local elements = { 1, 2, 3, 4}
     return redis.call('lpush', KEYS[1], unpack(elements))
 EOS

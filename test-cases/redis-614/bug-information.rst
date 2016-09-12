@@ -37,7 +37,7 @@ Basically:
 2. brpoplpush
 3. remove all elements (1 and 2 are sufficient to see the failure)
 
-   2.2.1 Timing order
+2.2.1 Timing order
 
 Order doesn’t matter too much
 2.2.2 Events order externally controllable?

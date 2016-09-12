@@ -13,8 +13,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -y upgrade
 
 COPY install.sh /root/install.sh
-#RUN cd /root/ && git clone https://github.com/antirez/redis.git && cd redis && git checkout bfc197c3b604baf0dba739ea174d5054284133f0 && make
 RUN cd /root/ && sh install.sh
+COPY * /root/
 
 EXPOSE 22
 #ENTRYPOINT [ "service", "ssh", "start"]
