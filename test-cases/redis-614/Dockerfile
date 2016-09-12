@@ -11,6 +11,9 @@ ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -y upgrade
+RUN apt-get install \
+ruby
+RUN gem install bundler && bundle install
 
 COPY install.sh /root/install.sh
 RUN cd /root/ && sh install.sh

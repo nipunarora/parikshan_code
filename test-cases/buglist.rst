@@ -23,6 +23,7 @@
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
 |Redis-487     |Semantic bugs|Keys exist despite  |Deterministic     |2 nodes/         |        |                    |bug#487  |Aspirator|    Y    |Redis    |
 |              |             |fulshing            |                  |multi-nodes      |        |                    |         |benchmark|         |         |
+|              |             |                    |                  |                 |        |                    |         |         |         |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
 |Cassandra-5225|Semantic bugs|Missing Column      |Deterministic     |2 nodes          |        |                    |bug#5225 |         |         |Cassandra|
 |              |             |error, when         |                  |                 |        |                    |         |         |         |         |
@@ -33,7 +34,7 @@
 |Cassandra-1837|Semantic bugs|Wrong computation   |Deterministic     |2 nodes/         |        |                    |bug#1837 |         |    Y    |cassandra|
 |              |             |                    |                  |multi-nodes      |        |                    |         |         |         |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
-|Redis-614     |Resource Leak|When Master + Slave,|Deterministic     |3 nodes          |        |0. master + slave   |bug#614  |         |         |Redis    |
+|Redis-614     |Resource Leak|When Master + Slave,|Deterministic     |3 nodes          |        |0. master + slave   |bug#614  |         |   Y     |Redis    |
 |              |             |and lua scripting is|                  |                 |        |(feature start)     |         |         |         |         |
 |              |             |used, BRPush and    |                  |                 |        |1. brpush/brpop     |         |         |         |         |
 |              |             |BRPop on a list were|                  |                 |        |using lua scripting |         |         |         |         |
@@ -43,7 +44,7 @@
 |              |             |(memory) grows      |                  |                 |        |                    |         |         |         |         |
 |              |             |unbounded           |                  |                 |        |                    |         |         |         |         |
 +--------------+-------------+--------------------+------------------+-----------------+--------+--------------------+---------+---------+---------+---------+
-|Redis-417     |Resource Leak|Memory Leak in      |Deterministic     |2 nodes          |        |0. start cluster    |bug#417  |         |         |Redis    |
+|Redis-417     |Resource Leak|Memory Leak in      |Deterministic     |2 nodes          |        |0. start cluster    |bug#417  |         |   Y     |Redis    |
 |              |             |master server       |                  |                 |        |(master + slave)    |         |         |         |         |
 |              |             |                    |                  |                 |        |1. executes two     |         |         |         |         |
 |              |             |                    |                  |                 |        |client commands     |         |         |         |         |
