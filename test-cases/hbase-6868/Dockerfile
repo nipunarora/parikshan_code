@@ -10,8 +10,9 @@ MAINTAINER nipun
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get install -y openjdk-7-jdk
-RUN apt-get install -y wget
+RUN apt-get install \
+openjdk-7-jdk \
+wget
 
 COPY bashrc /root/.bashrc
 COPY core-site.xml /root/.
