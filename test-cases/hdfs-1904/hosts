@@ -1,0 +1,5 @@
+127.0.0.1	localhost
+
+172.17.0.9 spark-master
+172.17.0.11 spark-slave1
+172.17.0.12 spark-slave2
