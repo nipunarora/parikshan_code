@@ -35,20 +35,20 @@
 |              |              |             |                    |                  |multi-nodes      |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
 |9.            |Redis-614     |Resource Leak|When Master + Slave,|Deterministic     |3 nodes          |0. master + slave                              |bug#614  |         |   Y     |Redis    |
-|              |              |             |and lua scripting is|                  |                 |(feature start)                                |         |         |         |         |
-|              |              |             |used, BRPush and    |                  |                 |1. brpush/brpop                                |         |         |         |         |
-|              |              |             |BRPop on a list were|                  |                 |using lua scripting                            |         |         |         |         |
-|              |              |             |not replicated      |                  |                 |(file write)                                   |         |         |         |         |
+|              |              |             |and lua scripting is|                  |                 |1. brpush/brpop using lua                      |         |         |         |         |
+|              |              |             |used, BRPush and    |                  |                 |scripting                                      |         |         |         |         |
+|              |              |             |BRPop on a list were|                  |                 |                                               |         |         |         |         |
+|              |              |             |not replicated      |                  |                 |                                               |         |         |         |         |
 |              |              |             |correctly to slave, |                  |                 |                                               |         |         |         |         |
 |              |              |             |and slave's list    |                  |                 |                                               |         |         |         |         |
 |              |              |             |(memory) grows      |                  |                 |                                               |         |         |         |         |
 |              |              |             |unbounded           |                  |                 |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
-|10.           |Redis-417     |Resource Leak|Memory Leak in      |Deterministic     |2 nodes          |0. start cluster                               |bug#417  |         |   Y     |Redis    |
-|              |              |             |master server       |                  |                 |(master + slave)                               |         |         |         |         |
-|              |              |             |                    |                  |                 |1. executes two                                |         |         |         |         |
-|              |              |             |                    |                  |                 |client commands                                |         |         |         |         |
-|              |              |             |                    |                  |                 |(feature start)                                |         |         |         |         |
+|10.           |Redis-417     |Resource Leak|Memory Leak in      |Deterministic     |2 nodes          |0. start cluster (master + slave)              |bug#417  |         |   Y     |Redis    |
+|              |              |             |master server       |                  |                 |1. executes                                    |         |         |         |         |
+|              |              |             |                    |                  |                 |two client commands                            |         |         |         |         |
+|              |              |             |                    |                  |                 |                                               |         |         |         |         |
+|              |              |             |                    |                  |                 |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
 |11.           |Redis-957     |Configuration|Slave cannot sync   |Non Deterministic |2 nodes          |Upload a large db                              |bug#957  |         |N (Could |Redis    |
 |              |              |Bugs         |with Master on large|                  |                 |(file write)                                   |         |         |not find |         |
@@ -69,23 +69,23 @@
 |              |              |             |string              |                  |                 |execution script has                           |         |         |         |         |
 |              |              |             |                    |                  |                 |been provided                                  |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
-|14.           |Redis-761     |Crash Bugs   |Redis server crashes|Deterministic     |1 node           | zinterstore out                               |bug#761  |         |   Y     |Redis    |
-|              |              |             |on a large integer  |                  |                 |9223372036854775807                            |         |         |         |         |
-|              |              |             |input to            |                  |                 |zset zset2 (feature                            |         |         |         |         |
-|              |              |             |                    |                  |                 |start)                                         |         |         |         |         |
+|14.           |Redis-761     |Crash Bugs   |Redis server crashes|Deterministic     |1 node           | zinterstore out 9223372036854775807           |bug#761  |         |   Y     |Redis    |
+|              |              |             |on a large integer  |                  |                 |zset zset2                                     |         |         |         |         |
+|              |              |             |input to            |                  |                 |                                               |         |         |         |         |
+|              |              |             |                    |                  |                 |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
 |15.           |HBASE-9115    |Semantic Bugs|                    |Deterministic     |1 node           |                                               |bug#9115 |         |   Y     |HBASE    |
 |              |              |             |                    |                  |                 |                                               |         |         |         |         |
 |              |              |             |                    |                  |                 |                                               |         |         |         |         |
 |              |              |             |                    |                  |                 |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
-|16.           |HDFS-1904     |Crash Bug and|Trying to create a  | Determinstic     |1 node           |The bug is triggered                           |bug#1904 |         |   N     |HDFS     |
+|16.           |HDFS-1904     |Crash Bug and|Trying to create a  | Determinstic     |1 node           |The bug is triggered                           |bug#1904 |         |         |HDFS     |
 |              |              |Configuration|child directory in  |                  |                 |when the fsynch                                |         |         |         |         |
 |              |              |Bug          |an unexisting parent|                  |                 |interval is set to                             |         |         |         |         |
 |              |              |             |directory crashes   |                  |                 |10 seconds                                     |         |         |         |         |
 |              |              |             |HDFS NameNode       |                  |                 |                                               |         |         |         |         |
 +--------------+--------------+-------------+--------------------+------------------+-----------------+-----------------------------------------------+---------+---------+---------+---------+
-|17.           |HDFS-6165     |Semantic Bug |Given a directory   |Deterministic     |1 node           |https://issues.apache.org/jira/browse/HDFS-6165|bug#6165 |         |   N     |HDFS     |
+|17.           |HDFS-6165     |Semantic Bug |Given a directory   |Deterministic     |1 node           |https://issues.apache.org/jira/browse/HDFS-6165|bug#6165 |         |         |HDFS     |
 |              |              |             |owned by user A with|                  |                 |                                               |         |         |         |         |
 |              |              |             |WRITE permission    |                  |                 |                                               |         |         |         |         |
 |              |              |             |containing an empty |                  |                 |                                               |         |         |         |         |
