@@ -1,0 +1,1 @@
+g++ -g3 -O2 -Wshadow -lpthread -Wall -L/home/mysql4/lib/mysql -Wl,-R/home/mysql4/lib/mysql -I/home/mysql4/include runtran.cc -lmysqlclient -lz -o runtran

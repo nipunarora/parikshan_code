@@ -1,0 +1,18 @@
+0 3 localhost 265.653635 "select * from a,b where a.tal+b.tal=?"
+
+1 0 localhost 0.000881 ""
+
+2 3 localhost 279.529550 "select * from a,b where a.tal+b.tal=?"
+
+3 3 localhost 269.649489 "select * from a,b where a.tal+b.tal=?"
+
+4 3 localhost 265.653898 "select * from a,b where a.tal+b.tal=?"
+
+5 3 localhost 265.653971 "select * from a,b where a.tal+b.tal=?"
+
+6 3 localhost 265.653753 "select * from a,b where a.tal+b.tal=?"
+
+7 0 localhost 0.000809 ""
+
+8 3 localhost 269.648498 "select * from a,b where a.tal+b.tal=?"
+

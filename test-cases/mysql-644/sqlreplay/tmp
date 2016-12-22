@@ -1,0 +1,238 @@
+runtran.cc:21:25: mysql/mysql.h: No such file or directory
+runtran.cc:146: error: syntax error before `*' token
+runtran.cc:173: error: syntax error before `*' token
+runtran.cc:174: error: ISO C++ forbids declaration of `abort' with no type
+runtran.cc: In static member function `static void SQLGenerator::reinit()':
+runtran.cc:167: error: cannot call member function `int SQLGenerator::abort()' 
+   without object
+runtran.cc:169: error: cannot call member function `int SQLGenerator::abort()' 
+   without object
+runtran.cc: At global scope:
+runtran.cc:174: error: syntax error before `}' token
+runtran.cc:178: error: syntax error before `if'
+runtran.cc:180: error: ISO C++ forbids declaration of `abort' with no type
+runtran.cc:180: error: new declaration `int abort()'
+/usr/include/stdlib.h:594: error: ambiguates old declaration `void abort()'
+runtran.cc:180: error: syntax error before `}' token
+runtran.cc:185: error: `buf' was not declared in this scope
+runtran.cc:186: error: syntax error before `if'
+runtran.cc:189: error: `nr' was not declared in this scope
+runtran.cc:189: error: syntax error before `.' token
+runtran.cc:192: error: `nr' was not declared in this scope
+runtran.cc:192: error: syntax error before `.' token
+runtran.cc:195: error: `nr' was not declared in this scope
+runtran.cc:195: error: syntax error before `.' token
+runtran.cc:198: error: `nr' was not declared in this scope
+runtran.cc:198: error: syntax error before `.' token
+runtran.cc:211: error: ISO C++ forbids declaration of `fclose' with no type
+runtran.cc:211: error: `int fclose' redeclared as different kind of symbol
+/usr/include/stdio.h:208: error: previous declaration of `int fclose(FILE*)'
+runtran.cc:211: error: invalid conversion from `FILE*' to `int'
+runtran.cc:212: error: syntax error before `}' token
+runtran.cc:213: error: ISO C++ forbids declaration of `abort' with no type
+runtran.cc:213: error: syntax error before `}' token
+runtran.cc:215: error: ISO C++ forbids declaration of `newtid' with no type
+runtran.cc:217: error: ISO C++ forbids declaration of `it' with no type
+runtran.cc:217: error: `tid' was not declared in this scope
+runtran.cc:218: error: syntax error before `}' token
+runtran.cc: In function `const aquery* getnext(resultset_t*, int*)':
+runtran.cc:225: error: `tid' undeclared (first use this function)
+runtran.cc:225: error: (Each undeclared identifier is reported only once for 
+   each function it appears in.)
+runtran.cc:227: error: `ntid' undeclared (first use this function)
+runtran.cc:230: error: invalid type argument of `unary *'
+runtran.cc:238: error: invalid type argument of `unary *'
+runtran.cc: At global scope:
+runtran.cc:254: error: syntax error before `}' token
+runtran.cc: In function `pid_t monitor_thr(std::string&, long int, long int, 
+   long int)':
+runtran.cc:290: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:290: error:                 void std::abort()
+runtran.cc:317: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:317: error:                 void std::abort()
+runtran.cc: In function `pid_t mymonitor_thr(std::string&, long int, long int, 
+   long int)':
+runtran.cc:332: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:332: error:                 void std::abort()
+runtran.cc:354: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:354: error:                 void std::abort()
+runtran.cc: In function `void* start_new(void*)':
+runtran.cc:373: error: `MYSQL' undeclared (first use this function)
+runtran.cc:373: error: syntax error before `;' token
+runtran.cc:374: error: `dbase' undeclared (first use this function)
+runtran.cc:374: error: `mysql_init' undeclared (first use this function)
+runtran.cc:375: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:375: error:                 void std::abort()
+runtran.cc:377: error: `mysql_real_connect' undeclared (first use this 
+   function)
+runtran.cc:379: error: `mysql_error' undeclared (first use this function)
+runtran.cc:380: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:380: error:                 void std::abort()
+runtran.cc:389: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:389: error:                 void std::abort()
+runtran.cc:390: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:390: error:                 void std::abort()
+runtran.cc:391: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:391: error:                 void std::abort()
+runtran.cc:392: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:392: error:                 void std::abort()
+runtran.cc:396: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:396: error:                 void std::abort()
+runtran.cc:401: error: `mysql_autocommit' undeclared (first use this function)
+runtran.cc:409: error: `getnext' undeclared (first use this function)
+runtran.cc:416: error: `mysql_rollback' undeclared (first use this function)
+runtran.cc:418: error: `MYSQL_RES' undeclared (first use this function)
+runtran.cc:418: error: syntax error before `=' token
+runtran.cc:424: error: `mysql_query' undeclared (first use this function)
+runtran.cc:425: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:425: error:                 void std::abort()
+runtran.cc:429: error: `mysql_commit' undeclared (first use this function)
+runtran.cc:440: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:440: error:                 void std::abort()
+runtran.cc:442: error: syntax error before `=' token
+runtran.cc:443: error: `MYSQL_ROW' undeclared (first use this function)
+runtran.cc:444: error: `srow' undeclared (first use this function)
+runtran.cc:444: error: syntax error before `)' token
+runtran.cc:446: error: syntax error before `)' token
+runtran.cc:449: error: ISO C++ forbids declaration of `MYSQL_STMT' with no type
+runtran.cc:449: error: syntax error before `*' token
+runtran.cc:453: error: `stmt' undeclared (first use this function)
+runtran.cc:454: error: `mysql_prepare' undeclared (first use this function)
+runtran.cc:457: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:457: error:                 void std::abort()
+runtran.cc:459: error: `mysql_param_count' undeclared (first use this function)
+runtran.cc:462: error: `MYSQL_BIND' undeclared (first use this function)
+runtran.cc:462: error: syntax error before `;' token
+runtran.cc:463: error: `param_bind' undeclared (first use this function)
+runtran.cc:463: error: `MYSQL_TYPE_LONG' undeclared (first use this function)
+runtran.cc:467: error: `mysql_bind_param' undeclared (first use this function)
+runtran.cc:468: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:468: error:                 void std::abort()
+runtran.cc:470: error: syntax error before `=' token
+runtran.cc:471: error: syntax error before `)' token
+runtran.cc:472: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:472: error:                 void std::abort()
+runtran.cc:474: error: syntax error before `)' token
+runtran.cc:476: error: `id' undeclared (first use this function)
+runtran.cc:476: error: `mysql_execute' undeclared (first use this function)
+runtran.cc:477: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:477: error:                 void std::abort()
+runtran.cc:479: error: syntax error before `[' token
+runtran.cc:482: error: `my_bool' undeclared (first use this function)
+runtran.cc:482: error: syntax error before `[' token
+runtran.cc:484: error: `result_bind' undeclared (first use this function)
+runtran.cc:486: error: `is_null' undeclared (first use this function)
+runtran.cc:489: error: `mysql_bind_result' undeclared (first use this function)
+runtran.cc:490: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:490: error:                 void std::abort()
+runtran.cc:492: error: `mysql_stmt_store_result' undeclared (first use this 
+   function)
+runtran.cc:493: error: call of overloaded `abort()' is ambiguous
+runtran.cc:213: error: candidates are: int abort()
+<internal>:493: error:                 void std::abort()
+runtran.cc:495: error: `mysql_fetch' undeclared (first use this function)
+runtran.cc:496: error: `row' undeclared (first use this function)
+runtran.cc:498: error: syntax error before `)' token
+runtran.cc: At global scope:
+runtran.cc:510: error: ISO C++ forbids declaration of `abort' with no type
+runtran.cc:510: error: syntax error before `}' token
+runtran.cc:512: error: ISO C++ forbids declaration of `mysql_free_result' with 
+   no type
+runtran.cc:513: error: syntax error before `break'
+runtran.cc:518: error: ISO C++ forbids declaration of `abort' with no type
+runtran.cc:518: error: syntax error before `}' token
+runtran.cc:520: error: ISO C++ forbids declaration of `mysql_free_result' with 
+   no type
+runtran.cc:521: error: syntax error before `}' token
+runtran.cc:525: error: `t_end' was not declared in this scope
+runtran.cc:525: error: ISO C++ forbids declaration of `gettimeofday' with no 
+   type
+runtran.cc:525: error: `int gettimeofday' redeclared as different kind of 
+   symbol
+/usr/include/sys/time.h:73: error: previous declaration of `int 
+   gettimeofday(timeval*, timezone*)'
+runtran.cc:525: error: initializer list being treated as compound expression
+runtran.cc:526: error: syntax error before `->' token
+runtran.cc:540: error: syntax error before `.' token
+runtran.cc:542: error: ISO C++ forbids declaration of `mysql_close' with no 
+   type
+runtran.cc:543: error: syntax error before `return'
+runtran.cc: In function `int main(int, char**)':
+runtran.cc:692: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:692: error:                 void std::abort()
+runtran.cc:695: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:695: error:                 void std::abort()
+runtran.cc:701: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:701: error:                 void std::abort()
+runtran.cc:702: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:702: error:                 void std::abort()
+runtran.cc:703: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:703: error:                 void std::abort()
+runtran.cc:704: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:704: error:                 void std::abort()
+runtran.cc:705: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:705: error:                 void std::abort()
+runtran.cc:706: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:706: error:                 void std::abort()
+runtran.cc:707: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:707: error:                 void std::abort()
+runtran.cc:708: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:708: error:                 void std::abort()
+runtran.cc:745: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:745: error:                 void std::abort()
+runtran.cc:749: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:749: error:                 void std::abort()
+runtran.cc:752: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:752: error:                 void std::abort()
+runtran.cc:755: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:755: error:                 void std::abort()
+runtran.cc:775: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:775: error:                 void std::abort()
+runtran.cc:776: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:776: error:                 void std::abort()
+runtran.cc:777: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:777: error:                 void std::abort()
+runtran.cc:785: error: `gettimeofday' cannot be used as a function
+runtran.cc:787: error: `gettimeofday' cannot be used as a function
+runtran.cc:798: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:798: error:                 void std::abort()
+runtran.cc:802: error: `gettimeofday' cannot be used as a function
+runtran.cc:845: error: call of overloaded `abort()' is ambiguous
+runtran.cc:518: error: candidates are: int abort()
+<internal>:845: error:                 void std::abort()

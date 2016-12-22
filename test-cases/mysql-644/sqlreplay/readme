@@ -1,0 +1,3 @@
+refer to the `compile' to compile the runtran
+execute the populate_db.sh 
+execute run.txt (or you cn tune the parameter by yourself) 

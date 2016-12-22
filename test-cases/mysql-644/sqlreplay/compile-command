@@ -1,0 +1,2 @@
+g++ -g3 -O2 -lpthread -Wshadow -L/home/yyzhou2/shanlu/research/bugbench/mysql-4.1.1-alpha/mysql/lib/mysql -W1,-R/home/yyzhou2/shanlu/research/bugbench/mysql-4.1.1-alpha/mysql/lib/mysql -I/home/yyzhou2/shanlu/research/bugbench/mysql-4.1.1-alpha/mysql/include runtran.cc -lmysqlclient -lz -o runtran
+
