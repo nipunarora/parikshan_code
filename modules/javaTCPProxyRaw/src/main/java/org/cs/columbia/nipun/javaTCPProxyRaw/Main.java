@@ -1,6 +1,6 @@
-package net.boboman13.raw_tcp_proxy.main;
+package org.cs.columbia.nipun.javaTCPProxyRaw;
 
-import net.boboman13.raw_tcp_proxy.Proxy;
+import org.cs.columbia.nipun.javaTCPProxyRaw.Proxy;
 
 /**
  * @author boboman13

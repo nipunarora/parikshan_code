@@ -1,12 +1,13 @@
-package net.boboman13.raw_tcp_proxy;
+package org.cs.columbia.nipun.javaTCPProxyRaw;
 
 import java.util.HashSet;
 
 /**
- * @author boboman13
+ * A defunct class
+ * @author nipun
  */
 public class RegistryManager {
-    private HashSet<Registry> clients = new HashSet<Registry>();
+    private HashSet<ClientToServer> clients = new HashSet<ClientToServer>();
     private Proxy proxy;
 
     /**
@@ -23,7 +24,7 @@ public class RegistryManager {
      *
      * @param client
      */
-    public void addClient(Registry client) {
+    public void addClient(ClientToServer client) {
         clients.add(client);
     }
 
@@ -32,7 +33,7 @@ public class RegistryManager {
      *
      * @param client
      */
-    public void removeClient(Registry client) {
+    public void removeClient(ClientToServer client) {
         clients.remove(client);
     }
 

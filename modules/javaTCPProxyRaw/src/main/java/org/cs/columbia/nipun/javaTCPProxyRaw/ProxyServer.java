@@ -1,4 +1,4 @@
-package net.boboman13.raw_tcp_proxy;
+package org.cs.columbia.nipun.javaTCPProxyRaw;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * @author boboman13
+ * @author nipun
  */
 public class ProxyServer {
 
@@ -32,10 +32,10 @@ public class ProxyServer {
 
                 this.proxy.debug("Accepted new client: "+client.getInetAddress().getHostAddress());
 
-                Registry registry = new Registry(this.proxy, client);
+                ClientToServer clientToServer = new ClientToServer(this.proxy, client);
 
                 // Start the thread.
-                Thread thread = new Thread(registry);
+                Thread thread = new Thread(clientToServer);
                 thread.start();
             }
         } catch (IOException ex) {

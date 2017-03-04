@@ -1,4 +1,4 @@
-package net.boboman13.raw_tcp_proxy;
+package org.cs.columbia.nipun.javaTCPProxyRaw;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +8,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 /**
- * @author boboman13
+ * @author nipun
  */
-public class Registry implements Runnable {
+public class ClientToServer implements Runnable {
 
     private Proxy proxy;
     private boolean isRunning = true;
@@ -24,7 +24,7 @@ public class Registry implements Runnable {
     public InputStream clientIn;
     public OutputStream clientOut;
 
-    private SocketListener socketListener;
+    private ServerToClient serverToClient;
 
     /**
      * Creates a Registry instance; Registry represents a client.
@@ -33,7 +33,7 @@ public class Registry implements Runnable {
      * @param inSocket The socket to the client.
      * @throws IOException Upon getting an exception, the program will throw an exception.
      */
-    public Registry(Proxy proxy, Socket inSocket) {
+    public ClientToServer(Proxy proxy, Socket inSocket) {
         this.proxy = proxy;
 
         try {
@@ -60,8 +60,8 @@ public class Registry implements Runnable {
 
 
         // Start up the SocketListener.
-        this.socketListener = new SocketListener(this);
-        Thread thread = new Thread(this.socketListener);
+        this.serverToClient = new ServerToClient(this);
+        Thread thread = new Thread(this.serverToClient);
         thread.start();
     }
 
@@ -115,7 +115,7 @@ public class Registry implements Runnable {
      * Kills the Registry, this happens when either the client or server disconnects.
      */
     public void kill() {
-        if(this.socketListener != null) this.socketListener.kill();
+        if(this.serverToClient != null) this.serverToClient.kill();
         isRunning = false;
 
         try {

@@ -1,11 +1,11 @@
-package net.boboman13.raw_tcp_proxy;
+package org.cs.columbia.nipun.javaTCPProxyRaw;
 
 /**
- * @author boboman13
+ * @author nipun
  */
 public class Proxy {
 
-    private RegistryManager registryManager;
+    //private RegistryManager registryManager;
     private ProxyServer proxyServer;
 
     private String host;
@@ -25,7 +25,7 @@ public class Proxy {
     public void start() {
         System.out.println("Starting Raw TCP Proxy on "+host+":"+listenPort+". Will forward to "+out+":"+port+".");
 
-        this.registryManager = new RegistryManager(this);
+        //this.registryManager = new RegistryManager(this);
         this.proxyServer = new ProxyServer(this);
     }
 
@@ -135,8 +135,10 @@ public class Proxy {
      *
      * @return The RegistryManager instance.
      */
+    /*
     public RegistryManager getRegistryManager() {
         return this.registryManager;
     }
+    */
 
 }

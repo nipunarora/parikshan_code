@@ -17,7 +17,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>net.boboman13.raw_tcp_proxy.main.Main</mainClass>
+							<mainClass>org.cs.columbia.nipun.javaTCPProxyRaw.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
