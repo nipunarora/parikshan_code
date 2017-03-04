@@ -10,13 +10,14 @@ import java.net.SocketTimeoutException;
 /**
  * @author nipun
  */
-public class ClientToServer implements Runnable {
+public class Register{
 
     private Proxy proxy;
     private boolean isRunning = true;
 
     private Socket outsocket;
     private Socket insocket;
+    private Socket duplicatesocket;
 
     public InputStream serverIn;
     public OutputStream serverOut;
@@ -24,7 +25,11 @@ public class ClientToServer implements Runnable {
     public InputStream clientIn;
     public OutputStream clientOut;
 
-    private ServerToClient serverToClient;
+    private Communicate ClienttoServer;
+    private Communicate ServertoClient;
+
+    public String client;
+    public String server;
 
     /**
      * Creates a Registry instance; Registry represents a client.
@@ -33,7 +38,7 @@ public class ClientToServer implements Runnable {
      * @param inSocket The socket to the client.
      * @throws IOException Upon getting an exception, the program will throw an exception.
      */
-    public ClientToServer(Proxy proxy, Socket inSocket) {
+    public Register(Proxy proxy, Socket inSocket) {
         this.proxy = proxy;
 
         try {
@@ -60,14 +65,22 @@ public class ClientToServer implements Runnable {
 
 
         // Start up the SocketListener.
-        this.serverToClient = new ServerToClient(this);
-        Thread thread = new Thread(this.serverToClient);
-        thread.start();
+        this.ClienttoServer = new Communicate(this,this.clientIn,this.serverOut);
+        Thread thread1 = new Thread(this.ClienttoServer);
+        thread1.start();
+
+        this.ServertoClient = new Communicate(this, this.serverIn,this.clientOut);
+        Thread thread2 = new Thread(this.ServertoClient);
+        thread2.start();
+
+
+
     }
 
     /**
      * Ran as a separate thread.
      */
+    /*
     public void run() {
         try {
             String line = null;
@@ -101,6 +114,7 @@ public class ClientToServer implements Runnable {
             this.kill();
         }
     }
+    */
 
     /**
      * Gets the Proxy of the Registry.
@@ -115,15 +129,15 @@ public class ClientToServer implements Runnable {
      * Kills the Registry, this happens when either the client or server disconnects.
      */
     public void kill() {
-        if(this.serverToClient != null) this.serverToClient.kill();
+        if(this.ClienttoServer != null) this.ClienttoServer.kill();
         isRunning = false;
 
         try {
+            proxy.debug("Client " + insocket.getInetAddress().getHostAddress() + " has disconnected or connection lost");
+
             if(this.outsocket != null) this.outsocket.close();
-            if(this.insocket != null) {
-                this.insocket.close();
-                proxy.debug("Client " + insocket.getInetAddress().getHostAddress() + " has disconnected.");
-            }
+            if(this.insocket != null) this.insocket.close();
+
         } catch (IOException ex) {
             // Do nothing.
         }

@@ -29,14 +29,13 @@ public class ProxyServer {
             // Keep listening for new clients!
             while(true) {
                 Socket client = server.accept();
-
                 this.proxy.debug("Accepted new client: "+client.getInetAddress().getHostAddress());
+                new Register(this.proxy,client);
 
-                ClientToServer clientToServer = new ClientToServer(this.proxy, client);
-
+                //Register register = new Register(this.proxy, client);
                 // Start the thread.
-                Thread thread = new Thread(clientToServer);
-                thread.start();
+                //Thread thread = new Thread(register);
+                //thread.start();
             }
         } catch (IOException ex) {
             // Bad boy, we got an error.
