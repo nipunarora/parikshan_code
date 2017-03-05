@@ -21,6 +21,7 @@ public class Main {
         for(int i = 0; i < args.length; i++) {
             // Look for out (-o, --out)
             if(args[i].equalsIgnoreCase("-l") || args[i].equalsIgnoreCase("--listen")) {
+
                 String[] split = args[i + 1].split(":");
                 listenIP=split[0];
                 listenPort = Integer.valueOf(split[1]);

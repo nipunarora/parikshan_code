@@ -32,7 +32,7 @@ public class CommunicateToServerAndPipe implements Runnable {
      */
     public void run() {
         try {
-            System.out.println("Executing Run");
+            //System.out.println("Executing Run");
             String line = null;
 
             final byte[] request = new byte[1024];

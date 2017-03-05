@@ -115,7 +115,7 @@ public class Register{
             this.replicaOut = this.replicaSocket.getOutputStream();
 
 
-            pis = new PipedInputStream();
+            pis = new PipedInputStream(100000000);
             pos = new PipedOutputStream();
             pos.connect(pis);
             //pipe = Pipe.open();
