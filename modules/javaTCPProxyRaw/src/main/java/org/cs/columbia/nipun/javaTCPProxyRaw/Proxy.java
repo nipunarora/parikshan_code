@@ -13,6 +13,10 @@ public class Proxy {
     private int port;
     private int listenPort;
 
+    private String replicaIP;
+    private int replicaPort;
+
+    private boolean duplicate;
     private boolean debug;
 
     /**
@@ -128,6 +132,30 @@ public class Proxy {
         if(this.getDebug()) {
             System.out.println("[DEBUG] "+msg);
         }
+    }
+
+    public String getReplicaIP() {
+        return replicaIP;
+    }
+
+    public void setReplicaIP(String replicaIP) {
+        this.replicaIP = replicaIP;
+    }
+
+    public int getReplicaPort() {
+        return replicaPort;
+    }
+
+    public void setReplicaPort(int replicaPort) {
+        this.replicaPort = replicaPort;
+    }
+
+    public boolean isDuplicate() {
+        return duplicate;
+    }
+
+    public void setDuplicate(boolean duplicate) {
+        this.duplicate = duplicate;
     }
 
     /**

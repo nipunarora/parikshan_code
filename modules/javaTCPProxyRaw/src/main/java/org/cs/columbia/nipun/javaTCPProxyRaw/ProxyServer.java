@@ -30,8 +30,10 @@ public class ProxyServer {
             while(true) {
                 Socket client = server.accept();
                 this.proxy.debug("Accepted new client: "+client.getInetAddress().getHostAddress());
-                new Register(this.proxy,client);
-
+                if(!this.proxy.isDuplicate())
+                    new Register(this.proxy,client);
+                else
+                    new Register(this.proxy,client,this.proxy.isDuplicate());
                 //Register register = new Register(this.proxy, client);
                 // Start the thread.
                 //Thread thread = new Thread(register);
