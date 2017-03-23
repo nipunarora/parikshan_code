@@ -41,12 +41,15 @@ public class HttpClientExample {
         // add request header
         request.addHeader("User-Agent", USER_AGENT);
 
-        HttpResponse response = client.execute(request);
-
         System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " +
-                response.getStatusLine().getStatusCode());
 
+        long before = System.nanoTime();
+        HttpResponse response = client.execute(request);
+        long after = System.nanoTime();
+
+        System.out.println("Response Code : " + response.getStatusLine().getStatusCode() + " Time: " + (after-before));
+
+        /*
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
 
@@ -57,7 +60,7 @@ public class HttpClientExample {
         }
 
         System.out.println(result.toString());
-
+        */
     }
 
     // HTTP POST request
