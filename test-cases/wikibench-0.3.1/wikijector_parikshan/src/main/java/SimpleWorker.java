@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 import static java.lang.Thread.sleep;
 
 /**
@@ -22,6 +21,7 @@ public class SimpleWorker {
         int timeout = 2000;
 
         MediaWiki mediaWiki = new MediaWiki(serverHost,serverPort);
+        HttpClientExample client = new HttpClientExample();
 
 
         while (sc.hasNextLine()) {
@@ -33,7 +33,12 @@ public class SimpleWorker {
             System.out.println(l.currentTime);
 
             long before = System.nanoTime();
-            boolean success = mediaWiki.doGET(l.currentPath,timeout);
+            //boolean success = mediaWiki.doGET(l.currentPath,timeout);
+            try {
+                client.sendGet(l.currentPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             long after = System.nanoTime();
 
             System.out.println(" Report " + success + " Time " + (after-before));
