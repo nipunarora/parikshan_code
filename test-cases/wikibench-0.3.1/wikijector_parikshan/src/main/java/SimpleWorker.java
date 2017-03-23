@@ -41,7 +41,7 @@ public class SimpleWorker {
             }
             long after = System.nanoTime();
 
-            System.out.println(" Report " + success + " Time " + (after-before));
+            //System.out.println(" Report " + success + " Time " + (after-before));
 
         }
     }
