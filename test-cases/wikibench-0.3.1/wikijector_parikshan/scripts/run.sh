@@ -1,2 +1,8 @@
 #!/bin/bash
-cat $1|java -cp target/Parikshan-1.0-SNAPSHOT.jar:target/dependency/httpclient-4.0.jar:target/dependency/httpcore-4.0.jar:target/dependency/commons-logging-1.1.1.jar:target/dependency/commons-codec-1.3.jar SimpleWorker > $2
+# $1 - hostname - 138.15.170.40:8080
+# $2 - traces.txt
+# $3 - output.txt
+
+echo cat $2|java -cp target/Parikshan-1.0-SNAPSHOT.jar:target/dependency/* SimpleWorker -h $1 > $3
+cat $2|java -cp target/Parikshan-1.0-SNAPSHOT.jar:target/dependency/* SimpleWorker -h $1 > $3
+#java -cp target/Parikshan-1.0-SNAPSHOT.jar:target/dependency/* SimpleWorker -h 138.15.170.140

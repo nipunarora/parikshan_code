@@ -1,5 +1,8 @@
 import java.util.Scanner;
 import static java.lang.Thread.sleep;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -7,12 +10,27 @@ import org.kohsuke.args4j.Option;
  */
 public class SimpleWorker {
 
-    @Option(name="-host",usage="Sets a hostname")
+    @Option(name="-h",usage="Sets a hostname")
     public static String hostname;
 
     public static void main(String[] args){
 
+
         SimpleWorker worker = new SimpleWorker();
+        CmdLineParser parser = new CmdLineParser(worker);
+
+
+        try {
+            // parse the arguments.
+            parser.parseArgument(args);
+
+        } catch( CmdLineException e ) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.println("Looking at host: " + hostname);
+
         Scanner sc = new Scanner(System.in);
 
         boolean flag_first = false;
