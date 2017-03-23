@@ -14,6 +14,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpClientExample {
 
+    int counter = 0;
     private final String USER_AGENT = "Mozilla/5.0";
 
     public static void main(String[] args) throws Exception {
@@ -47,7 +48,7 @@ public class HttpClientExample {
         HttpResponse response = client.execute(request);
         long after = System.nanoTime();
 
-        System.out.println("Response Code : " + response.getStatusLine().getStatusCode() + " Time: " + (after-before));
+        System.out.println("Code:" + response.getStatusLine().getStatusCode() + " Time:" + (after-before)/1000000000.0 + " ID:" + counter++);
 
         /*
         BufferedReader rd = new BufferedReader(
