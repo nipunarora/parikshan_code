@@ -1,14 +1,17 @@
 import java.util.Scanner;
 import static java.lang.Thread.sleep;
+import org.kohsuke.args4j.Option;
 
 /**
  * Created by Nipun on 3/22/17.
  */
 public class SimpleWorker {
 
-
+    @Option(name="-host",usage="Sets a hostname")
+    public static String hostname;
 
     public static void main(String[] args){
+
         SimpleWorker worker = new SimpleWorker();
         Scanner sc = new Scanner(System.in);
 
@@ -29,7 +32,7 @@ public class SimpleWorker {
             System.out.println(s);
 
             LogParser l = new LogParser();
-            l.lineParser(s);
+            l.lineParser(hostname, s);
             System.out.println(l.currentTime);
 
             long before = System.nanoTime();

@@ -28,7 +28,7 @@ public class LogParser {
         return Long.parseLong(x);
     }
 
-    public boolean lineParser(String line) {
+    public boolean lineParser(String host, String line) {
         System.out.println("Parsing line " + line);
         String[] parts;
 
@@ -37,8 +37,8 @@ public class LogParser {
         currentTime = parseEpochTime(parts[0]);
         String[] x = parts[1].split("wiki");
 
-        currentPath = "http://138.15.170.140/index.php" + x[x.length - 1];
-
+        //currentPath = "http://138.15.170.140/index.php" + x[x.length - 1];
+        currentPath = "http://" + host + "/index.php" + x[x.length - 1];
         String currentPostData = parts[2];				/* Get the post data, if any */
 
         if (currentPostData.length()>4) {		/* Check if there is post data */
